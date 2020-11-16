@@ -3,22 +3,71 @@
 
 :- include('enemy.pl').
 
+:- dynamic(type_enemy/1).
+:- dynamic(hp_enemy/1).
+:- dynamic(att_enemy/1).
+:- dynamic(def_enemy/1).
+:- dynamic(lvl_enemy/1).
+
 /* Encounter enemy randomizer */
+
+start :-
+    assertz(type_enemy(0)),
+    assertz(hp_enemy(0)),
+    assertz(att_enemy(0)),
+    assertz(def_enemy(0)),
+    assertz(lvl_enemy(0)).
 
 encounter_enemy(MaxId, EnemyType) :-
     random(1, 151, EncounterRate),
-    EncounterRate =< 75,
+    EncounterRate =< 150,
     random(0, MaxId, EncounterType),
     EnemyType is EncounterType,
     write('You encounter a '),
     enemy_type(EncounterType, EncounterName),
     write(EncounterName),
-    write('!\n'),
+    write('!\n').   
+
+encounter :- 
+    encounter_enemy(3, X), !,
+    retract(type_enemy(_)),
+    assertz(type_enemy(X)),
+
     random(1, 6, EnemyLevel),
-    enemy_attack(EncounterType, Att),
-    enemy_defense(EncounterType, Def),
+    retract(lvl_enemy(_)),
+    assertz(lvl_enemy(EnemyLevel)),
+    
+
+    enemy_health(X, Hp),
+    ScaleHp is Hp + 10*EnemyLevel,
+    retract(hp_enemy(_)),
+    assertz(hp_enemy(ScaleHp)),
+    
+
+    enemy_attack(X, Att),
+    ScaleAtt is Att + 3*EnemyLevel,
+    retract(att_enemy(_)),
+    assertz(att_enemy(ScaleAtt)),
+
+    enemy_defense(X, Def),
+    ScaleDef is Def + 2*EnemyLevel,
+    retract(def_enemy(_)),
+    assertz(def_enemy(ScaleDef)),
+
+    print_info.
+
+encounter :- !.
+
+print_info :-
+    /* Print Info enemy */
+    lvl_enemy(EnemyLevel),
+    hp_enemy(Hp),
+    att_enemy(Att),
+    def_enemy(Def), !,
     write('Level: '),
     write(EnemyLevel), nl,
+    write('Health: '),
+    write(Hp), nl,
     write('Attack: '),
     write(Att), nl,
     write('Defense: '),

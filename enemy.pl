@@ -2,10 +2,10 @@
 /* Place to store Enemy Facts */
 
 /* ID and Name */
-enemy_type(0, 'Slime').
-enemy_type(1, 'Goblin').
-enemy_type(2, 'Wolf').
-enemy_type(3, 'Dragon').
+enemy_type(0, slime).
+enemy_type(1, hilichurl).
+enemy_type(2, mage).
+enemy_type(3, paimon).
 
 /* Enemy Base Stats */
 enemy_health(0, 50).
@@ -13,7 +13,7 @@ enemy_health(1, 100).
 enemy_health(2, 200).
 enemy_health(3, 10000).
 
-enemy_attack(0, 10).
+enemy_attack(0, 15).
 enemy_attack(1, 25).
 enemy_attack(2, 40).
 enemy_attack(3, 1000).
