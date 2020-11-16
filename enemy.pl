@@ -27,5 +27,3 @@ enemy_special(0, 30).
 enemy_special(1, 50).
 enemy_special(2, 75).
 enemy_special(3, 2000).
-
-/* Enemy Stats by Level */

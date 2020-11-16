@@ -9,6 +9,7 @@
 /* Quest Generator */
 
 quest :-
+    (\+ quest_active), !,
     asserta(in_quest_dialogue),
     random(1, 11, SlimeCount),
     random(1, 6, HilichurlCount),
@@ -24,11 +25,17 @@ quest :-
     assertz(mage_counter(MageCount)),
     assertz(quest_active).
 
+quest :- 
+    quest_active, !,
+    write('You already have a quest!! Go finish it first!!').
+
 yes :- 
-    in_quest_dialogue, !,
+    in_quest_dialogue, 
+    (\+ quest_active), !,
     slime_counter(SlimeCount),
     hilichurl_counter(HilichurlCount),
     mage_counter(MageCount),
+    assertz(quest_active),
     write('You accepted the quest!!'), nl,
     write('You agreed to go kill: '), nl,
     write(SlimeCount), write(' slime(s)'), nl,

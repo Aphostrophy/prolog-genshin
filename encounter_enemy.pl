@@ -11,13 +11,6 @@
 
 /* Encounter enemy randomizer */
 
-start :-
-    assertz(type_enemy(0)),
-    assertz(hp_enemy(0)),
-    assertz(att_enemy(0)),
-    assertz(def_enemy(0)),
-    assertz(lvl_enemy(0)).
-
 encounter_enemy(MaxId, EnemyType) :-
     random(1, 151, EncounterRate),
     EncounterRate =< 150,
@@ -26,7 +19,7 @@ encounter_enemy(MaxId, EnemyType) :-
     write('You encounter a '),
     enemy_type(EncounterType, EncounterName),
     write(EncounterName),
-    write('!\n').   
+    write('!\n').
 
 encounter :- 
     encounter_enemy(3, X), !,
@@ -45,7 +38,7 @@ encounter :-
     
 
     enemy_attack(X, Att),
-    ScaleAtt is Att + 3*EnemyLevel,
+    ScaleAtt is Att + 5*EnemyLevel,
     retract(att_enemy(_)),
     assertz(att_enemy(ScaleAtt)),
 
