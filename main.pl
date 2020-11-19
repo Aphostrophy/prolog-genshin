@@ -9,6 +9,8 @@ start :-
     ['items.pl'],
     ['quest.pl'],
     ['enemy.pl'],
+    ['class.pl'],
+    ['player.pl'],
 
     assertz(game_start), !,
 
@@ -20,6 +22,8 @@ start :-
     write(' #     #       # #           ##        #         #         #             ##         #            #        # #           #   #            #      '), nl,
     write('#########       #          ##        ##        ## #        #           ##           #          ##          #     ########## #            #      '), nl,
     write('         #       #       ##        ##        ##    #        ####     ##              ####    ##             #                #######      ####  '), nl,
+
+    choose_class,
 
     /* Inisialisasi variabel */
     assertz(type_enemy(0)),
