@@ -68,7 +68,9 @@ encounter :-
     retract(def_enemy(_)),
     assertz(def_enemy(ScaleDef)),
 
-    print_info.
+    print_info,
+
+    trigger_battle.
 
 encounter :- !.
 
