@@ -11,6 +11,8 @@ start :-
     ['enemy.pl'],
     ['class.pl'],
     ['player.pl'],
+    ['inventory.pl'],
+    ['shop.pl'],
 
     assertz(game_start), !,
 

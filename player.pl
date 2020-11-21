@@ -23,7 +23,8 @@ choose_class :-
     write('2. Archer'), nl,
     write('3. Mage'), nl,
     read(X),nl,
-    assert_class(X).
+    assert_class(X),
+    initialize_resources.
 
 status :-
     player_class(X),player_level(Y),player_health(Health),player_attack(Attack),player_defense(Defense),
@@ -46,7 +47,7 @@ assert_class(1):-
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
-    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(current_gold(1000)),
+    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
     write('You choose '), write(X), write(', let’s explore the world'),nl,!.
 
 assert_class(2):-
@@ -54,7 +55,7 @@ assert_class(2):-
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
-    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(current_gold(1000)),
+    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
     write('You choose '), write(X), write(', let’s explore the world'),nl,!.
 
 assert_class(3):-
@@ -62,5 +63,9 @@ assert_class(3):-
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
-    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(current_gold(1000)),
+    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
     write('You choose '), write(X), write(', let’s explore the world'),nl,!.
+
+initialize_resources:-
+    assertz(current_gold(1000)),
+    assertz(inventory_bag([],0)).
