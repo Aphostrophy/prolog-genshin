@@ -14,3 +14,10 @@ power(A,B,X) :-
   B1 is B+1,
   power(A,B1,X1),
   X is X1/A.
+
+calc_damage(Att, Def, Res) :-
+    AttMin is Att - 5,
+    AttMax is Att + 5,
+    random(AttMin, AttMax, Random),
+    AttRandom is Random,
+    Res is truncate(AttRandom - 0.2*Def).

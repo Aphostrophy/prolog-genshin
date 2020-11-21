@@ -13,6 +13,7 @@ start :-
     ['player.pl'],
     ['inventory.pl'],
     ['shop.pl'],
+    ['battle.pl'],
 
     assertz(game_start), !,
 
