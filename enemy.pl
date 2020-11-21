@@ -27,3 +27,11 @@ enemy_special(0, 30).
 enemy_special(1, 50).
 enemy_special(2, 75).
 enemy_special(3, 2000).
+
+enemy_exp(0, 100).
+enemy_exp(1, 200).
+enemy_exp(2, 500).
+
+enemy_gold(0, 50).
+enemy_gold(1, 75).
+enemy_gold(2, 100).

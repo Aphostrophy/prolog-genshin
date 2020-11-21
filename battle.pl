@@ -145,7 +145,16 @@ check_death :-
     enemy_type(Y, Name),
 
     write(Name), write(' defeated! you got : '), nl, !,
+
+    /* calculate gold and exp gain */
+    enemy_exp(Y, Exp),
+    enemy_gold(Y, Gold), !,
+    ExpLoot is Exp + truncate(1.5*Exp),
+    GoldLoot is Gold + 10*Gold,
+
     /* nanti loot ama exp gainnya ditulis disini */
+    write(ExpLoot), write(' exp'), nl,
+    write(GoldLoot), write(' gold'), nl,
 
     retract(in_battle),
     retract(special_used).
@@ -159,16 +168,11 @@ check_death :-
 check_player_death :-
     player_health(PlayerHealth),
     PlayerHealth =< 0, !,
-
-    lose, !.
+    write('You died... Game Over... Type \'start.\' to retry!'),
+    retract(game_start).
 
 check_player_death :-
     show_battle_status, !.
-
-lose :-
-    retract(game_start(true)),
-    asserta(game_start(false)),
-    write('You died... Game Over... Type \'start.\' to retry!'), !.
 
 show_battle_status :-
     /* Enemy Status */
