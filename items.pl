@@ -55,34 +55,44 @@ type(armor,'golden armor').
 type(armor,'diamond armor').
 
 /* Properti buat consumable. Health nambah sebesar Arrity kedua */
-property('health potion', 75).
-property('panas spesial 2 mekdi', 150).
-property('sadikin', 225).
-property('go milk', 320).
-property('crisbar', 450).
+property('health potion', Health) :- Health is 75.
+property('panas spesial 2 mekdi', Health) :- Health is 150.
+property('sadikin', Health) :- Health is 250.
+property('go milk', Health) :- Health is 320.
+property('crisbar', Health) :- Health is 450.
 
 /* Properti buat claymore, bow, catalyst. Attack nambah sebesar Arrity kedua */
-property('waster greatsword', 30).
-property('old merc pal', 70).
-property('debate club', 120).
-property('prototype aminus', 180).
-property('wolf greatsword', 250).
+property('waster greatsword', Attack) :- Attack is 30.
+property('old merc pal', Attack) :- Attack is 70.
+property('debate club', Attack) :- Attack is 120.
+property('prototype aminus', Attack) :- Attack is 180.
+property('wolf greatsword', Attack) :- Attack is 250.
 
-property('hunter bow', 40).
-property('seasoned hunter bow', 90).
-property('messenger', 150).
-property('favonius warbow', 230).
-property('skyward harp', 300).
+property('hunter bow', Attack) :- Attack is 40.
+property('seasoned hunter bow', Attack) :- Attack is 90.
+property('messenger', Attack) :- Attack is 150.
+property('favonius warbow', Attack) :- Attack is 230.
+property('skyward harp', Attack) :- Attack is 300.
 
-property('apprentice notes', 50).
-property('pocket grimoire', 110).
-property('emerald orb', 175).
-property('mappa mare', 320).
-property('skyward atlas', 410).
+property('apprentice notes', Attack) :- Attack is 50.
+property('pocket grimoire', Attack) :- Attack is 110.
+property('emerald orb', Attack) :- Attack is 175.
+property('mappa mare', Attack) :- Attack is 320.
+property('skyward atlas', Attack) :- Attack is 410.
 
-/* Properti buat armor. Defense nambah sebesar Arrity kedua */
-property('wooden armor', 50).
-property('iron armor', 120).
-property('steel aromor', 200).
-property('golden armor', 290).
-property('diamond armor', 400).
+/* Properti buat armor. Defense dan Health nambah sebesar Arrity kedua dan ketiga */
+property('wooden armor', Defense, Health) :-
+    Defense is 50,
+    Health is 20.
+property('iron armor', Defense, Health) :-
+    Defense is 120,
+    Health is 60.
+property('steel aromor', Defense, Health) :-
+    Defense is 200,
+    Health is 100.
+property('golden armor', Defense, Health) :-
+    Defense is 290,
+    Health is 150.
+property('diamond armor', Defense, Health) :-
+    Defense is 400,
+    Health is 200.
