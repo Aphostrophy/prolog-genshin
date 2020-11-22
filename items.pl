@@ -87,7 +87,7 @@ property('wooden armor', Defense, Health) :-
 property('iron armor', Defense, Health) :-
     Defense is 120,
     Health is 60.
-property('steel aromor', Defense, Health) :-
+property('steel armor', Defense, Health) :-
     Defense is 200,
     Health is 100.
 property('golden armor', Defense, Health) :-
