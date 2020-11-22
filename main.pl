@@ -14,6 +14,7 @@ start :-
     ['inventory.pl'],
     ['shop.pl'],
     ['battle.pl'],
+    ['map.pl'],
 
     assertz(game_start), !,
 
@@ -33,7 +34,8 @@ start :-
     assertz(hp_enemy(0)),
     assertz(att_enemy(0)),
     assertz(def_enemy(0)),
-    assertz(lvl_enemy(0)).
+    assertz(lvl_enemy(0)),
+    assertz(map_entity(1, 1, 'P')).
 
 start :-
     game_start, !,

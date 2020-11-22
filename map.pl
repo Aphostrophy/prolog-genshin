@@ -1,302 +1,161 @@
-:- dynamic(player/2).
+:- dynamic(map_entity/3).
 
-isStore(X,Y):-
-    X =:= 5,
-    Y =:= 3.
-isBoss(X,Y):-
-    X =:= 9,
-    Y =:= 9.
-isQuest(X,Y):-
-    X =:= 2,
-    Y =:= 7.
+map_entity(5, 3, 'S').
+map_entity(9, 9, 'B').
+map_entity(2, 7, 'Q').
 
-player(1,1).
+% pagar
+map_entity(4, 7, '#').
+map_entity(4, 8, '#').
+map_entity(5, 8, '#').
+map_entity(6, 8, '#').
+map_entity(9, 2, '#').
+map_entity(8, 2, '#').
+map_entity(7, 2, '#').
+map_entity(8, 3, '#').
+map_entity(8, 4, '#').
 
-%MISI NYAMPAH INI CARA BODOH
-
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 1,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 2,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 3,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 4,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 5,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 6,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 7,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 8,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 9,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 10,
-    Y =:= 0.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 0.
-
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 1,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 2,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 3,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 4,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 5,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 6,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 7,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 8,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 9,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 10,
-    Y =:= 11.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 11.
-
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 1.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 2.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 3.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 4.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 5.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 6.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 7.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 8.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 9.
-isPagar(X,Y):-
-    X =:= 0,
-    Y =:= 10.
-
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 1.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 2.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 3.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 4.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 5.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 6.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 7.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 8.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 9.
-isPagar(X,Y):-
-    X =:= 11,
-    Y =:= 10.
-
-isPagar(X,Y):-
-    X =:= 4,
-    Y =:= 7.
-isPagar(X,Y):-
-    X =:= 4,
-    Y =:= 8.
-isPagar(X,Y):-
-    X =:= 5,
-    Y =:= 8.
-isPagar(X,Y):-
-    X =:= 6,
-    Y =:= 8.
-
-isPagar(X,Y):-
-    X =:= 9,
-    Y =:= 2.
-isPagar(X,Y):-
-    X =:= 8,
-    Y =:= 2.
-isPagar(X,Y):-
-    X =:= 7,
-    Y =:= 2.
-isPagar(X,Y):-
-    X =:= 8,
-    Y =:= 3.
-isPagar(X,Y):-
-    X =:= 8,
-    Y =:= 4.
-
-
-% NYAMPAH SELESAI
-
+% Top border
 draw_map(X,Y):-
-    X < 12,
-    Y < 12,
-    \+(player(X,Y)),
-    \+(isPagar(X,Y)),
-    \+(isStore(X,Y)),
-    \+(isBoss(X,Y)),
-    \+(isQuest(X,Y)),
-    write('- '),
-    Y2 is Y+1,
-    draw_map(X,Y2).
-
-draw_map(X,12):-
-    write('\n'),
-    Y2 is 0,
-    X2 is X+1,
-    draw_map(X2,Y2).
-
-draw_map(X,Y):-
-    isStore(X,Y),
-    write('S '),
-    Y2 is Y+1,
-    draw_map(X,Y2).
-
-draw_map(X,Y):-
-    isBoss(X,Y),
-    write('B '),
-    Y2 is Y+1,
-    draw_map(X,Y2).
-
-draw_map(X,Y):-
-    isQuest(X,Y),
-    write('Q '),
-    Y2 is Y+1,
-    draw_map(X,Y2).
-
-draw_map(X,Y):-
-    player(X,Y),
-    write('P '),
-    Y2 is Y+1,
-    draw_map(X,Y2).
-
-draw_map(X,Y):-
-    isPagar(X,Y),
+    X =< 10,
+    X > 0,
+    Y =:= 0,
     write('# '),
+    X2 is X+1,
+    draw_map(X2,Y).
+
+% Right border
+draw_map(X,Y):-
+    X =:= 11,
+    Y =< 11,
+    write('# '), nl,
     Y2 is Y+1,
-    draw_map(X,Y2).
+    draw_map(0, Y2).
 
-isNabrak(X,Y) :-
-    isBoss(X,Y).
-isNabrak(X,Y) :-
-    isPagar(X,Y).
-isNabrak(X,Y) :-
-    isStore(X,Y).
-isNabrak(X,Y) :-
-    isQuest(X,Y).
+% Bottom border
+draw_map(X,Y):-
+    X =< 10,
+    X > 0,
+    Y =:= 11,
+    write('# '),
+    X2 is X+1,
+    draw_map(X2, Y).
 
+% Left border
+draw_map(X,Y):-
+    X =:= 0,
+    Y =< 11,
+    write('# '),
+    X2 is X+1,
+    draw_map(X2, Y).
+
+% Inside Map
+draw_map(X,Y):-
+    X =< 10,
+    X > 0,
+    Y =< 10,
+    Y > 0,
+    map_entity(X, Y, Entity), !,
+    write(Entity), write(' '),
+    X2 is X+1,
+    draw_map(X2,Y).
+
+draw_map(X,Y):-
+    X =< 10,
+    X > 0,
+    Y =< 10,
+    Y > 0,
+    (\+map_entity(X, Y, _)),
+    write('- '),
+    X2 is X+1,
+    draw_map(X2,Y).
 
 w :-
-    player(X,Y),
-    X2 is X-1,
-    \+(isNabrak(X2,Y)),
-    retractall(player(X,Y)),
-    assertz(player(X2,Y)),
-    write('you moved to the north').
+    game_start,
+    (\+ in_battle),
+    map_entity(X, Y, 'P'),
+    Y2 is Y-1,
+    (\+ map_entity(X, Y2, '#')),
+    Y2 > 0, Y2 =< 10, !,
+    retract(map_entity(X, Y, 'P')),
+    assertz(map_entity(X, Y2,'P')),
+    chest_encounter.
 
 w :-
-    player(X,Y),
+    (\+game_start), !,
+    write('Game is not started, use \"start.\" to play the game.').
+
+w :-
+    in_battle, !,
+    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
+
+w :-
+    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
+
+a :-
+    game_start,
+    (\+ in_battle),
+    map_entity(X, Y, 'P'),
     X2 is X-1,
-    isPagar(X2,Y),
-    write('ouch, you hitted the wall'), !.
-
-s :-
-    player(X,Y),
-    X2 is X+1,
-    \+(isNabrak(X2,Y)),
-    retractall(player(X,Y)),
-    assertz(player(X2,Y)),
-    write('you moved to the south').
-s :-
-    player(X,Y),
-    X2 is X+1,
-    isPagar(X2,Y),
-    write('ouch, you hitted the wall'), !.
+    (\+ map_entity(X2, Y, '#')),
+    X2 > 0, X2 =< 10, !,
+    retract(map_entity(X, Y, 'P')),
+    assertz(map_entity(X2, Y,'P')),
+    chest_encounter.
 
 a :-
-    player(X,Y),
-    Y2 is Y-1,
-    \+(isNabrak(X,Y2)),
-    retractall(player(X,Y)),
-    assertz(player(X,Y2)),
-    write('you moved to the west').
+    (\+game_start), !,
+    write('Game is not started, use \"start.\" to play the game.').
+
 a :-
-    player(X,Y),
-    Y2 is Y-1,
-    isPagar(X,Y2),
-    write('ouch, you hitted the wall').
+    in_battle, !,
+    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
+
+a :-
+    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
+
+s :-
+    game_start,
+    (\+ in_battle),
+    map_entity(X, Y, 'P'),
+    Y2 is Y+1,
+    (\+ map_entity(X, Y2, '#')),
+    Y2 > 0, Y2 =< 10, !,
+    retract(map_entity(X, Y, 'P')),
+    assertz(map_entity(X, Y2,'P')),
+    chest_encounter.
+
+s :-
+    (\+game_start), !,
+    write('Game is not started, use \"start.\" to play the game.').
+
+s :-
+    in_battle, !,
+    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
+
+s :-
+    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
 
 d :-
-    player(X,Y),
-    Y2 is Y+1,
-    \+(isNabrak(X,Y2)),
-    retractall(player(X,Y)),
-    assertz(player(X,Y2)),
-    write('you moved to the east').
+    game_start,
+    (\+ in_battle),
+    map_entity(X, Y, 'P'),
+    X2 is X+1,
+    (\+ map_entity(X2, Y, '#')),
+    X2 > 0, X2 =< 10, !,
+    retract(map_entity(X, Y, 'P')),
+    assertz(map_entity(X2, Y,'P')),
+    chest_encounter.
+
 d :-
-    player(X,Y),
-    Y2 is Y+1,
-    isPagar(X,Y2),
-    write('ouch, you hitted the wall').
+    (\+game_start), !,
+    write('Game is not started, use \"start.\" to play the game.').
 
+d :-
+    in_battle, !,
+    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
 
+d :-
+    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
 
-
-
-
-
-
+map :- draw_map(0,0).

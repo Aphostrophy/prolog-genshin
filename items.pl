@@ -32,7 +32,7 @@ type(consumable, 'health potion').
 type(consumable, 'panas spesial 2 mekdi').
 type(consumable, 'sadikin').
 type(consumable, 'go milk').
-ttype(consumable, 'crisbar').
+type(consumable, 'crisbar').
 type(claymore, 'waster greatsword').
 type(claymore, 'old merc pal').
 type(claymore, 'debate club').
