@@ -18,7 +18,7 @@ start :-
     ['battle.pl'],
     ['map.pl'],
 
-    assertz(game_start), !,
+    assertz(game_start), assertz(game_state(travelling)), !,
 
     nl,
     write('     #                  ######   ##########          #   ######     ######        ######   ##########                       #          ######   '), nl,
