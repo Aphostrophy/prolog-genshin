@@ -19,7 +19,7 @@ fight :-
     retract(fight_or_run).
 
 fight :- 
-    (\+ game_start(in_battle)), !,
+    (\+ game_state(in_battle)), !,
     write('You aren\'t in a battle, please walk a bit to find monsters!!').
     
 fight :- 

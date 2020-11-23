@@ -69,7 +69,7 @@ draw_map(X,Y):-
 
 w :-
     game_start,
-    (\+ in_battle),
+    (\+ game_state(in_battle)),
     map_entity(X, Y, 'P'),
     Y2 is Y-1,
     (\+ map_entity(X, Y2, '#')),
@@ -83,15 +83,15 @@ w :-
     write('Game is not started, use \"start.\" to play the game.').
 
 w :-
-    in_battle, !,
-    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
+    game_state(in_battle), !,
+    write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 w :-
     write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
 
 a :-
     game_start,
-    (\+ in_battle),
+    (\+ game_state(in_battle)),
     map_entity(X, Y, 'P'),
     X2 is X-1,
     (\+ map_entity(X2, Y, '#')),
@@ -105,15 +105,15 @@ a :-
     write('Game is not started, use \"start.\" to play the game.').
 
 a :-
-    in_battle, !,
-    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
+    game_state(in_battle), !,
+    write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 a :-
     write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
 
 s :-
     game_start,
-    (\+ in_battle),
+    (\+ game_state(in_battle)),
     map_entity(X, Y, 'P'),
     Y2 is Y+1,
     (\+ map_entity(X, Y2, '#')),
@@ -127,15 +127,15 @@ s :-
     write('Game is not started, use \"start.\" to play the game.').
 
 s :-
-    in_battle, !,
-    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
+    game_state(in_battle), !,
+    write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 s :-
     write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
 
 d :-
     game_start,
-    (\+ in_battle),
+    (\+ game_state(in_battle)),
     map_entity(X, Y, 'P'),
     X2 is X+1,
     (\+ map_entity(X2, Y, '#')),
@@ -149,8 +149,8 @@ d :-
     write('Game is not started, use \"start.\" to play the game.').
 
 d :-
-    in_battle, !,
-    write('You are in battle!! Use \"help.\" top display the commands that you can use.').
+    game_state(in_battle), !,
+    write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 d :-
     write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
