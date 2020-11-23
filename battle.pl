@@ -1,25 +1,24 @@
 /* File : battle.pl */
 /* Battle Mechanisms Go Here */
 
-:- dynamic(in_battle/0).
 :- dynamic(special_used/0).
 :- dynamic(fight_or_run/0).
 :- dynamic(can_run/0).
 
 trigger_battle :- 
     assertz(fight_or_run),
-    assertz(in_battle),
+    assertz(game_state(in_battle)),
     assertz(can_run),
     write('Fight or Run?').
 
 fight :- 
-    in_battle,
+    game_state(in_battle),
     fight_or_run, !,
     write('You choose to face the monster head on!!'),
     retract(fight_or_run).
 
 fight :- 
-    (\+ in_battle), !,
+    (\+ game_start(in_battle)), !,
     write('You aren\'t in a battle, please walk a bit to find monsters!!').
     
 fight :- 
@@ -28,14 +27,14 @@ fight :-
 
 run :- 
     can_run,
-    in_battle,
+    game_state(in_battle),
     fight_or_run, 
     random(0,11,RunRate),
     retract(can_run),
     run_gacha(RunRate), !.
 
 run :-
-    (\+ in_battle),!,
+    (\+ game_state(in_battle)),!,
     write('You aren\'t in a battle. Why are you running??!!').
 
 run :-
@@ -48,7 +47,7 @@ run :-
 
 run_gacha(Rate) :-
     Rate >= 8, !,
-    retract(in_battle),
+    retract(game_state(in_battle)),
     retract(fight_or_run),
     write('You choose to run. You successfully escaped from the monster!!').
 
@@ -58,7 +57,7 @@ run_gacha(Rate) :-
     retract(fight_or_run).
 
 attack :-
-    in_battle, (\+ fight_or_run), !,
+    game_state(in_battle), (\+ fight_or_run), !,
 
     hp_enemy(X),
     retract(hp_enemy(X)),
@@ -80,12 +79,12 @@ attack :-
     write('Type \'fight.\' to fight, type \'run\' to run.').
 
 attack :-
-    \+in_battle, !,
+    \+game_state(in_battle), !,
     write('You are currently not in a battle').
 
 % Success Result: Darah musuh berkurang
 specialAttack :-
-    in_battle, (\+ fight_or_flight), (\+ special_used),
+    game_state(in_battle), (\+ fight_or_flight), (\+ special_used),
     (\+ selected_pokemon(0)), !,
     enemy_health(X),
     retract(enemy_health(X)),
@@ -156,7 +155,7 @@ check_death :-
     write(ExpLoot), write(' exp'), nl,
     write(GoldLoot), write(' gold'), nl,
 
-    retract(in_battle),
+    retract(game_state(in_battle)),
     retract(special_used).
 
 % Ignore bila musuh belum mati

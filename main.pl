@@ -1,6 +1,8 @@
 /* File Utama */
 
 :- dynamic(game_start/0).
+:- dynamic(game_state/1).
+/* Keadaan player, battle kah? travelling kah? buka shop kah? */
 
 start :-
     (\+ game_start),
