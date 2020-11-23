@@ -38,9 +38,9 @@ status :-
     write('Gold: '),write(Gold),nl.
 
 exp_level_up(Level,Exp):-
-    power(1.4,Level,Exp1),
-    write(Exp1),
-    Exp is truncate(300*Exp1).
+    power(1.4,(Level-1),ScalingFactor),
+    write(ScalingFactor),
+    Exp is truncate(300*ScalingFactor).
 
 assert_class(1):-
     assertz(player_class('knight')),baseHealth(X,BaseHealth),
