@@ -41,10 +41,9 @@ draw_map(X,Y):-
 % Left border
 draw_map(X,Y):-
     X =:= 0,
-    Y =< 11,
     write('# '),
     X2 is X+1,
-    draw_map(X2, Y).
+    draw_map(X2,Y).
 
 % Inside Map
 draw_map(X,Y):-

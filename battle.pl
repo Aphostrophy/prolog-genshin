@@ -27,8 +27,8 @@ fight :-
     write('You choose to fight, get ready!!').
 
 run :- 
-    can_run,
     game_state(in_battle),
+    can_run,
     fight_or_run, 
     random(0,11,RunRate),
     retract(can_run),
@@ -84,41 +84,9 @@ attack :-
     \+game_state(in_battle), !,
     write('You are currently not in a battle').
 
-% Success Result: Darah musuh berkurang
-specialAttack :-
-    game_state(in_battle), (\+ fight_or_flight), (\+ special_used),
-    (\+ selected_pokemon(0)), !,
-    enemy_health(X),
-    retract(enemy_health(X)),
-    selected_pokemon(SelPoke),
-    pokemon_inventory(Inv, _),
-    nth_item(Inv, SelPoke, PokeId),
-    enemy_pokemon(EnemyId),
-    calc_special_damage(PokeId, EnemyId, Atk),
-    NewX is X - Atk,
-    assertz(enemy_health(NewX)),
-    assertz(special_used),
-    
     write('You deal '), write(Atk), write(' damage to the enemy!'), nl, nl,
 
     check_death.
-
-specialAttack :-
-    selected_pokemon(0), !,
-    write('You have not picked a pokemon yet').
-
-specialAttack :-
-    fight_or_flight, !,
-    write('Type \'fight.\' to fight, type \'run\' to run.').
-
-specialAttack :-
-    special_used, !,
-    write('You have used a special this battle.').
-
-% Fail Condition: Tidak dalam battle
-specialAttack :-
-    !,
-    write('You are currently not in a battle').
 
 enemy_turn :- 
     !,

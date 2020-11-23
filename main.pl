@@ -32,6 +32,7 @@ start :-
     choose_class,
 
     /* Inisialisasi variabel */
+    
     assertz(type_enemy(0)),
     assertz(hp_enemy(0)),
     assertz(att_enemy(0)),
