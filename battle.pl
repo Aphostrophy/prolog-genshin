@@ -7,6 +7,7 @@
 
 trigger_battle :- 
     assertz(fight_or_run),
+    retract(game_state(travelling)),
     assertz(game_state(in_battle)),
     assertz(can_run),
     write('Fight or Run?').
@@ -48,6 +49,7 @@ run :-
 run_gacha(Rate) :-
     Rate >= 8, !,
     retract(game_state(in_battle)),
+    assertz(game_state(travelling)),
     retract(fight_or_run),
     write('You choose to run. You successfully escaped from the monster!!').
 
@@ -156,6 +158,7 @@ check_death :-
     write(GoldLoot), write(' gold'), nl,
 
     retract(game_state(in_battle)),
+    assertz(game_state(travelling)),
     retract(special_used).
 
 % Ignore bila musuh belum mati

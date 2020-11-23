@@ -1,6 +1,5 @@
 /* File : quest.pl */
 
-:- dynamic(in_quest_dialogue/0).
 :- dynamic(quest_active/0).
 :- dynamic(slime_counter/1).
 :- dynamic(hilichurl_counter/1).
@@ -13,7 +12,8 @@ quest :-
     map_entity(X, Y, 'P'),
     map_entity(X, Y, 'Q'),
     (\+ quest_active), !,
-    asserta(in_quest_dialogue),
+    retract(game_state(travelling)),
+    assertz(game_state(in_quest_dialogue)),
     random(1, 11, SlimeCount),
     random(1, 6, HilichurlCount),
     random(1, 3, MageCount),
@@ -37,7 +37,7 @@ quest :-
     write('You are not in quest node, use \"map\" to find the quest node!!').
 
 yes :- 
-    in_quest_dialogue, 
+    game_state(in_quest_dialogue), 
     (\+ quest_active), !,
     slime_counter(SlimeCount),
     hilichurl_counter(HilichurlCount),
@@ -48,20 +48,22 @@ yes :-
     write(SlimeCount), write(' slime(s)'), nl,
     write(HilichurlCount), write(' hilichurl(s)'), nl,
     write(MageCount), write(' mage(s)'), nl,
-    retract(in_quest_dialogue).
+    retract(game_state(in_quest_dialogue)),
+    assertz(game_state(travelling)).
 
 yes :-
-    (\+ in_quest_dialogue), !,
+    (\+ game_state(in_quest_dialogue)), !,
     write('You are not in quest dialogue!!').
 
 no :- 
-    in_quest_dialogue, !,
+    game_state(in_quest_dialogue), !,
     write('You rejected the quest!!'),
-    retract(in_quest_dialogue),
+    retract(game_state(in_quest_dialogue)),
+    assertz(game_state(travelling)),
     retract(slime_counter(_)),
     retract(hilichurl_counter(_)),
     retract(mage_counter(_)).
 
 no :- 
-    (\+ in_quest_dialogue), !,
+    (\+ game_state(in_quest_dialogue)), !,
     write('You are not in quest dialogue!!').

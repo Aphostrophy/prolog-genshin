@@ -53,3 +53,19 @@ quit :-
     read(Param),
     (Param = y -> halt;
     (Param = n -> fail)).
+
+help :-
+    game_state(in_battle),!,
+    write('Ini nanti perintah" battle').
+
+help :-
+    game_state(in_quest_dialogue),!,
+    write('Please finish your queset dialogue first before continuing').
+
+help :-
+    game_state(shopactive),!,
+    write('Ini nanti perintah" shop').
+
+help :-
+    game_state(travelling),!,
+    write('Ini nanti perintah" travelling').
