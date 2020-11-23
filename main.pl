@@ -35,7 +35,10 @@ start :-
     assertz(att_enemy(0)),
     assertz(def_enemy(0)),
     assertz(lvl_enemy(0)),
-    assertz(map_entity(1, 1, 'P')).
+    assertz(map_entity(1, 1, 'P')),
+    assertz(map_entity(5, 3, 'S')),
+    assertz(map_entity(9, 9, 'B')),
+    assertz(map_entity(2, 7, 'Q')).
 
 start :-
     game_start, !,

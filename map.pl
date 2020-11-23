@@ -1,9 +1,5 @@
 :- dynamic(map_entity/3).
 
-map_entity(5, 3, 'S').
-map_entity(9, 9, 'B').
-map_entity(2, 7, 'Q').
-
 % pagar
 map_entity(4, 7, '#').
 map_entity(4, 8, '#').

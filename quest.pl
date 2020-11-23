@@ -9,6 +9,9 @@
 /* Quest Generator */
 
 quest :-
+    game_start,
+    map_entity(X, Y, 'P'),
+    map_entity(X, Y, 'Q'),
     (\+ quest_active), !,
     asserta(in_quest_dialogue),
     random(1, 11, SlimeCount),
@@ -28,6 +31,10 @@ quest :-
 quest :- 
     quest_active, !,
     write('You already have a quest!! Go finish it first!!').
+
+quest :-
+    !,
+    write('You are not in quest node, use \"map\" to find the quest node!!').
 
 yes :- 
     in_quest_dialogue, 
