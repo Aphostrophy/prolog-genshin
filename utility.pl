@@ -29,3 +29,9 @@ push(X, [Head|Tail], [Head|L]) :- push(X,Tail,L).
 modifyElement([Name|Amount], [[Name,OldAmount]|Tail],[[Name,X]|Tail]):- X is OldAmount+Amount.
 
 modifyElement([Name|Amount], [[Other,OldAmount]|Tail],[[Other,OldAmount]|L]) :- modifyElement([Name|Amount],Tail,L).
+
+reduceElement([Name|Amount], [[Name,OldAmount]|Tail],[[Name,X]|Tail]):- X is OldAmount-Amount.
+
+getItemAmount(Name, [[Name,Amount]|Tail],Amount).
+
+getItemAmount(Name,[[Other,OtherAmount]|Tail],Amount) :- getItemAmount(Name,Tail,X), Amount is X.

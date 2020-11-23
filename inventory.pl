@@ -13,12 +13,12 @@ printInventory([H|T]) :-
     printPair(H),printInventory(T).
 
 printPair([H|T]) :-
-    [Amount|None] = T,
+    [Amount|None] = T,Amount>0,
     write(H),write(':'),write(Amount),nl.
 
 addToInventory([Name|Amount]) :-
     inventory_bag(Inventory,Size),
-    member([Name|_],Inventory),
+    member([Name|_],Inventory),!,
     modifyElement([Name|Amount], Inventory, NewInventory),
     NewSize is Size + Amount,
     retract(inventory_bag(Inventory,Size)),!,
@@ -31,3 +31,24 @@ addToInventory([Name|Amount]) :-
     NewSize is Size + Amount,
     retract(inventory_bag(Inventory,Size)),!,
     assertz(inventory_bag(NewInventory,NewSize)).
+
+substractFromInventory([Name|Amount]) :-
+    inventory_bag(Inventory,Size),
+    member([Name|_],Inventory),!,
+    reduceElement([Name|Amount],Inventory,NewInventory),
+    NewSize is Size - Amount,
+    retract(inventory_bag(Inventory,Size)),!,
+    assertz(inventory_bag(NewInventory,NewSize)).
+
+substractFromInventory([Name|Amount]) :- write('Hey dont cheat!'),nl.
+
+findItemAmount(Name) :-
+    inventory_bag(Inventory,Size),
+    member([Name|_],Inventory),!,
+    getItemAmount(Name,Inventory,X),
+    write(X).
+
+findItemAmount(Name) :-
+    inventory_bag(Inventory,Size),
+    \+member([Name|_],Inventory),!,
+    write(0).
