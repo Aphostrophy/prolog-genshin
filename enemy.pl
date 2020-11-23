@@ -33,6 +33,7 @@ enemy_special(2, 75).
 enemy_special(3, 75).
 enemy_special(3, 2000).
 
+/* Enemy base loot */
 enemy_exp(0, 100).
 enemy_exp(1, 200).
 enemy_exp(2, 500).

@@ -11,6 +11,7 @@ map_entity(7, 2, '#').
 map_entity(8, 3, '#').
 map_entity(8, 4, '#').
 
+/* Buat ngebuat map */
 % Top border
 draw_map(X,Y):-
     X =< 10,

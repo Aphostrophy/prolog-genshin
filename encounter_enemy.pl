@@ -1,4 +1,4 @@
-/* File : encounter_simulation.pl */
+/* File : encounter_enemy.pl */
 
 %:- include('enemy.pl').
 
