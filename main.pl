@@ -76,3 +76,6 @@ help :-
     write('Use command \'s.\' to move downward'), nl,
     write('Use command \'d.\' to move to the right'), nl,
     write('You might encounter an enemy while you\'re travelling, so be ready for them!').
+
+check_inventory :-
+    write('You have nothing in your inventory! You can buy some in the shop.').
