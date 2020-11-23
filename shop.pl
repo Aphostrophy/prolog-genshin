@@ -4,7 +4,7 @@
 shop:- game_state(shopactive),!,writeShopUsedMessage,fail.
 
 shop:-
-    assertz(game_state(shopactive)),
+    assertz(game_state(shopactive)),!,
     write('What do you want to buy?'),nl,
     write('1. Gacha (1000 gold)'),nl,
     write('2. Health Potion (100 gold)'),nl.

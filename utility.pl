@@ -21,3 +21,11 @@ calc_damage(Att, Def, Res) :-
     random(AttMin, AttMax, Random),
     AttRandom is Random,
     Res is truncate(AttRandom - 0.2*Def).
+
+push(X, [], [X]).
+
+push(X, [Head|Tail], [Head|L]) :- push(X,Tail,L).
+
+modifyElement([Name|Amount], [[Name,OldAmount]|Tail],[[Name,X]|Tail]):- X is OldAmount+Amount.
+
+modifyElement([Name|Amount], [[Other,OldAmount]|Tail],[[Other,OldAmount]|L]) :- modifyElement([Name|Amount],Tail,L).

@@ -69,4 +69,4 @@ assert_class(3):-
 initialize_resources:-
     assertz(current_gold(1000)),
     assertz(current_exp(0)),
-    assertz(inventory_bag([],0)).
+    assertz(inventory_bag([['health potion',10]],10)).

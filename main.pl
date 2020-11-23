@@ -7,7 +7,7 @@
 start :-
     (\+ game_start),
     ['encounter_enemy.pl'],
-    ['calculator.pl'],
+    ['utility.pl'],
     ['items.pl'],
     ['quest.pl'],
     ['enemy.pl'],
