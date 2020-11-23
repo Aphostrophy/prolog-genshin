@@ -153,7 +153,7 @@ check_death :-
     ExpLoot is Exp + truncate(1.5*Exp),
     GoldLoot is Gold + 10*Gold,
 
-    /* nanti loot ama exp gainnya ditulis disini */
+    /* Loot and EXP gain */
     write(ExpLoot), write(' exp'), nl,
     write(GoldLoot), write(' gold'), nl,
 
@@ -185,6 +185,9 @@ show_battle_status :-
     write('Enemy :'), write(EnemyName), nl,
     write('Health : '), write(EnemyHealth), nl, nl,
 
+    /* Player Status */
     write('Your status :'), nl,
     player_health(PlayerHealth),
     write('Health : '), write(PlayerHealth).
+
+/* Command untuk use Potion  */
