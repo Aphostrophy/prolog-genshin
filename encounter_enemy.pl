@@ -101,12 +101,7 @@ gacha_chest(ChestRate) :-
     chestLoot(MinGold),
     MaxGold is MinGold + 100*PlayerLevel,
     random(MinGold, MaxGold, Loot),    
-    write('You found a chest!! You get : '), write(Loot), write(' gold'), !,
-    current_gold(CurrentGold),
-    NewCurrentGold is CurrentGold+Loot,
-    
-    retract(current_gold(_)),
-    assertz(current_gold(NewCurrentGold)).
+    write('You found a chest!! You get : '), write(Loot), write(' gold'), !.
 
 gacha_chest(X) :-
     ChestRate > 70,
