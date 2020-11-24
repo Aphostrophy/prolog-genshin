@@ -54,6 +54,25 @@ type(armor,'steel armor').
 type(armor,'golden armor').
 type(armor,'diamond armor').
 
+/*harga consumable*/
+price('health potion', 100).
+price('panas spesial 2 mekdi',150).
+price('sadikin',200).
+price('go milk',250).
+price('crisbar',300).
+
+/*item rare*/
+ultraRareItem('wolf greatsword').
+ultraRareItem('skyward harp').
+ultraRareItem('skyward atlas').
+ultraRareItem('diamond armor').
+rareItem('prototype aminus').
+rareItem('favonius warbow').
+rareItem('mappa mare').
+rareItem('golden armor').
+
+
+
 /* Properti buat consumable. Health nambah sebesar Arrity kedua */
 property('health potion', Health) :- Health is 75.
 property('panas spesial 2 mekdi', Health) :- Health is 150.
