@@ -16,6 +16,7 @@
 
 :- dynamic(current_gold/1).
 :- dynamic(current_exp/1).
+:- dynamic(upgradable/0).
 
 choose_class :-
     write('Welcome to Genshin Asik. Choose your job'), nl,
@@ -29,18 +30,17 @@ choose_class :-
 status :-
     player_class(X),player_level(Y),player_health(Health),player_attack(Attack),player_defense(Defense),
     player_max_health(MaxHealth),player_max_attack(MaxAttack),player_max_defense(MaxDefense),
-    current_gold(Gold),
+    current_gold(Gold),current_exp(Exp),exp_level_up(Y,MaxExp),
     write('Job: '),write(X),nl,
     write('Level: '),write(Y),nl,
     write('Health: '),write(Health),write('/'),write(MaxHealth),nl,
     write('Attack: '),write(Attack),write('/'),write(MaxAttack),nl,
     write('Defense: '),write(Defense),write('/'),write(MaxDefense),nl,
-    write('Gold: '),write(Gold),nl.
+    write('Gold: '),write(Gold),nl,
+    write('Exp: '),write(Exp),write('/'),write(MaxExp),nl.
 
 exp_level_up(Level,Exp):-
-    power(1.4,(Level-1),ScalingFactor),
-    write(ScalingFactor),
-    Exp is truncate(300*ScalingFactor).
+    Exp is 300*Level.
 
 assert_class(1):-
     assertz(player_class('knight')),baseHealth(X,BaseHealth),
@@ -70,3 +70,51 @@ initialize_resources:-
     assertz(current_gold(1000)),
     assertz(current_exp(0)),
     assertz(inventory_bag([['health potion',10]],10)).
+
+add_player_exp(ObtainedExp) :-
+    current_exp(CurrentExp),
+    Result is CurrentExp + ObtainedExp,
+    retract(current_exp(CurrentExp)),
+    assertz(current_exp(Result)),
+    player_level(X1),
+    exp_level_up(X1,LevelExp),
+    upgrade_player_level(X1,Result,LevelExp),
+    write('You can now check your updated current Exp and Gold with \'status\' command!'),nl.
+
+upgrade_player_level(X,Y,Z) :-
+    Y < Z, !,
+    RemainingExp is Z - Y,
+    write('You now have '), write(Y), write(' Exp'), nl,
+    write('You need '), write(RemainingExp), write(' Exp to get upgraded to the next level. Keep exploring the game!'),nl.
+
+upgrade_player_level(X,Y,Z) :-
+    Y >= Z,
+    UpgradedLevel is X + 1,
+    UpgradedExp is Y - Z,
+    retract(player_level(X)), assertz(player_level(UpgradedLevel)),
+    retract(current_exp(Y)), assertz(current_exp(UpgradedExp)),
+    exp_level_up(UpgradedLevel,NewLevelExp),
+    RemainingExp is NewLevelExp - UpgradedExp,
+    upgrade_player_status,
+    write('Your character has been upgraded to level '), write(UpgradedLevel), write('!'), nl,
+    write('You now have '), write(UpgradedExp), write(' Exp'), nl,
+    write('You need '), write(RemainingExp), write(' Exp to get upgraded to the next level. Keep exploring the game!'),nl.
+
+upgrade_player_status :-
+    player_max_attack(X), player_max_defense(Y), player_max_health(Z),
+    player_attack(X1), player_defense(Y1), player_health(Z1),
+    calc_status_upgrade(X,UpgradedAttack),
+    retract(player_max_attack(X)), assertz(player_max_attack(UpgradedAttack)),
+    retract(player_attack(X1)), assertz(player_attack(UpgradedAttack)),
+    calc_status_upgrade(Y,UpgradedDefense),
+    retract(player_max_defense(Y)), assertz(player_max_defense(UpgradedDefense)),
+    retract(player_defense(Y1)), assertz(player_defense(UpgradedDefense)),
+    calc_status_upgrade(Z,UpgradedHealth),
+    retract(player_max_health(Z)), assertz(player_max_health(UpgradedHealth)),
+    retract(player_health(Z1)), assertz(player_health(UpgradedHealth)).
+
+add_player_gold(ObtainedGold) :-
+    current_gold(X),
+    AddedGold is X + ObtainedGold,
+    retract(current_gold(X)), assertz(current_gold(AddedGold)),
+    write('You obtained '), write(AddedGold),write(' Gold! The gold is now kept in your pocket!'),nl.

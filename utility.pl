@@ -21,6 +21,9 @@ calc_damage(Att, Def, Res) :-
     random(AttMin, AttMax, Random),
     AttRandom is Random,
     Res is truncate(AttRandom - 0.2*Def).
+  
+calc_status_upgrade(Status,Result) :-
+  Result is truncate(Status * 1.4).
 
 push(X, [], [X]).
 
