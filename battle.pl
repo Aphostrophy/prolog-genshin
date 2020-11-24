@@ -132,7 +132,7 @@ attack :-
 
     player_attack(AttPlayer),
     calc_damage(AttPlayer, DefEnemy, Atk),
-
+    
     NewX is X - Atk,
     assertz(hp_enemy(NewX)),
     
@@ -220,7 +220,61 @@ special_attack :-
     \+game_state(in_battle), !,
     write('You are currently not in a battle').
 
-/* Command untuk use Potion  */
+/* Command untuk use Consumables  */
+
+/* Saat travelling */
+item :-
+    game_state(travelling), !,
+    inventory,
+    write('Input item name!!'), nl,
+    read(ItemName),
+    substractFromInventory([ItemName|1]),
+
+    property(ItemName, Hp),
+    heal(Hp),
+    write('You used '), write(ItemName), nl.
+
+/* Saat boss battle */
+item :-
+    game_state(boss_battle), !,
+    inventory,
+    write('Input item name!!'), nl,
+    read(ItemName),
+    substractFromInventory([ItemName|1]),
+
+    property(ItemName, Hp),
+    heal(Hp),
+    write('You used '), write(ItemName), nl,
+    enemy_turn.
+
+/* Saat bukan boss battle */
+item :-
+    game_state(in_battle), !,
+    inventory,
+    write('Input item name!!'), nl,
+    read(ItemName),
+    substractFromInventory([ItemName|1]),
+
+    property(ItemName, Hp),
+    heal(Hp),
+    write('You used '), write(ItemName), nl,
+    enemy_turn.
+
+heal(Hp) :-
+    player_health(PlayerHealth),
+    player_max_health(PlayerMaxHealth),
+    NewHealth is PlayerHealth+Hp,
+    NewHealth < PlayerMaxHealth, !,
+    retract(player_health(_)),
+    assertz(player_health(NewHealth)).
+
+heal(Hp) :-
+    player_health(PlayerHealth),
+    player_max_health(PlayerMaxHealth),
+    NewHealth is PlayerHealth+Hp,
+    NewHealth >= PlayerMaxHealth, !,
+    retract(player_health(_)),
+    assertz(player_health(PlayerMaxHealth)).
 
 /* Saat bukan boss battle */
 check_death :-
@@ -326,7 +380,8 @@ show_battle_status :-
     /* Player Status */
     write('Your status :'), nl,
     player_health(PlayerHealth),
-    write('Health : '), write(PlayerHealth), nl,
+    player_max_health(PlayerMaxHealth),
+    write('Health : '), write(PlayerHealth), write(' / '), write(PlayerMaxHealth), nl,
     special_timer(Timer),
     special_status(Timer).
 

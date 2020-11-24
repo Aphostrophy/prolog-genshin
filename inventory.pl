@@ -40,7 +40,7 @@ substractFromInventory([Name|Amount]) :-
     retract(inventory_bag(Inventory,Size)),!,
     assertz(inventory_bag(NewInventory,NewSize)).
 
-substractFromInventory([Name|Amount]) :- write('Hey dont cheat!'),nl.
+substractFromInventory([Name|Amount]) :- write('Hey dont cheat!'),nl,fail.
 
 findItemAmount(Name) :-
     inventory_bag(Inventory,Size),
