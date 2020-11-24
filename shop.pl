@@ -16,9 +16,9 @@ shop:-
 % GACHA 
 listIdx([X], 0, X).
 listIdx([H|_], 0, H).
-listIdx([_|T], I, E) :- 
-    I2 is I-1, 
-    listIdx(T, I2, E).
+listIdx([_|T], idx, elmt) :- 
+    idx2 is idx-1, 
+    listIdx(T, idx2, elmt).
 
 listitem(['waster greatsword','waster greatsword','waster greatsword','waster greatsword','waster greatsword',
            'old merc pal', 'old merc pal','old merc pal','old merc pal',
@@ -46,97 +46,83 @@ gacha:-
     game_state(shopactive),
     current_gold(G),
     G >= 1000,
-    random(0,59,X),
-    writeGacha(X).
+    random(0,59,idx),
+    listIdx(L,idx,elmt),
+    addToInventory([elmt|1]),
+    writeGacha(elmt).
 
-writeGacha(X):-
-    listitem(L),
-    \+(X =:= 14),
-    \+(X =:= 29),
-    \+(X =:= 44),
-    \+(X =:= 59),
-    listIdx(L,X,E),
-    addToInventory([E|1]),
-    format('You got ~w.~n',[E]),!.
-writeGacha(X):-
-    listitem(L),
-    X =:= 14,
-    listIdx(L,X,E),
-    addToInventory([E|1]),
-    format('You got ~w (RARE).~n',[E]),!.
-writeGacha(X):-
-    listitem(L),
-    X =:= 29,
-    listIdx(L,X,E),
-    addToInventory([E|1]),
-    format('You got ~w (RARE).~n',[E]),!.
-writeGacha(X):-
-    listitem(L),
-    X =:= 44,
-    listIdx(L,X,E),
-    addToInventory([E|1]),
-    format('You got ~w (RARE).~n',[E]),!.
-writeGacha(X):-
-    listitem(L),
-    X =:= 59,
-    listIdx(L,X,E),
-    addToInventory([E|1]),
-    format('You got ~w (RARE).~n',[E]),!.
+writeGacha(elmt):-
+    \+(ultraRareItem(elmt)),
+    \+(rareItem(elmt)),
+    format('You got ~w.~n',[elmt]),!.
 
+writeGacha(elmt):-
+    ultraRareItem(elmt),
+    format('You got ~w (ULTRA RARE).~n',[elmt]),!.
+
+writeGacha(elmt):-
+    rareItem(elmt),
+    format('You got ~w (RARE).~n',[elmt]),!.
+    
 % POTION
 
 healthpotion:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
 healthpotion:-
     game_state(shopactive),
-    current_gold(X),
-    X >= 100,
-    retract(current_gold(X)),
-    X2 is X-100,
-    assertz(current_gold(X2)),
+    current_gold(G),
+    price('health potion', P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
     addToInventory(['health potion'|1]),
     write('Thanks for buying!'),nl.
 
 panas:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
 panas:-
     game_state(shopactive),
-    current_gold(X),
-    X >= 150,
-    retract(current_gold(X)),
-    X2 is X-150,
-    assertz(current_gold(X2)),
+    current_gold(G),
+    price('panas spesial 2 mekdi', P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
     addToInventory(['panas 2 spesial mekdi'|1]),
     write('Thanks for buying!'),nl.
 
 sadikin:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
 sadikin:-
     game_state(shopactive),
-    current_gold(X),
-    X >= 200,
-    retract(current_gold(X)),
-    X2 is X-200,
-    assertz(current_gold(X2)),
+    current_gold(G),
+    price('sadikin', P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
     addToInventory(['sadikin'|1]).
     write('Thanks for buying!'),nl.
 
 gomilk:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
 gomilk:-
     game_state(shopactive),
-    current_gold(X),
-    X >= 250,
-    retract(current_gold(X)),
-    X2 is X-250,
-    assertz(current_gold(X2)),
+    current_gold(G),
+    price('go milk',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
     addToInventory(['health potion'|1]).
     write('Thanks for buying!'),nl.
 
 crisbar :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
 crisbar:-
     game_state(shopactive),
-    current_gold(X),
-    X >= 300,
-    retract(current_gold(X)),
-    X2 is X-250,
-    assertz(current_gold(X2)),
+    current_gold(G),
+    price('crisbar',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
     addToInventory(['health potion'|1]).    
     write('Thanks for buying!'),nl.
 
