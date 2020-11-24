@@ -65,7 +65,9 @@ encounter(X) :-
     enemy_type(X, EncounterName), !,
     write(EncounterName),
     write('!\n'),
-    random(1, 6, EnemyLevel),
+    player_level(PlayerLevel),
+    MaxRandom is PlayerLevel+1,
+    random(1, MaxRandom, EnemyLevel),
     retract(lvl_enemy(_)),
     assertz(lvl_enemy(EnemyLevel)),
     
@@ -103,7 +105,7 @@ gacha_chest(ChestRate) :-
     random(MinGold, MaxGold, Loot),    
     write('You found a chest!! You get : '), write(Loot), write(' gold'), !.
 
-gacha_chest(X) :-
+gacha_chest(ChestRate) :-
     ChestRate > 70,
     write('You encounter a '),
     enemy_type(3, EncounterName),
@@ -111,7 +113,8 @@ gacha_chest(X) :-
     write('!\n'),
 
     player_level(PlayerLevel),
-    random(1, PlayerLevel+1, EnemyLevel),
+    MaxRandom is PlayerLevel+1,
+    random(1, MaxRandom, EnemyLevel),
     retract(lvl_enemy(_)),
     assertz(lvl_enemy(EnemyLevel)),
     

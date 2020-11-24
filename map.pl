@@ -151,10 +151,20 @@ s :-
     (\+ game_state(in_battle)),
     map_entity(X, Y, 'P'),
     Y2 is Y+1,
-    (\+isPagar(X, Y2)), !,
+    (\+isPagar(X, Y2)), 
+    (\+map_entity(X,Y2,'B')), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X, Y2,'P')),
     chest_encounter.
+
+s :-
+    game_start,
+    (\+ game_state(in_battle)),
+    map_entity(X, Y, 'P'),
+    Y2 is Y+1,
+    (\+isPagar(X, Y2)), !,
+    map_entity(X,Y2,'B'), !, 
+    trigger_boss.
 
 s :-
     (\+game_start), !,
@@ -172,10 +182,20 @@ d :-
     (\+ game_state(in_battle)),
     map_entity(X, Y, 'P'),
     X2 is X+1,
-    (\+isPagar(X2, Y)), !,
+    (\+isPagar(X2, Y)),
+    (\+map_entity(X2, Y, 'B')), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X2, Y,'P')),
     chest_encounter.
+
+d :-
+    game_start,
+    (\+ game_state(in_battle)),
+    map_entity(X, Y, 'P'),
+    X2 is X+1,
+    (\+isPagar(X2,Y)), !,
+    map_entity(X2,Y,'B'), !,
+    trigger_boss.
 
 d :-
     (\+game_start), !,
