@@ -54,12 +54,13 @@ type(armor,'steel armor').
 type(armor,'golden armor').
 type(armor,'diamond armor').
 
-/*harga consumable*/
+/*harga shop*/
 price('health potion', 100).
 price('panas spesial 2 mekdi',150).
 price('sadikin',200).
 price('go milk',250).
 price('crisbar',300).
+price('gacha',1000).
 
 /*item rare*/
 ultraRareItem('wolf greatsword').
@@ -70,7 +71,6 @@ rareItem('prototype aminus').
 rareItem('favonius warbow').
 rareItem('mappa mare').
 rareItem('golden armor').
-
 
 
 /* Properti buat consumable. Health nambah sebesar Arrity kedua */
