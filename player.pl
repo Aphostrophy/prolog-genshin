@@ -79,20 +79,26 @@ add_player_exp(ObtainedExp) :-
     player_level(X1),
     exp_level_up(X1,LevelExp),
     upgrade_player_level(X1,Result,LevelExp),
-    write('You can now check your updated current Exp and Gold with \'status\' command!').
+    write('You can now check your updated current Exp and Gold with \'status\' command!'),nl.
+
+upgrade_player_level(X,Y,Z) :-
+    Y < Z, !,
+    RemainingExp is Z - Y,
+    write('You now have '), write(Y), write(' Exp'), nl,
+    write('You need '), write(RemainingExp), write(' Exp to get upgraded to the next level. Keep exploring the game!'),nl.
 
 upgrade_player_level(X,Y,Z) :-
     Y >= Z,
     UpgradedLevel is X + 1,
     UpgradedExp is Y - Z,
     retract(player_level(X)), assertz(player_level(UpgradedLevel)),
-    retract(current_exp(Y)), assertz(current_exp(UpgradedExp)).
-    exp_level_up(player_level(UpgradedLevel),NewLevelExp),
+    retract(current_exp(Y)), assertz(current_exp(UpgradedExp)),
+    exp_level_up(UpgradedLevel,NewLevelExp),
     RemainingExp is NewLevelExp - UpgradedExp,
     upgrade_player_status,
     write('Your character has been upgraded to level '), write(UpgradedLevel), write('!'), nl,
     write('You now have '), write(UpgradedExp), write(' Exp'), nl,
-    write('You need '), write(RemainingExp), write(' Exp to get upgraded to the next level. Keep exploring the game!').
+    write('You need '), write(RemainingExp), write(' Exp to get upgraded to the next level. Keep exploring the game!'),nl.
 
 upgrade_player_status :-
     player_max_attack(X), player_max_defense(Y), player_max_health(Z),
@@ -110,4 +116,5 @@ upgrade_player_status :-
 add_player_gold(ObtainedGold) :-
     current_gold(X),
     AddedGold is X + ObtainedGold,
-    retract(current_gold(X)), assertz(current_gold(AddedGold)).
+    retract(current_gold(X)), assertz(current_gold(AddedGold)),
+    write('You obtained '), write(AddedGold),write(' Gold! The gold is now kept in your pocket!'),nl.

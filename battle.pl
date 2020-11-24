@@ -126,7 +126,7 @@ check_death :-
     write(GoldLoot), write(' gold'), nl,
     
     add_player_exp(ExpLoot),
-    add_player_gold(GoldLoot).
+    add_player_gold(GoldLoot),
 
     retract(game_state(in_battle)),
     assertz(game_state(travelling)),
