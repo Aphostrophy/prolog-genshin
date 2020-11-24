@@ -7,18 +7,18 @@ shop:-
     assertz(game_state(shopactive)),!,
     write('What do you want to buy?'),nl,
     write('1. Gacha (1000 gold)'),nl,
-    write('2. Health Potion (100 gold)'),nl.
-    write('3. Panas spesial 2 mekdi (150 gold)' ),nl.
-    write('4. Sadikin (200 gold)'),nl.
-    write('5. Go milk (250 gold)'),nl.
+    write('2. Health Potion (100 gold)'),nl,
+    write('3. Panas spesial 2 mekdi (150 gold)'),nl,
+    write('4. Sadikin (200 gold)'),nl,
+    write('5. Go milk (250 gold)'),nl,
     write('6. Crisbar (300 gold)'),nl.
 
 % GACHA 
 listIdx([X], 0, X).
 listIdx([H|_], 0, H).
-listIdx([_|T], idx, elmt) :- 
-    idx2 is idx-1, 
-    listIdx(T, idx2, elmt).
+listIdx([_|T], I, E) :- 
+    I2 is I-1, 
+    listIdx(T, I2, E).
 
 listitem(['waster greatsword','waster greatsword','waster greatsword','waster greatsword','waster greatsword',
            'old merc pal', 'old merc pal','old merc pal','old merc pal',
@@ -42,35 +42,42 @@ listitem(['waster greatsword','waster greatsword','waster greatsword','waster gr
            'diamond armor']).
 
 gacha:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+gacha:- current_gold(G),price('gacha',P),G<P,writeNotEnoughGold,fail.
 gacha:-
+    listitem(L),
     game_state(shopactive),
     current_gold(G),
-    G >= 1000,
-    random(0,59,idx),
-    listIdx(L,idx,elmt),
-    addToInventory([elmt|1]),
-    writeGacha(elmt).
+    price('gacha',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
+    random(0,59,X),
+    listIdx(L,X,E),
+    addToInventory([E|1]),
+    writeGacha(E),!.
 
-writeGacha(elmt):-
-    \+(ultraRareItem(elmt)),
-    \+(rareItem(elmt)),
-    format('You got ~w.~n',[elmt]),!.
+writeGacha(E):-
+    \+(ultraRareItem(E)),
+    \+(rareItem(E)),
+    format('You got ~w.~n',[E]).
 
-writeGacha(elmt):-
-    ultraRareItem(elmt),
-    format('You got ~w (ULTRA RARE).~n',[elmt]),!.
+writeGacha(E):-
+    ultraRareItem(E),
+    format('Congratulation! you got ~w (ULTRA RARE).~n',[E]).
 
-writeGacha(elmt):-
-    rareItem(elmt),
-    format('You got ~w (RARE).~n',[elmt]),!.
+writeGacha(E):-
+    rareItem(E),
+    format('Congratulation! you got ~w (RARE).~n',[E]).
     
 % POTION
 
 healthpotion:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+healthpotion:- current_gold(G),price('healthpotion',P),G<P,writeNotEnoughGold,fail.
 healthpotion:-
     game_state(shopactive),
     current_gold(G),
-    price('health potion', P),
+    price('health potion',P),
     G >= P,
     retract(current_gold(G)),
     G2 is G-P,
@@ -79,6 +86,7 @@ healthpotion:-
     write('Thanks for buying!'),nl.
 
 panas:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+panas:- current_gold(G),price('panas',P),G<P,writeNotEnoughGold,fail.
 panas:-
     game_state(shopactive),
     current_gold(G),
@@ -91,6 +99,7 @@ panas:-
     write('Thanks for buying!'),nl.
 
 sadikin:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+sadikin:- current_gold(G),price('sadikin',P),G<P,writeNotEnoughGold,fail.
 sadikin:-
     game_state(shopactive),
     current_gold(G),
@@ -99,10 +108,11 @@ sadikin:-
     retract(current_gold(G)),
     G2 is G-P,
     assertz(current_gold(G2)),
-    addToInventory(['sadikin'|1]).
+    addToInventory(['sadikin'|1]),
     write('Thanks for buying!'),nl.
 
 gomilk:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+gomilk:- current_gold(G),price('gomilk',P),G<P,writeNotEnoughGold,fail.
 gomilk:-
     game_state(shopactive),
     current_gold(G),
@@ -111,10 +121,11 @@ gomilk:-
     retract(current_gold(G)),
     G2 is G-P,
     assertz(current_gold(G2)),
-    addToInventory(['health potion'|1]).
+    addToInventory(['go milk'|1]),
     write('Thanks for buying!'),nl.
 
 crisbar :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+crisbar:- current_gold(G),price('crisbar',P),G<P,writeNotEnoughGold,fail.
 crisbar:-
     game_state(shopactive),
     current_gold(G),
@@ -123,7 +134,7 @@ crisbar:-
     retract(current_gold(G)),
     G2 is G-P,
     assertz(current_gold(G2)),
-    addToInventory(['health potion'|1]).    
+    addToInventory(['crisbar'|1]),
     write('Thanks for buying!'),nl.
 
 exitShop:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -135,7 +146,8 @@ exitShop:-
 
 writeShopIsNotOpenMessage :-
     write('Please open the shop first'),nl.
-
+writeNotEnoughGold :-
+    write('Not enough gold! go clear the quests to get some gold!'),nl.
 writeShopUsedMessage :-
     write('You have already opened shop'), nl.
 
