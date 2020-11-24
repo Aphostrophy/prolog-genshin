@@ -38,6 +38,7 @@ start :-
     assertz(att_enemy(0)),
     assertz(def_enemy(0)),
     assertz(lvl_enemy(0)),
+    assertz(special_timer(0)),
     assertz(slime_counter(0)),
     assertz(hilichurl_counter(0)),
     assertz(mage_counter(0)),

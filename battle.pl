@@ -1,9 +1,9 @@
 /* File : battle.pl */
 /* Battle Mechanisms Go Here */
 
-:- dynamic(special_used/0).
 :- dynamic(fight_or_run/0).
 :- dynamic(can_run/0).
+:- dynamic(special_timer/1).
 
 trigger_battle :- 
     assertz(fight_or_run),
@@ -78,15 +78,50 @@ attack :-
 
 attack :-
     fight_or_run, !,
-    write('Type \'fight.\' to fight, type \'run\' to run.').
+    write('Type \'fight.\' to fight, type \'run.\' to run.').
 
 attack :-
     \+game_state(in_battle), !,
     write('You are currently not in a battle').
 
-    write('You deal '), write(Atk), write(' damage to the enemy!'), nl, nl,
+special_attack :-
+    game_state(in_battle), (\+ fight_or_run), !,
+    special_timer(Timer),
+    Timer >= 3, !,
+    write('You used your special attack!!'), nl,
+
+    hp_enemy(X),
+    retract(hp_enemy(X)),
+    att_enemy(AttEnemy),
+    def_enemy(DefEnemy),
+
+    player_attack(AttPlayer),
+    SpecialAtt is 2*AttPlayer,
+    calc_damage(SpecialAtt, DefEnemy, Atk),
+
+    NewX is X - Atk,
+    assertz(hp_enemy(NewX)),
+    
+    write('You deal '), write(Atk), write(' damage!'), nl, nl,
+
+    retract(special_timer(_)),
+    assertz(special_timer(0)),
 
     check_death.
+
+special_attack :-
+    game_state(in_battle), (\+ fight_or_run), !,
+    special_timer(Timer),
+    Timer < 3, !,
+    write('You can\'\t use special attack yet!').
+
+special_attack :-
+    fight_or_run, !,
+    write('Type \'fight.\' to fight, type \'run.\' to run.').
+
+special_attack :-
+    \+game_state(in_battle), !,
+    write('You are currently not in a battle').
 
 /* Command untuk use Potion  */
 
@@ -137,7 +172,11 @@ check_death :-
 % Ignore bila musuh belum mati
 check_death :- 
     show_battle_status, 
-    nl, nl, 
+    nl, nl,
+    special_timer(Timer),
+    NewTimer is Timer+1,
+    retract(special_timer(_)),
+    assertz(special_timer(NewTimer)),
     enemy_turn.
 
 check_player_death :-
@@ -161,7 +200,17 @@ show_battle_status :-
     /* Player Status */
     write('Your status :'), nl,
     player_health(PlayerHealth),
-    write('Health : '), write(PlayerHealth).
+    write('Health : '), write(PlayerHealth), nl,
+    special_timer(Timer),
+    special_status(Timer).
+
+special_status(Timer) :-
+    Timer < 3, !,
+    write('Special attack : not ready').
+
+special_status(Timer) :-
+    Timer >= 3, !,
+    write('Special attack : READY!!!!!').
 
 update_quest(Type) :-
     Type =:= 0,
