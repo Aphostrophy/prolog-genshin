@@ -88,6 +88,10 @@ attack :-
 
     check_death.
 
+/* Command untuk use Potion  */
+
+
+
 enemy_turn :- 
     !,
     att_enemy(AttEnemy),
@@ -125,9 +129,10 @@ check_death :-
     write(ExpLoot), write(' exp'), nl,
     write(GoldLoot), write(' gold'), nl,
 
+    update_quest(Y),
+
     retract(game_state(in_battle)),
-    assertz(game_state(travelling)),
-    retract(special_used).
+    assertz(game_state(travelling)).
 
 % Ignore bila musuh belum mati
 check_death :- 
@@ -158,4 +163,69 @@ show_battle_status :-
     player_health(PlayerHealth),
     write('Health : '), write(PlayerHealth).
 
-/* Command untuk use Potion  */
+update_quest(Type) :-
+    Type =:= 0,
+    (\+slime_counter(0)), !,
+    slime_counter(Count),
+    NewCount is Count-1,
+    retract(slime_counter(_)),
+    assertz(slime_counter(NewCount)),
+    check_quest_done.
+
+update_quest(Type) :-
+    Type =:= 0,
+    slime_counter(0), !.
+
+update_quest(Type) :-
+    Type =:= 1,
+    (\+hilichurl_counter(0)), !,
+    hilichurl_counter(Count),
+    NewCount is Count-1,
+    retract(hilichurl_counter(_)),
+    assertz(hilichurl_counter(NewCount)),
+    check_quest_done.
+
+update_quest(Type) :-
+    Type =:= 1,
+    hilichurl_counter(0), !.
+
+update_quest(Type) :-
+    Type =:= 2,
+    (\+mage_counter(0)), !,
+    mage_counter(Count),
+    NewCount is Count-1,
+    retract(mage_counter(_)),
+    assertz(mage_counter(NewCount)),
+    check_quest_done.
+
+update_quest(Type) :-
+    Type =:= 2,
+    mage_counter(0), !.
+
+check_quest_done :-
+    slime_counter(0),
+    hilichurl_counter(0),
+    mage_counter(0),
+    write('Quest finished!!! You get :'),\
+    questExp(ExpLoot),
+    questGold(GoldLoot),
+
+    current_gold(CurrentGold),
+    NewCurrentGold is CurrentGold+GoldLoot,
+
+    current_exp(CurrentExp),
+    NewCurrentExp is CurrentExp+ExpLoot,
+
+    retract(current_exp(_)),
+    retract(current_gold(_)),
+    assertz(current_gold(NewCurrentGold)),
+    assertz(current_exp(NewCurrentExp)).
+
+check_quest_done :-
+    (\+slime_counter(0)), !.  
+
+check_quest_done :-
+    (\+hilichurl_counter(0)), !. 
+
+check_quest_done :-
+    (\+mage_counter(0)), !.
