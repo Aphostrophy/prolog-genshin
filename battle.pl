@@ -124,6 +124,9 @@ check_death :-
     /* Loot and EXP gain */
     write(ExpLoot), write(' exp'), nl,
     write(GoldLoot), write(' gold'), nl,
+    
+    add_player_exp(ExpLoot),
+    add_player_gold(GoldLoot).
 
     retract(game_state(in_battle)),
     assertz(game_state(travelling)),
