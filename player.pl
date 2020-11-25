@@ -19,25 +19,31 @@
 :- dynamic(upgradable/0).
 
 choose_class :-
-    write('Welcome to Genshin Asik. Choose your job'), nl,
-    write('1. Knight'), nl,
-    write('2. Archer'), nl,
-    write('3. Mage'), nl,
+    write('------------------------------------------------------------'),nl,
+    write('|        Welcome to Genshin Asik. Choose your job          |'), nl,
+    write('|                        1. Knight                         |'), nl,
+    write('|                        2. Archer                         |'), nl,
+    write('|                        3. Mage                           |'), nl,
+    write('------------------------------------------------------------'),nl,
+    write('Type the number associated with the job you chose followed with a periodt.'),nl,
+    write('For example: 1. or 2. or 3.'),nl,
+    write('Then, press return or enter.'),nl,
     read(X),nl,
     assert_class(X),
+    write('The game has been started. Use \'help.\' to look for available commands!'),nl,
     initialize_resources.
 
 status :-
     player_class(X),player_level(Y),player_health(Health),player_attack(Attack),player_defense(Defense),
     player_max_health(MaxHealth),player_max_attack(MaxAttack),player_max_defense(MaxDefense),
     current_gold(Gold),current_exp(Exp),exp_level_up(Y,MaxExp),
-    write('Job: '),write(X),nl,
-    write('Level: '),write(Y),nl,
-    write('Health: '),write(Health),write('/'),write(MaxHealth),nl,
-    write('Attack: '),write(Attack),write('/'),write(MaxAttack),nl,
+    write('Job:     '),write(X),nl,
+    write('Level:   '),write(Y),nl,
+    write('Health:  '),write(Health),write('/'),write(MaxHealth),nl,
+    write('Attack:  '),write(Attack),write('/'),write(MaxAttack),nl,
     write('Defense: '),write(Defense),write('/'),write(MaxDefense),nl,
-    write('Gold: '),write(Gold),nl,
-    write('Exp: '),write(Exp),write('/'),write(MaxExp),nl.
+    write('Gold:    '),write(Gold),nl,
+    write('Exp:     '),write(Exp),write('/'),write(MaxExp),nl.
 
 exp_level_up(Level,Exp):-
     Exp is 300*Level.
