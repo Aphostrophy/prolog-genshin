@@ -39,10 +39,14 @@ start :-
     assertz(def_enemy(0)),
     assertz(lvl_enemy(0)),
     assertz(special_timer(0)),
+    assertz(buff_att(0)),
+    assertz(buff_def(0)),
+
     assertz(slime_counter(0)),
     assertz(hilichurl_counter(0)),
     assertz(mage_counter(0)),
     assertz(quest_active(false)),
+    
     asserta(map_entity(1, 1, 'P')),
     asserta(map_entity(13, 1, 'S')),
     asserta(map_entity(15, 15, 'B')),

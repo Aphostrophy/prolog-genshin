@@ -35,6 +35,8 @@ modifyElement([Name|Amount], [[Other,OldAmount]|Tail],[[Other,OldAmount]|L]) :- 
 
 reduceElement([Name|Amount], [[Name,OldAmount]|Tail],[[Name,X]|Tail]):- X is OldAmount-Amount.
 
+reduceElement([Name|Amount], [[Other,OldAmount]|Tail],[[Other,OldAmount]|L]):- reduceElement([Name|Amount],Tail,L).
+
 getItemAmount(Name, [[Name,Amount]|Tail],Amount).
 
 getItemAmount(Name,[[Other,OtherAmount]|Tail],Amount) :- getItemAmount(Name,Tail,X), Amount is X.

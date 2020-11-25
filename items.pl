@@ -32,7 +32,12 @@ type(consumable, 'health potion').
 type(consumable, 'panas spesial 2 mekdi').
 type(consumable, 'sadikin').
 type(consumable, 'go milk').
-type(consumable, 'crisbar').
+type(consumable, 'attack potion S').
+type(consumable, 'attack potion M').
+type(consumable, 'attack potion L').
+type(consumable, 'defense potion S').
+type(consumable, 'defense potion M').
+type(consumable, 'defense potion L').
 type(claymore, 'waster greatsword').
 type(claymore, 'old merc pal').
 type(claymore, 'debate club').
@@ -72,13 +77,36 @@ rareItem('favonius warbow').
 rareItem('mappa mare').
 rareItem('golden armor').
 
+/* Type consumable */
+consumable_type('health potion', heal).
+consumable_type('panas spesial 2 mekdi', heal).
+consumable_type('sadikin', heal).
+consumable_type('go milk', heal).
+consumable_type('crisbar', heal).
+consumable_type('gacha', heal).
 
-/* Properti buat consumable. Health nambah sebesar Arrity kedua */
+consumable_type('attack potion S', att).
+consumable_type('attack potion M', att).
+consumable_type('attack potion L', att).
+
+consumable_type('defense potion S', def).
+consumable_type('defense potion M', def).
+consumable_type('defense potion L', def).
+
+/* Properti buat consumable. Health, Attack, atau Defense nambah sebesar Arrity kedua */
 property('health potion', Health) :- Health is 75.
 property('panas spesial 2 mekdi', Health) :- Health is 150.
 property('sadikin', Health) :- Health is 250.
 property('go milk', Health) :- Health is 320.
 property('crisbar', Health) :- Health is 450.
+
+property('attack potion S', Attack) :- Attack is 50.
+property('attack potion M', Attack) :- Attack is 100.
+property('attack potion L', Attack) :- Attack is 200.
+
+property('defense potion S', Defense) :- Defense is 25.
+property('defense potion M', Defense) :- Defense is 50.
+property('defense potion L', Defense) :- Defense is 100.
 
 /* Properti buat claymore, bow, catalyst. Attack nambah sebesar Arrity kedua */
 property('waster greatsword', Attack) :- Attack is 30.
