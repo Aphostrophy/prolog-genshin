@@ -437,6 +437,9 @@ update_quest(Type) :-
     Type =:= 2,
     mage_counter(0), !.
 
+update_quest(Type) :-
+    Type =:= 3, !.
+
 check_quest_done :-
     slime_counter(0),
     hilichurl_counter(0),

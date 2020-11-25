@@ -17,7 +17,8 @@ encounter_enemy(MaxWeight, EnemyType) :-
     EncounterRate =< 75,
     random(0, MaxWeight, EncounterWeight),
 
-    enemy_gacha(EncounterWeight),
+    map_entity(X,Y,'P'),
+    enemy_gacha(X,Y,EncounterWeight),
     type_enemy(EncounterType),
 
     EnemyType is EncounterType.
@@ -26,26 +27,102 @@ encounter_enemy(MaxWeight, EnemyType) :-
 /* Nanti weight-nya bisa disesuaiin sama area map, 
    biar kemunculan tipe monster tertentu bisa lebih tinggi di tempat tertentu */
 
-enemy_gacha(Rate) :-
-    Rate =< 50,
+/* Area 1 Slime */
+enemy_gacha(X,Y,Rate) :-
+    X =< 8, X > 0,
+    Y =< 8, Y > 0,
+    Rate =< 70, 
+    Rate > 0, !,
     retract(type_enemy(_)),
     asserta(type_enemy(0)).
 
-enemy_gacha(Rate) :- 
+enemy_gacha(X,Y,Rate) :-
+    X =< 8, X > 0,
+    Y =< 8, Y > 0,
     Rate =< 80,
-    Rate > 50,
+    Rate > 70, !,
     retract(type_enemy(_)),
     asserta(type_enemy(1)).
 
-enemy_gacha(Rate) :- 
+enemy_gacha(X,Y,Rate) :-
+    X =< 8, X > 0,
+    Y =< 8, Y > 0,
     Rate =< 90,
-    Rate > 80,
+    Rate > 80, !,
     retract(type_enemy(_)),
     asserta(type_enemy(2)).
 
-enemy_gacha(Rate) :- 
+enemy_gacha(X,Y,Rate) :- 
+    X =< 8, X > 0,
+    Y =< 8, Y > 0,
     Rate =< 100,
-    Rate > 90,
+    Rate > 90, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(3)).
+
+/* Area 2 Hilichurl */
+enemy_gacha(X,Y,Rate) :-
+    X =< 15, X > 8,
+    Y =< 8, Y > 0,
+    Rate =< 10, 
+    Rate > 0, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(0)).
+
+enemy_gacha(X,Y,Rate) :-
+    X =< 15, X > 8,
+    Y =< 8, Y > 0,
+    Rate =< 80,
+    Rate > 10, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(1)).
+
+enemy_gacha(X,Y,Rate) :-
+    X =< 15, X > 8,
+    Y =< 8, Y > 0,
+    Rate =< 90,
+    Rate > 80, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(2)).
+
+enemy_gacha(X,Y,Rate) :- 
+    X =< 15, X > 8,
+    Y =< 8, Y > 0,
+    Rate =< 100,
+    Rate > 90, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(3)).
+
+/* Area 3 Mage */
+enemy_gacha(X,Y,Rate) :-
+    X =< 15, X > 0,
+    Y =< 15, Y > 8,
+    Rate =< 10, 
+    Rate > 0, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(0)).
+
+enemy_gacha(X,Y,Rate) :-
+    X =< 15, X > 0,
+    Y =< 15, Y > 8,
+    Rate =< 40,
+    Rate > 10, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(1)).
+
+enemy_gacha(X,Y,Rate) :-
+    X =< 15, X > 0,
+    Y =< 15, Y > 8,
+    Rate =< 90,
+    Rate > 40, !,
+    retract(type_enemy(_)),
+    asserta(type_enemy(2)).
+
+enemy_gacha(X,Y,Rate) :- 
+    X =< 15, X > 0,
+    Y =< 15, Y > 8,
+    Rate =< 100,
+    Rate > 90, !,
     retract(type_enemy(_)),
     asserta(type_enemy(3)).
 

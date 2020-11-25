@@ -12,61 +12,68 @@ isPagar(8, 2).
 isPagar(7, 2).
 isPagar(8, 3).
 isPagar(8, 4).
+isPagar(13, 9).
+isPagar(13, 10).
+isPagar(13, 11).
+isPagar(13, 12).
+isPagar(12, 12).
+isPagar(11, 12).
+isPagar(10, 12).
 
 setBorder(X,Y) :-
-    X =< 10,
+    X =< 15,
     X > 0,
-    Y =< 10,
+    Y =< 15,
     Y > 0,
     X2 is X+1,
     setBorder(X2,Y).
 
 setBorder(X,Y) :-
     Y =:= 0,
-    X =< 10,
+    X =< 15,
     assertz(isPagar(X,Y)),
     X2 is X+1,
     setBorder(X2,Y).
 
 setBorder(X,Y) :-
     X =:= 0,
-    Y =< 11,
+    Y =< 16,
     assertz(isPagar(X,Y)),
     X2 is X+1,
     setBorder(X2,Y).
 
 setBorder(X,Y) :-
-    X =:= 11,
-    Y =< 11,
+    X =:= 16,
+    Y =< 16,
     assertz(isPagar(X,Y)),
     Y2 is Y+1,
     setBorder(0,Y2).
 
 setBorder(X,Y) :-
-    Y =:= 11,
-    X =< 11,
+    Y =:= 16,
+    X =< 16,
     assertz(isPagar(X,Y)),
     X2 is X+1,
     setBorder(X2,Y).
 
 /* Buat ngebuat map */
 draw_map(X,Y) :-
-    Y =:= 12,
+    Y =:= 17,
     retract(draw_done(_)),
     asserta(draw_done(true)).
 
 draw_map(X,Y) :-
     draw_done(false),
-    X =:= 12, nl,
-    Y =< 11,
+    X =:= 17, nl,
+    Y =< 16,
     Y2 is Y+1,
     draw_map(0,Y2).
 
 draw_map(X,Y):-
     draw_done(false),
-    X =< 11,
+    X =< 16,
     X >= 0,
-    Y =< 11,
+    Y =< 16,
     Y >= 0,
     isPagar(X,Y), !,
     write('# '),
@@ -75,9 +82,9 @@ draw_map(X,Y):-
 
 draw_map(X,Y):-
     draw_done(false),
-    X =< 10,
+    X =< 15,
     X > 0,
-    Y =< 10,
+    Y =< 15,
     Y > 0,
     map_entity(X,Y,_),
     draw_entity(X,Y),
@@ -86,9 +93,9 @@ draw_map(X,Y):-
 
 draw_map(X,Y):-
     draw_done(false),
-    X =< 10,
+    X =< 15,
     X > 0,
-    Y =< 10,
+    Y =< 15,
     Y > 0,
     (\+isPagar(X,Y)), !,
     write('- '),
@@ -212,3 +219,16 @@ map :-
     retract(draw_done(_)),
     asserta(draw_done(false)),
     draw_map(0,0), !.
+
+teleport :-
+    game_start,
+    map_entity(X, Y, 'P'),
+    map_entity(X, Y, 'T'), 
+    game_state(travelling), !,
+    map, write('Where do you want to teleport??'), nl,
+    write('Input the X coordinate : '), read(X2),
+    write('Input the Y coordinate : '), read(Y2),
+    map_entity(X2,Y2,'T'), !,
+    write('You teleported to '), write(X2), write(','), write(Y2), nl,
+    retract(map_entity(X,Y,'P')),
+    assertz(map_entity(X2,Y2,'P')).

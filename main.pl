@@ -44,9 +44,13 @@ start :-
     assertz(mage_counter(0)),
     assertz(quest_active(false)),
     asserta(map_entity(1, 1, 'P')),
-    asserta(map_entity(5, 3, 'S')),
-    asserta(map_entity(10, 10, 'B')),
+    asserta(map_entity(13, 1, 'S')),
+    asserta(map_entity(15, 15, 'B')),
     asserta(map_entity(2, 7, 'Q')),
+    asserta(map_entity(13, 3, 'T')),
+    asserta(map_entity(2, 5, 'T')),
+    asserta(map_entity(3, 14, 'T')),
+    asserta(map_entity(14, 12, 'T')),
     asserta(draw_done(true)),
     setBorder(0,0).
 
