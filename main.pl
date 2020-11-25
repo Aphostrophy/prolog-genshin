@@ -113,7 +113,7 @@ help :-
     write('Use \'shop.\' to open the shop.'),nl,
     write('Use \'item.\' to use items in your inventory.'),nl,
     write('Use \'quest_info.\' to get the remaining enemies to be killed when doing your quest.'),nl,
-    write('Use \'teleport.\' to move to a specific coordinate on the map.'),nl
+    write('Use \'teleport.\' to move to a specific coordinate on the map.'),nl,
     write('Use \'status.\' to get the player info.'),nl,
     write('You might encounter an enemy while you\'re travelling, so be ready for them!'),nl.
 

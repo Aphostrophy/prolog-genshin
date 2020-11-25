@@ -31,6 +31,9 @@ choose_class :-
     read(X),nl,
     assert_class(X),
     write('The game has been started. Use \'help.\' to look for available commands!'),nl,
+    write('Use \'start.\' to restart the game'),nl,
+    write('Use \'quit.\' to exit the game.'),nl,
+    write('Use \'check_inventory.\' to list all the items in your inventory.'),nl,
     initialize_resources.
 
 status :-
@@ -54,7 +57,7 @@ assert_class(1):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
-    write('You choose '), write(X), write(', let’s explore the world'),nl,!.
+    write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
 assert_class(2):-
     assertz(player_class('archer')),
@@ -62,7 +65,7 @@ assert_class(2):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
-    write('You choose '), write(X), write(', let’s explore the world'),nl,!.
+    write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
 assert_class(3):-
     assertz(player_class('mage')),
@@ -70,7 +73,7 @@ assert_class(3):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
-    write('You choose '), write(X), write(', let’s explore the world'),nl,!.
+    write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
 initialize_resources:-
     assertz(current_gold(1000)),
