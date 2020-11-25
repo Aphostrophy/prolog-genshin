@@ -228,7 +228,15 @@ teleport :-
     map, write('Where do you want to teleport??'), nl,
     write('Input the X coordinate : '), read(X2),
     write('Input the Y coordinate : '), read(Y2),
-    map_entity(X2,Y2,'T'), !,
-    write('You teleported to '), write(X2), write(','), write(Y2), nl,
-    retract(map_entity(X,Y,'P')),
-    assertz(map_entity(X2,Y2,'P')).
+    execute_teleport(X2,Y2).
+    
+execute_teleport(X,Y) :-
+    map_entity(X,Y,'T'), !,
+    map_entity(OldX,OldY,'P'),
+    write('You teleported to '), write(X), write(','), write(Y), nl,
+    retract(map_entity(OldX,OldY,'P')),
+    assertz(map_entity(X,Y,'P')).
+
+execute_teleport(X,Y) :-
+    (\+map_entity(X,Y,'T')), !,
+    write('Invalid Location!!').

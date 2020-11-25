@@ -86,3 +86,66 @@ no :-
 no :- 
     (\+ game_state(in_quest_dialogue)), !,
     write('You are not in quest dialogue!!').
+
+/* buat update quest saat menang battle */
+update_quest(Type) :-
+    Type =:= 0,
+    (\+slime_counter(0)), !,
+    slime_counter(Count),
+    NewCount is Count-1,
+    retract(slime_counter(_)),
+    assertz(slime_counter(NewCount)),
+    check_quest_done.
+
+update_quest(Type) :-
+    Type =:= 0,
+    slime_counter(0), !.
+
+update_quest(Type) :-
+    Type =:= 1,
+    (\+hilichurl_counter(0)), !,
+    hilichurl_counter(Count),
+    NewCount is Count-1,
+    retract(hilichurl_counter(_)),
+    assertz(hilichurl_counter(NewCount)),
+    check_quest_done.
+
+update_quest(Type) :-
+    Type =:= 1,
+    hilichurl_counter(0), !.
+
+update_quest(Type) :-
+    Type =:= 2,
+    (\+mage_counter(0)), !,
+    mage_counter(Count),
+    NewCount is Count-1,
+    retract(mage_counter(_)),
+    assertz(mage_counter(NewCount)),
+    check_quest_done.
+
+update_quest(Type) :-
+    Type =:= 2,
+    mage_counter(0), !.
+
+update_quest(Type) :-
+    Type =:= 3, !.
+
+check_quest_done :-
+    slime_counter(0),
+    hilichurl_counter(0),
+    mage_counter(0),
+    write('Quest finished!!! You get :'),
+    questExp(ExpLoot), write(' Exp'), nl,
+    questGold(GoldLoot), write(' Gold'), nl,
+
+    add_player_exp(ExpLoot),
+    add_player_gold(GoldLoot).
+
+check_quest_done :-
+    (\+slime_counter(0)), !.  
+
+check_quest_done :-
+    (\+hilichurl_counter(0)), !. 
+
+check_quest_done :-
+    (\+mage_counter(0)), !.

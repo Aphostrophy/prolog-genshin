@@ -258,6 +258,12 @@ item :-
     property(ItemName, Hp),
     heal(Hp),
     write('You used '), write(ItemName), nl,
+
+    special_timer(Timer),
+    NewTimer is Timer+1,
+    retract(special_timer(_)),
+    assertz(special_timer(NewTimer)),
+
     enemy_turn.
 
 heal(Hp) :-
@@ -396,74 +402,3 @@ special_status(Timer) :-
 special_status(Timer) :-
     Timer >= 3, !,
     write('Special attack : READY!!!!!').
-
-/* buat update quest saat menang battle (NANTI BAKAL DIPINDAH KE quest.pl) */
-update_quest(Type) :-
-    Type =:= 0,
-    (\+slime_counter(0)), !,
-    slime_counter(Count),
-    NewCount is Count-1,
-    retract(slime_counter(_)),
-    assertz(slime_counter(NewCount)),
-    check_quest_done.
-
-update_quest(Type) :-
-    Type =:= 0,
-    slime_counter(0), !.
-
-update_quest(Type) :-
-    Type =:= 1,
-    (\+hilichurl_counter(0)), !,
-    hilichurl_counter(Count),
-    NewCount is Count-1,
-    retract(hilichurl_counter(_)),
-    assertz(hilichurl_counter(NewCount)),
-    check_quest_done.
-
-update_quest(Type) :-
-    Type =:= 1,
-    hilichurl_counter(0), !.
-
-update_quest(Type) :-
-    Type =:= 2,
-    (\+mage_counter(0)), !,
-    mage_counter(Count),
-    NewCount is Count-1,
-    retract(mage_counter(_)),
-    assertz(mage_counter(NewCount)),
-    check_quest_done.
-
-update_quest(Type) :-
-    Type =:= 2,
-    mage_counter(0), !.
-
-update_quest(Type) :-
-    Type =:= 3, !.
-
-check_quest_done :-
-    slime_counter(0),
-    hilichurl_counter(0),
-    mage_counter(0),
-    write('Quest finished!!! You get :'),\
-    questExp(ExpLoot),
-    questGold(GoldLoot),
-
-    current_gold(CurrentGold),
-    NewCurrentGold is CurrentGold+GoldLoot,
-
-    current_exp(CurrentExp),
-    NewCurrentExp is CurrentExp+ExpLoot,
-
-    retract(current_exp(_)),
-    retract(current_gold(_)),
-    assertz(current_gold(NewCurrentGold)),
-    assertz(current_exp(NewCurrentExp)).
-
-check_quest_done :-
-    (\+slime_counter(0)), !.  
-
-check_quest_done :-
-    (\+hilichurl_counter(0)), !. 
-
-check_quest_done :-
-    (\+mage_counter(0)), !.
