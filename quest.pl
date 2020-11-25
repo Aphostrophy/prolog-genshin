@@ -1,10 +1,5 @@
 /* File : quest.pl */
 
-:- dynamic(quest_active/1).
-:- dynamic(slime_counter/1).
-:- dynamic(hilichurl_counter/1).
-:- dynamic(mage_counter/1).
-
 questExp(5000).
 questGold(5000).
 

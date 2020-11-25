@@ -1,10 +1,26 @@
 /* File Utama */
 
+:- dynamic(game_opened/0).
 :- dynamic(game_start/0).
 :- dynamic(game_state/1).
 /* Keadaan player, battle kah? travelling kah? buka shop kah? */
 
-start :-
+start:-
+    nl,
+    write('     #                  ######   ##########          #   ######     ######        ######   ##########                       #          ######   '), nl,
+    write('    #      ##########            #        #         #      #                        #      #        # ##########   ######   #   ###      #      '), nl,
+    write('   #               #  ##########         #     #   #   ########## ##########    ##########         #          #         #   ####     ########## '), nl,
+    write('  #               #   #        #        #       # #        #      #        #        #             #          #          #   #            #      '), nl,
+    write(' #     #       # #           ##        #         #         #             ##         #            #        # #           #   #            #      '), nl,
+    write('#########       #          ##        ##        ## #        #           ##           #          ##          #     ########## #            #      '), nl,
+    write('         #       #       ##        ##        ##    #        ####     ##              ####    ##             #                #######      ####  '), nl,
+    write('Main Menu:'),nl,
+    write('new'),nl,
+    write('load'),
+    assertz(game_opened).
+
+new :-
+    game_opened,!,
     (\+ game_start),
     ['encounter_enemy.pl'],
     ['utility.pl'],
@@ -19,15 +35,6 @@ start :-
     ['map.pl'],
 
     assertz(game_start), assertz(game_state(travelling)), !,
-
-    nl,
-    write('     #                  ######   ##########          #   ######     ######        ######   ##########                       #          ######   '), nl,
-    write('    #      ##########            #        #         #      #                        #      #        # ##########   ######   #   ###      #      '), nl,
-    write('   #               #  ##########         #     #   #   ########## ##########    ##########         #          #         #   ####     ########## '), nl,
-    write('  #               #   #        #        #       # #        #      #        #        #             #          #          #   #            #      '), nl,
-    write(' #     #       # #           ##        #         #         #             ##         #            #        # #           #   #            #      '), nl,
-    write('#########       #          ##        ##        ## #        #           ##           #          ##          #     ########## #            #      '), nl,
-    write('         #       #       ##        ##        ##    #        ####     ##              ####    ##             #                #######      ####  '), nl,
 
     choose_class,
 
@@ -54,7 +61,7 @@ start :-
     asserta(draw_done(true)),
     setBorder(0,0).
 
-start :-
+new :-
     game_start, !,
     write('The game has already been started. Use \'help.\' to look at available commands!').
 

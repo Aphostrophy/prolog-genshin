@@ -3,21 +3,6 @@
 
 /* Dependency Files : items.pl */
 
-:- dynamic(player_class/1).
-:- dynamic(player_level/1).
-:- dynamic(equipped_weapon/1).
-:- dynamic(player_health/1).
-:- dynamic(player_attack/1).
-:- dynamic(player_defense/1).
-
-:- dynamic(player_max_health/1).
-:- dynamic(player_max_attack/1).
-:- dynamic(player_max_defense/1).
-
-:- dynamic(current_gold/1).
-:- dynamic(current_exp/1).
-:- dynamic(upgradable/0).
-
 choose_class :-
     write('Welcome to Genshin Asik. Choose your job'), nl,
     write('1. Knight'), nl,

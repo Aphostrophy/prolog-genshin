@@ -130,7 +130,7 @@ w :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 w :-
-    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
+    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
 
 a :-
     game_start,
@@ -151,7 +151,7 @@ a :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 a :-
-    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
+    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
 
 s :-
     game_start,
@@ -182,7 +182,7 @@ s :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 s :-
-    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
+    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
 
 d :-
     game_start,
@@ -213,7 +213,7 @@ d :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 d :-
-    write('Ouch, you hitted a wall. Use \"map.\" to open the map!!').
+    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
 
 map :-
     retract(draw_done(_)),
