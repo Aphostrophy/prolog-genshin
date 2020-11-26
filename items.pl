@@ -83,7 +83,6 @@ consumable_type('panas spesial 2 mekdi', heal).
 consumable_type('sadikin', heal).
 consumable_type('go milk', heal).
 consumable_type('crisbar', heal).
-consumable_type('gacha', heal).
 
 consumable_type('attack potion S', att).
 consumable_type('attack potion M', att).
