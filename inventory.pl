@@ -87,9 +87,9 @@ equip(Item) :-
 
 equippedItems:-
     equipped_weapon(X),
-    write("Weapon:"),write(X),nl,
-    property(X,Attack),write("Attack Bonus: "),write(Attack),
+    write('Weapon:'),write(X),nl,
+    property(X,Attack),write('Attack Bonus: '),write(Attack),
     equipped_cover(Y),property(Y,Defense,HP),
-    write("Armor:"),write(Y),nl,
-    write("Bonus Defense: "),write(Defense),nl,
-    write("Bonus Health: "),write(HP).
+    write('Armor:'),write(Y),nl,
+    write('Bonus Defense: '),write(Defense),nl,
+    write('Bonus Health: '),write(HP).
