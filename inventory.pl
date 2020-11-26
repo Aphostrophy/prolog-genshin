@@ -12,8 +12,10 @@ printInventory([H|T]) :-
     printPair(H),printInventory(T).
 
 printPair([H|T]) :-
-    [Amount|None] = T,Amount>0,
+    [Amount|None] = T,Amount>0,!,
     write(H),write(':'),write(Amount),nl.
+
+printPair([H|T]) :- !.
 
 addToInventory([Name|Amount]) :-
     inventory_bag(Inventory,Size),
