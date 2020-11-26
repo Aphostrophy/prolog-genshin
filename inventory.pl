@@ -84,3 +84,12 @@ equip(Item) :-
     retract(player_max_health(_)),assertz(player_max_health(NewMaxHealth)),
     retract(player_defense(_)),assertz(player_defense(NewMaxDefense)),
     retract(player_max_defense(_)),assertz(player_max_defense(NewMaxDefense)).
+
+equippedItems:-
+    equipped_weapon(X),
+    write("Weapon:"),write(X),nl,
+    property(X,Attack),write("Attack Bonus: "),write(Attack),
+    equipped_cover(Y),property(Y,Defense,HP),
+    write("Armor:"),write(Y),nl,
+    write("Bonus Defense: "),write(Defense),nl,
+    write("Bonus Health: "),write(HP).
