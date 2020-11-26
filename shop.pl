@@ -1,4 +1,4 @@
-:- dynamic(shopactive/0).
+
 /*Nanti disatuin semua ke main biar ada game state (battle,shop,inventory,travelling,dll). */
 
 shop:- game_state(shopactive),!,writeShopUsedMessage,fail.
