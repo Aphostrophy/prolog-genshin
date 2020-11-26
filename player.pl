@@ -63,7 +63,7 @@ assert_class(3):-
 initialize_resources:-
     assertz(current_gold(1000)),
     assertz(current_exp(0)),
-    assertz(inventory_bag([['health potion',10],['attack potion S',5]],10)).
+    assertz(inventory_bag([['health potion',10],['attack potion S',5]],15)).
 
 add_player_exp(ObtainedExp) :-
     current_exp(CurrentExp),
