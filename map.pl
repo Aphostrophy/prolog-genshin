@@ -111,7 +111,7 @@ draw_entity(X,Y) :-
 
 w :-
     game_start,
-    (\+ game_state(in_battle)),
+    (\+ game_state(in_battle)),game_state(travelling),
     map_entity(X, Y, 'P'),
     Y2 is Y-1,
     (\+ isPagar(X, Y2)), !,
@@ -128,11 +128,15 @@ w :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 w :-
+    \+game_state(travelling),!,
+    write('Cannot travel now').
+
+w :-
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
 
 a :-
     game_start,
-    (\+ game_state(in_battle)),
+    (\+ game_state(in_battle)),game_state(travelling),
     map_entity(X, Y, 'P'),
     X2 is X-1,
     (\+isPagar(X2, Y)), !,
@@ -149,11 +153,15 @@ a :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 a :-
+    \+game_state(travelling),!,
+    write('Cannot travel now').
+
+a :-
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
 
 s :-
     game_start,
-    (\+ game_state(in_battle)),
+    (\+ game_state(in_battle)),game_state(travelling),
     map_entity(X, Y, 'P'),
     Y2 is Y+1,
     (\+isPagar(X, Y2)), 
@@ -180,11 +188,15 @@ s :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 s :-
+    \+game_state(travelling),!,
+    write('Cannot travel now').
+
+s :-
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
 
 d :-
     game_start,
-    (\+ game_state(in_battle)),
+    (\+ game_state(in_battle)),game_state(travelling),
     map_entity(X, Y, 'P'),
     X2 is X+1,
     (\+isPagar(X2, Y)),
@@ -209,6 +221,10 @@ d :-
 d :-
     game_state(in_battle), !,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
+
+d :-
+    \+game_state(travelling),!,
+    write('Cannot travel now').
 
 d :-
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
