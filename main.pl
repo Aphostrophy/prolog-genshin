@@ -109,7 +109,7 @@ new :-
     asserta(map_entity(3, 14, 'T')),
     asserta(map_entity(14, 12, 'T')),
     asserta(draw_done(true)),
-    setBorder(0,0).
+    setBorder.
 
 new :-
     game_start, !,

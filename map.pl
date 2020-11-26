@@ -18,41 +18,11 @@ isPagar(12, 12).
 isPagar(11, 12).
 isPagar(10, 12).
 
-setBorder(X,Y) :-
-    X =< 15,
-    X > 0,
-    Y =< 15,
-    Y > 0,
-    X2 is X+1,
-    setBorder(X2,Y).
-
-setBorder(X,Y) :-
-    Y =:= 0,
-    X =< 15,
-    assertz(isPagar(X,Y)),
-    X2 is X+1,
-    setBorder(X2,Y).
-
-setBorder(X,Y) :-
-    X =:= 0,
-    Y =< 16,
-    assertz(isPagar(X,Y)),
-    X2 is X+1,
-    setBorder(X2,Y).
-
-setBorder(X,Y) :-
-    X =:= 16,
-    Y =< 16,
-    assertz(isPagar(X,Y)),
-    Y2 is Y+1,
-    setBorder(0,Y2).
-
-setBorder(X,Y) :-
-    Y =:= 16,
-    X =< 16,
-    assertz(isPagar(X,Y)),
-    X2 is X+1,
-    setBorder(X2,Y).
+setBorder :- 
+    forall(between(0,16,X), assertz(isPagar(X,0))),
+    forall(between(0,16,X), assertz(isPagar(X,16))),
+    forall(between(0,16,Y), assertz(isPagar(0,Y))),
+    forall(between(0,16,Y), assertz(isPagar(16,Y))).
 
 /* Buat ngebuat map */
 draw_map(X,Y) :-
