@@ -115,12 +115,12 @@ run_gacha(A) :-
 attack :-
 	game_state(boss_battle),
 	\+ fight_or_run, !,
-	hp_enemy(A),
+	hp_enemy(A), !,
 	retract(hp_enemy(A)),
 	att_enemy(_),
-	def_enemy(B),
-	player_attack(C),
-	calc_damage(C, B, D),
+	def_enemy(B), !,
+	player_attack(C), !,
+	calc_damage(C, B, D), !,
 	E is A - D,
 	assertz(hp_enemy(E)),
 	write('You deal '),
@@ -132,12 +132,12 @@ attack :-
 attack :-
 	game_state(in_battle),
 	\+ fight_or_run, !,
-	hp_enemy(A),
+	hp_enemy(A), !,
 	retract(hp_enemy(A)),
 	att_enemy(_),
-	def_enemy(B),
-	player_attack(C),
-	calc_damage(C, B, D),
+	def_enemy(B), !,
+	player_attack(C), !,
+	calc_damage(C, B, D), !,
 	E is A - D,
 	assertz(hp_enemy(E)),
 	write('You deal '),
@@ -237,21 +237,8 @@ item :-
 	nl,
 	read(A),
 	substractFromInventory([A|1]),
-	property(A, B),
-	heal(B),
-	write('You used '),
-	write(A),
-	nl,
-	enemy_turn.
-item :-
-	game_state(in_battle), !,
-	inventory,
-	write('Input item name!!'),
-	nl,
-	read(A),
-	substractFromInventory([A|1]),
-	property(A, B),
-	heal(B),
+	consumable_type(A, B), !,
+	use_item(A, B),
 	write('You used '),
 	write(A),
 	nl,
@@ -259,28 +246,74 @@ item :-
 	D is C + 1,
 	retract(special_timer(_)),
 	assertz(special_timer(D)),
-	enemy_turn.
+	enemy_turn, !.
+item :-
+	game_state(in_battle), !,
+	inventory,
+	write('Input item name!!'),
+	nl,
+	read(A),
+	substractFromInventory([A|1]),
+	consumable_type(A, B),
+	use_item(A, B),
+	write('You used '),
+	write(A),
+	nl,
+	special_timer(C),
+	D is C + 1,
+	retract(special_timer(_)),
+	assertz(special_timer(D)),
+	enemy_turn, !.
+
+use_item(A, B) :-
+	B = heal,
+	property(A, C), !,
+	heal(C).
+use_item(A, B) :-
+	B = att,
+	property(A, C), !,
+	attUp(C).
+use_item(A, B) :-
+	B = def,
+	property(A, C), !,
+	defUp(C).
 
 heal(A) :-
-	player_health(B),
+	player_health(B), !,
 	player_max_health(C),
 	D is B + A,
 	D < C, !,
 	retract(player_health(_)),
 	assertz(player_health(D)).
 heal(A) :-
-	player_health(B),
+	player_health(B), !,
 	player_max_health(C),
 	D is B + A,
 	D >= C, !,
 	retract(player_health(_)),
 	assertz(player_health(C)).
 
+attUp(A) :-
+	player_attack(B), !,
+	C is B + A,
+	retract(buff_att(_)),
+	assertz(buff_att(3)),
+	retract(player_attack(_)),
+	assertz(player_attack(C)).
+
+defUp(A) :-
+	player_defense(B), !,
+	C is B + A,
+	retract(buff_def(_)),
+	assertz(buff_def(3)),
+	retract(player_defense(_)),
+	assertz(player_defense(C)).
+
 check_death :-
 	hp_enemy(A),
-	A =< 0,
+	A =< 0, !,
 	type_enemy(B),
-	enemy_type(B, C),
+	enemy_type(B, C), !,
 	write(C),
 	write(' defeated! you got : '),
 	nl, !,
@@ -295,8 +328,12 @@ check_death :-
 	write(' gold'),
 	nl,
 	add_player_exp(F),
-	add_player_gold(G),
+	add_player_gold(G), !,
 	update_quest(B),
+	buff_att(H),
+	buff_def(I), !,
+	check_buff_att(H),
+	check_buff_def(I), !,
 	retract(game_state(in_battle)),
 	assertz(game_state(travelling)).
 check_death :-
@@ -307,13 +344,17 @@ check_death :-
 	B is A + 1,
 	retract(special_timer(_)),
 	assertz(special_timer(B)),
+	buff_att(C),
+	buff_def(D), !,
+	check_buff_att(C),
+	check_buff_def(D), !,
 	enemy_turn.
 
 check_death_boss :-
 	hp_enemy(A),
-	A =< 0,
+	A =< 0, !,
 	type_enemy(B),
-	enemy_type(B, C),
+	enemy_type(B, C), !,
 	write(C),
 	write(' defeated!!'),
 	nl, !,
@@ -339,19 +380,47 @@ check_death_boss :-
 	B is A + 1,
 	retract(special_timer(_)),
 	assertz(special_timer(B)),
+	buff_att(C),
+	buff_def(D), !,
+	check_buff_att(C),
+	check_buff_def(D), !,
 	enemy_turn.
+
+check_buff_att(A) :-
+	A > 0, !,
+	buff_att(B), !,
+	C is B - 1,
+	retract(buff_att(_)),
+	assertz(buff_att(C)).
+check_buff_att(A) :-
+	A =:= 0, !,
+	player_max_attack(B), !,
+	retract(player_attack(_)),
+	assertz(player_attack(B)).
+
+check_buff_def(A) :-
+	A > 0, !,
+	buff_def(B), !,
+	C is B - 1,
+	retract(buff_def(_)),
+	assertz(buff_def(C)).
+check_buff_def(A) :-
+	A =:= 0, !,
+	player_max_defense(B), !,
+	retract(player_defense(_)),
+	assertz(player_defense(B)).
 
 enemy_turn :-
 	!,
 	att_enemy(A),
 	player_defense(B),
-	player_health(C),
+	player_health(C), !,
 	retract(player_health(C)),
-	calc_damage(A, B, D),
+	calc_damage(A, B, D), !,
 	E is C - D,
 	assertz(player_health(E)), !,
 	type_enemy(F),
-	enemy_type(F, G),
+	enemy_type(F, G), !,
 	write(G),
 	write(' deals '),
 	write(D),
@@ -371,7 +440,7 @@ check_player_death :-
 show_battle_status :-
 	type_enemy(A),
 	enemy_type(A, B),
-	hp_enemy(C),
+	hp_enemy(C), !,
 	write('Enemy :'),
 	write(B),
 	nl,
@@ -382,7 +451,7 @@ show_battle_status :-
 	write('Your status :'),
 	nl,
 	player_health(D),
-	player_max_health(E),
+	player_max_health(E), !,
 	write('Health : '),
 	write(D),
 	write(' / '),
@@ -802,7 +871,12 @@ type(consumable, 'health potion').
 type(consumable, 'panas spesial 2 mekdi').
 type(consumable, sadikin).
 type(consumable, 'go milk').
-type(consumable, crisbar).
+type(consumable, 'attack potion S').
+type(consumable, 'attack potion M').
+type(consumable, 'attack potion L').
+type(consumable, 'defense potion S').
+type(consumable, 'defense potion M').
+type(consumable, 'defense potion L').
 type(claymore, 'waster greatsword').
 type(claymore, 'old merc pal').
 type(claymore, 'debate club').
@@ -841,6 +915,19 @@ rareItem('favonius warbow').
 rareItem('mappa mare').
 rareItem('golden armor').
 
+consumable_type('health potion', heal).
+consumable_type('panas spesial 2 mekdi', heal).
+consumable_type(sadikin, heal).
+consumable_type('go milk', heal).
+consumable_type(crisbar, heal).
+consumable_type(gacha, heal).
+consumable_type('attack potion S', att).
+consumable_type('attack potion M', att).
+consumable_type('attack potion L', att).
+consumable_type('defense potion S', def).
+consumable_type('defense potion M', def).
+consumable_type('defense potion L', def).
+
 property('health potion', A) :-
 	A is 75.
 property('panas spesial 2 mekdi', A) :-
@@ -851,6 +938,18 @@ property('go milk', A) :-
 	A is 320.
 property(crisbar, A) :-
 	A is 450.
+property('attack potion S', A) :-
+	A is 50.
+property('attack potion M', A) :-
+	A is 100.
+property('attack potion L', A) :-
+	A is 200.
+property('defense potion S', A) :-
+	A is 25.
+property('defense potion M', A) :-
+	A is 50.
+property('defense potion L', A) :-
+	A is 100.
 property('waster greatsword', A) :-
 	A is 30.
 property('old merc pal', A) :-
@@ -898,6 +997,11 @@ property('diamond armor', A, B) :-
 	A is 400,
 	B is 200.
 
+% file: C:/Users/Aphos/Documents/prolog-genshin/load.pl
+
+l :-
+	['a.pl'].
+
 % file: C:/Users/Aphos/Documents/prolog-genshin/main.pl
 
 player_class(knight).
@@ -923,7 +1027,7 @@ current_gold(2100).
 current_exp(200).
 
 
-inventory_bag([['health potion', 10]], 10).
+inventory_bag([['health potion', 10], ['attack potion S', 5]], 10).
 
 quest_active(false).
 
@@ -956,7 +1060,7 @@ map_entity(13, 3, 'T').
 map_entity(2, 7, 'Q').
 map_entity(15, 15, 'B').
 map_entity(13, 1, 'S').
-map_entity(1, 5, 'P').
+map_entity(1, 2, 'P').
 
 draw_done(true).
 
@@ -981,6 +1085,7 @@ start :-
 	['battle.pl'],
 	['map.pl'],
 	['save.pl'],
+	['load.pl'],
 	write('     #                  ######   ##########          #   ######     ######        ######   ##########                       #          ######   '),
 	nl,
 	write('    #      ##########            #        #         #      #                        #      #        # ##########   ######   #   ###      #      '),
@@ -1007,6 +1112,26 @@ new :-
 	\+ game_start,
 	assertz(game_start),
 	assertz(game_state(travelling)), !,
+	write(================================================================================================================================================),
+	nl,
+	write('             @@@@@@@@@   @@@@@@@@@   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @     @@@@@@     @                 '),
+	nl,
+	write('             @       @   @           @           @      @   @   @@    @      @   @           @           @  @     @      @    @                 '),
+	nl,
+	write('             @           @           @           @      @   @   @ @   @      @   @           @           @ @     @        @   @                 '),
+	nl,
+	write('             @           @@@@@@@@@   @@@@@@@@@   @@@@@@@@   @   @  @  @      @   @@@@@@@@@   @@@@@@@@@   @       @        @   @                 '),
+	nl,
+	write('             @  @@@@@@   @                   @   @      @   @   @   @ @      @           @   @           @ @     @@@@@@@@@@   @                 '),
+	nl,
+	write('             @       @   @                   @   @      @   @   @    @@      @           @   @           @  @    @        @   @                 '),
+	nl,
+	write('             @@@@@@@@@   @@@@@@@@@   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @   @        @   @                 '),
+	nl,
+	nl,
+	write(================================================================================================================================================),
+	nl,
+	nl,
 	choose_class,
 	assertz(type_enemy(0)),
 	assertz(hp_enemy(0)),
@@ -1014,6 +1139,8 @@ new :-
 	assertz(def_enemy(0)),
 	assertz(lvl_enemy(0)),
 	assertz(special_timer(0)),
+	assertz(buff_att(0)),
+	assertz(buff_def(0)),
 	assertz(slime_counter(0)),
 	assertz(hilichurl_counter(0)),
 	assertz(mage_counter(0)),
@@ -1030,7 +1157,7 @@ new :-
 	setBorder(0, 0).
 new :-
 	game_start, !,
-	write('The game has already been started. Use ''help.'' to look at available commands!').
+	write('The game has already been started. Use ''help.'' to look for available commands!').
 
 quit :-
 	game_start,
@@ -1048,34 +1175,146 @@ help :-
 	game_state(in_battle), !,
 	write('You are currently in a battle. Here are some commands to help you get through the battle.'),
 	nl,
-	write('Use command ''fight.'' to fight against the encountered enemy.'),
+	write('Use ''fight.'' to fight against the encountered enemy.'),
 	nl,
-	write('Use command ''run.'' to run away from the enemy. This command might as well not work as it is and you have no choice but to fight the enemy.').
+	write('Use ''run.'' to run away from the enemy. This command might as well not work as it is and you have no choice but to fight the enemy.'),
+	nl,
+	write('Use ''attack.'' to attack di enemy you''re currently facing.'),
+	nl,
+	write('Use ''special_attack.'' to use special attack ONLY when you face the boss.'),
+	nl,
+	write('Use ''item.'' to use items in your inventory.'),
+	nl,
+	write('Use ''status.'' to get the player info.'),
+	nl.
 help :-
 	game_state(in_quest_dialogue), !,
-	write('Please finish your quest dialogue first before continuing.').
+	write('You are currently negotiating a quest offered to you. Here are the valid commands for this state.'),
+	nl,
+	write('Use ''yes.'' to accept the quest.'),
+	nl,
+	write('Use ''no.'' to reject the quest.'),
+	nl.
 help :-
 	game_state(shopactive), !,
-	write('You are currently in the shop. Here are some commands to get the stuff you needed.').
+	write('The shop is now open! Here are some commands to get the stuff you needed.'),
+	nl,
+	write('Use ''gacha.'' to get a random item with a random class and keep it in your inventory.'),
+	nl,
+	write('Use ''healthpotion.'' to buy a health potion.'),
+	nl,
+	write('Use ''panas.'' to buy a panas spesial 2 mekdi.'),
+	nl,
+	write('Use ''sadikin.'' to buy a sadikin.'),
+	nl,
+	write('Use ''gomilk.'' to buy a go milk.'),
+	nl,
+	write('Use ''crisbar.'' to buy a crisbar.'),
+	nl,
+	write('Use ''exitshop.'' to exit the shop.'),
+	nl.
 help :-
 	game_state(travelling), !,
 	write('You are currently travlling in the outside world! Here are some commands to guide you through this fantasy map.'),
 	nl,
-	write('Use command ''w.'' to move upward'),
+	write('Use ''w.'' to move upward'),
 	nl,
-	write('Use command ''a.'' to move to the left'),
+	write('Use ''a.'' to move to the left'),
 	nl,
-	write('Use command ''s.'' to move downward'),
+	write('Use ''s.'' to move downward'),
 	nl,
-	write('Use command ''d.'' to move to the right'),
+	write('Use ''d.'' to move to the right'),
 	nl,
-	write('You might encounter an enemy while you''re travelling, so be ready for them!').
+	write('Use ''map.'' to print the map you are currently in.'),
+	nl,
+	write('Use ''quest.'' to do a quest when arriving at a place labeled ''Q''.'),
+	nl,
+	write('Use ''shop.'' to open the shop.'),
+	nl,
+	write('Use ''item.'' to use items in your inventory.'),
+	nl,
+	write('Use ''quest_info.'' to get the remaining enemies to be killed when doing your quest.'),
+	nl,
+	write('Use ''teleport.'' to move to a specific coordinate on the map.'),
+	nl,
+	write('Use ''status.'' to get the player info.'),
+	nl,
+	write('You might encounter an enemy while you''re travelling, so be ready for them!'),
+	nl.
 
 check_inventory :-
 	write('You have nothing in your inventory! You can buy some in the shop.').
 
-l :-
-	['a.dat'].
+save :-
+	game_opened,
+	open('a.pl', write, A),
+	set_output(A),
+	write(':- dynamic(player_class/1).'),
+	nl,
+	write(':- dynamic(player_level/1).'),
+	nl,
+	write(':- dynamic(equipped_weapon/1).'),
+	nl,
+	write(':- dynamic(player_health/1).'),
+	nl,
+	write(':- dynamic(player_attack/1).'),
+	nl,
+	write(':- dynamic(player_defense/1).'),
+	nl,
+	write(':- dynamic(player_max_health/1).'),
+	nl,
+	write(':- dynamic(player_max_attack/1).'),
+	nl,
+	write(':- dynamic(player_max_defense/1).'),
+	nl,
+	write(':- dynamic(current_gold/1).'),
+	nl,
+	write(':- dynamic(current_exp/1).'),
+	nl,
+	write(':- dynamic(upgradable/0).'),
+	nl,
+	write(':- dynamic(inventory_bag/2).'),
+	nl,
+	write(':- dynamic(quest_active/1).'),
+	nl,
+	write(':- dynamic(slime_counter/1).'),
+	nl,
+	write(':- dynamic(hilichurl_counter/1).'),
+	nl,
+	write(':- dynamic(mage_counter/1).'),
+	nl,
+	write(':- dynamic(game_opened/0).'),
+	nl,
+	write(':- dynamic(game_start/0).'),
+	nl,
+	write(':- dynamic(game_state/1).'),
+	nl,
+	write(':- dynamic(type_enemy/1).'),
+	nl,
+	write(':- dynamic(hp_enemy/1).'),
+	nl,
+	write(':- dynamic(att_enemy/1).'),
+	nl,
+	write(':- dynamic(def_enemy/1).'),
+	nl,
+	write(':- dynamic(lvl_enemy/1).'),
+	nl,
+	write(':- dynamic(map_entity/3).'),
+	nl,
+	write(':- dynamic(isPagar/2).'),
+	nl,
+	write(':- dynamic(draw_done/1).'),
+	nl,
+	write(':- dynamic(fight_or_run/0).'),
+	nl,
+	write(':- dynamic(can_run/0).'),
+	nl,
+	write(':- dynamic(special_timer/1).'),
+	nl,
+	write(':- dynamic(shopactive/0).'),
+	nl,
+	listing,
+	close(A).
 
 % file: C:/Users/Aphos/Documents/prolog-genshin/map.pl
 
@@ -1471,17 +1710,35 @@ execute_teleport(A, B) :-
 % file: C:/Users/Aphos/Documents/prolog-genshin/player.pl
 
 choose_class :-
-	write('Welcome to Genshin Asik. Choose your job'),
+	write(------------------------------------------------------------),
 	nl,
-	write('1. Knight'),
+	write('|        Welcome to Genshin Asik. Choose your job          |'),
 	nl,
-	write('2. Archer'),
+	write('|                        1. Knight                         |'),
 	nl,
-	write('3. Mage'),
+	write('|                        2. Archer                         |'),
+	nl,
+	write('|                        3. Mage                           |'),
+	nl,
+	write(------------------------------------------------------------),
+	nl,
+	write('Type the number associated with the job you chose followed with a periodt.'),
+	nl,
+	write('For example: 1. or 2. or 3.'),
+	nl,
+	write('Then, press return or enter.'),
 	nl,
 	read(A),
 	nl,
 	assert_class(A),
+	write('The game has been started. Use ''help.'' to look for available commands!'),
+	nl,
+	write('Use ''start.'' to restart the game'),
+	nl,
+	write('Use ''quit.'' to exit the game.'),
+	nl,
+	write('Use ''check_inventory.'' to list all the items in your inventory.'),
+	nl,
 	initialize_resources.
 
 status :-
@@ -1496,18 +1753,18 @@ status :-
 	current_gold(I),
 	current_exp(J),
 	exp_level_up(B, K),
-	write('Job: '),
+	write('Job:     '),
 	write(A),
 	nl,
-	write('Level: '),
+	write('Level:   '),
 	write(B),
 	nl,
-	write('Health: '),
+	write('Health:  '),
 	write(C),
 	write(/),
 	write(F),
 	nl,
-	write('Attack: '),
+	write('Attack:  '),
 	write(D),
 	write(/),
 	write(G),
@@ -1517,10 +1774,10 @@ status :-
 	write(/),
 	write(H),
 	nl,
-	write('Gold: '),
+	write('Gold:    '),
 	write(I),
 	nl,
-	write('Exp: '),
+	write('Exp:     '),
 	write(J),
 	write(/),
 	write(K),
@@ -1547,7 +1804,7 @@ assert_class(1) :-
 	assertz(equipped_weapon(E)),
 	write('You choose '),
 	write(A),
-	write(', letâ\x80\\x99\s explore the world'),
+	write(', letâ\x80\\x99\s explore the world!'),
 	nl, !.
 assert_class(2) :-
 	assertz(player_class(archer)),
@@ -1566,7 +1823,7 @@ assert_class(2) :-
 	assertz(equipped_weapon(E)),
 	write('You choose '),
 	write(A),
-	write(', letâ\x80\\x99\s explore the world'),
+	write(', letâ\x80\\x99\s explore the world!'),
 	nl, !.
 assert_class(3) :-
 	assertz(player_class(mage)),
@@ -1585,13 +1842,13 @@ assert_class(3) :-
 	assertz(equipped_weapon(E)),
 	write('You choose '),
 	write(A),
-	write(', letâ\x80\\x99\s explore the world'),
+	write(', letâ\x80\\x99\s explore the world!'),
 	nl, !.
 
 initialize_resources :-
 	assertz(current_gold(1000)),
 	assertz(current_exp(0)),
-	assertz(inventory_bag([['health potion', 10]], 10)).
+	assertz(inventory_bag([['health potion', 10], ['attack potion S', 5]], 10)).
 
 add_player_exp(A) :-
 	current_exp(B),
@@ -1830,78 +2087,6 @@ check_quest_done :-
 check_quest_done :-
 	\+ mage_counter(0), !.
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/save.pl
-
-save :-
-	open('a.pl', write, A),
-	set_output(A),
-	write(':- dynamic(player_class/1).'),
-	nl,
-	write(':- dynamic(player_level/1).'),
-	nl,
-	write(':- dynamic(equipped_weapon/1).'),
-	nl,
-	write(':- dynamic(player_health/1).'),
-	nl,
-	write(':- dynamic(player_attack/1).'),
-	nl,
-	write(':- dynamic(player_defense/1).'),
-	nl,
-	write(':- dynamic(player_max_health/1).'),
-	nl,
-	write(':- dynamic(player_max_attack/1).'),
-	nl,
-	write(':- dynamic(player_max_defense/1).'),
-	nl,
-	write(':- dynamic(current_gold/1).'),
-	nl,
-	write(':- dynamic(current_exp/1).'),
-	nl,
-	write(':- dynamic(upgradable/0).'),
-	nl,
-	write(':- dynamic(inventory_bag/2).'),
-	nl,
-	write(':- dynamic(quest_active/1).'),
-	nl,
-	write(':- dynamic(slime_counter/1).'),
-	nl,
-	write(':- dynamic(hilichurl_counter/1).'),
-	nl,
-	write(':- dynamic(mage_counter/1).'),
-	nl,
-	write(':- dynamic(game_opened/0).'),
-	nl,
-	write(':- dynamic(game_start/0).'),
-	nl,
-	write(':- dynamic(game_state/1).'),
-	nl,
-	write(':- dynamic(type_enemy/1).'),
-	nl,
-	write(':- dynamic(hp_enemy/1).'),
-	nl,
-	write(':- dynamic(att_enemy/1).'),
-	nl,
-	write(':- dynamic(def_enemy/1).'),
-	nl,
-	write(':- dynamic(lvl_enemy/1).'),
-	nl,
-	write(':- dynamic(map_entity/3).'),
-	nl,
-	write(':- dynamic(isPagar/2).'),
-	nl,
-	write(':- dynamic(draw_done/1).'),
-	nl,
-	write(':- dynamic(fight_or_run/0).'),
-	nl,
-	write(':- dynamic(can_run/0).'),
-	nl,
-	write(':- dynamic(special_timer/1).'),
-	nl,
-	write(':- dynamic(shopactive/0).'),
-	nl,
-	listing,
-	close(A).
-
 % file: C:/Users/Aphos/Documents/prolog-genshin/shop.pl
 
 shop :-
@@ -2101,7 +2286,7 @@ writeShopUsedMessage :-
 	nl.
 
 hehe :-
-	write('EHE TO NANDAYO?'),
+	write('EHE TE NANDAYO?'),
 	nl.
 
 % file: C:/Users/Aphos/Documents/prolog-genshin/utility.pl
@@ -2139,8 +2324,16 @@ modifyElement([A|B], [[C, D]|E], [[C, D]|F]) :-
 
 reduceElement([A|B], [[A, C]|D], [[A, E]|D]) :-
 	E is C - B.
+reduceElement([A|B], [[C, D]|E], [[C, D]|F]) :-
+	reduceElement([A|B], E, F).
 
 getItemAmount(A, [[A, B]|_], B).
 getItemAmount(A, [[_, _]|B], C) :-
 	getItemAmount(A, B, D),
 	C is D.
+
+% file: user_input
+
+buff_att(0).
+
+buff_def(0).

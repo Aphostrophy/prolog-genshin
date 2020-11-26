@@ -56,7 +56,6 @@ start:-
     ['shop.pl'],
     ['battle.pl'],
     ['map.pl'],
-    ['save.pl'],
     write('     #                  ######   ##########          #   ######     ######        ######   ##########                       #          ######   '), nl,
     write('    #      ##########            #        #         #      #                        #      #        # ##########   ######   #   ###      #      '), nl,
     write('   #               #  ##########         #     #   #   ########## ##########    ##########         #          #         #   ####     ########## '), nl,
@@ -169,3 +168,52 @@ help :-
 
 check_inventory :-
     write('You have nothing in your inventory! You can buy some in the shop.').
+
+save:-
+    game_opened,game_state(travelling),!,
+    open('backup.pl',write,S), set_output(S), write(':- dynamic(player_class/1).'),nl,
+    write(':- dynamic(player_level/1).'),nl,
+    write(':- dynamic(equipped_weapon/1).'),nl,
+    write(':- dynamic(player_health/1).'),nl,
+    write(':- dynamic(player_attack/1).'),nl,
+    write(':- dynamic(player_defense/1).'),nl,
+    write(':- dynamic(player_max_health/1).'),nl,
+    write(':- dynamic(player_max_attack/1).'),nl,
+    write(':- dynamic(player_max_defense/1).'),nl,
+    write(':- dynamic(current_gold/1).'),nl,
+    write(':- dynamic(current_exp/1).'),nl,
+    write(':- dynamic(upgradable/0).'),nl,
+    write(':- dynamic(inventory_bag/2).'),nl,
+    write(':- dynamic(quest_active/1).'),nl,
+    write(':- dynamic(slime_counter/1).'),nl,
+    write(':- dynamic(hilichurl_counter/1).'),nl,
+    write(':- dynamic(mage_counter/1).'),nl,
+    write(':- dynamic(game_opened/0).'),nl,
+    write(':- dynamic(game_start/0).'),nl,
+    write(':- dynamic(game_state/1).'),nl,
+    write(':- dynamic(type_enemy/1).'),nl,
+    write(':- dynamic(hp_enemy/1).'),nl,
+    write(':- dynamic(att_enemy/1).'),nl,
+    write(':- dynamic(def_enemy/1).'),nl,
+    write(':- dynamic(lvl_enemy/1).'),nl,
+    write(':- dynamic(map_entity/3).'),nl,
+    write(':- dynamic(isPagar/2).'),nl,
+    write(':- dynamic(draw_done/1).'),nl,
+    write(':- dynamic(fight_or_run/0).'),nl,
+    write(':- dynamic(can_run/0).'),nl,
+    write(':- dynamic(special_timer/1).'),nl,
+    write(':- dynamic(shopactive/0).'),nl,
+    listing,
+    close(S).
+
+save:-
+    write('You cannot save now').
+
+load:-
+    file_exists('backup.pl'),
+    game_opened,!,
+    ['backup.pl'].
+
+load:-
+    \+file_exists('backup.pl'),
+    game_opened,!,write('No save files detected').
