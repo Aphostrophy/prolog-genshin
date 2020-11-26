@@ -31,7 +31,7 @@
 :- dynamic(special_timer/1).
 :- dynamic(shopactive/0).
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/battle.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/battle.pl
 
 trigger_battle :-
 	assertz(fight_or_run),
@@ -467,7 +467,7 @@ special_status(A) :-
 	A >= 3, !,
 	write('Special attack : READY!!!!!').
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/class.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/class.pl
 
 class(knight).
 class(archer).
@@ -529,7 +529,7 @@ baseDefenseScaling(archer, level, A) :-
 	baseDefense(archer, B),
 	A is B + 150 * level.
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/encounter_enemy.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/encounter_enemy.pl
 
 chestLoot(100).
 
@@ -740,7 +740,7 @@ print_info :-
 	write(D),
 	nl.
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/enemy.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/enemy.pl
 
 enemy_type(0, slime).
 enemy_type(1, hilichurl).
@@ -782,7 +782,7 @@ enemy_gold(1, 75).
 enemy_gold(2, 100).
 enemy_gold(3, 100).
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/inventory.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/inventory.pl
 
 inventoryMaxSize(100).
 
@@ -840,7 +840,7 @@ findItemAmount(A) :-
 	\+ member([A|_], B), !,
 	write(0).
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/items.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/items.pl
 
 item('health potion').
 item('panas spesial 2 mekdi').
@@ -920,7 +920,6 @@ consumable_type('panas spesial 2 mekdi', heal).
 consumable_type(sadikin, heal).
 consumable_type('go milk', heal).
 consumable_type(crisbar, heal).
-consumable_type(gacha, heal).
 consumable_type('attack potion S', att).
 consumable_type('attack potion M', att).
 consumable_type('attack potion L', att).
@@ -997,34 +996,29 @@ property('diamond armor', A, B) :-
 	A is 400,
 	B is 200.
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/load.pl
-
-l :-
-	['a.pl'].
-
-% file: C:/Users/Aphos/Documents/prolog-genshin/main.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/main.pl
 
 player_class(knight).
 
-player_level(2).
+player_level(6).
 
 equipped_weapon('waster greatsword').
 
-player_health(700).
+player_health(2683).
 
-player_attack(14000000000).
+player_attack(53782400000).
 
-player_defense(42).
+player_defense(158).
 
-player_max_health(700).
+player_max_health(2683).
 
-player_max_attack(14000000000).
+player_max_attack(53782400000).
 
-player_max_defense(42).
+player_max_defense(158).
 
-current_gold(2100).
+current_gold(7050).
 
-current_exp(200).
+current_exp(750).
 
 
 inventory_bag([['health potion', 10], ['attack potion S', 5]], 10).
@@ -1042,16 +1036,17 @@ game_opened.
 game_start.
 
 game_state(travelling).
+game_state(shopactive).
 
-type_enemy(0).
+type_enemy(1).
 
-hp_enemy(-9999999938).
+hp_enemy(-53782399863).
 
-att_enemy(20).
+att_enemy(40).
 
-def_enemy(22).
+def_enemy(16).
 
-lvl_enemy(1).
+lvl_enemy(3).
 
 map_entity(14, 12, 'T').
 map_entity(3, 14, 'T').
@@ -1060,11 +1055,14 @@ map_entity(13, 3, 'T').
 map_entity(2, 7, 'Q').
 map_entity(15, 15, 'B').
 map_entity(13, 1, 'S').
-map_entity(1, 2, 'P').
+map_entity(13, 1, 'P').
 
 draw_done(true).
 
 
+can_run.
+can_run.
+can_run.
 can_run.
 can_run.
 
@@ -1084,8 +1082,6 @@ start :-
 	['shop.pl'],
 	['battle.pl'],
 	['map.pl'],
-	['save.pl'],
-	['load.pl'],
 	write('     #                  ######   ##########          #   ######     ######        ######   ##########                       #          ######   '),
 	nl,
 	write('    #      ##########            #        #         #      #                        #      #        # ##########   ######   #   ###      #      '),
@@ -1247,7 +1243,8 @@ check_inventory :-
 
 save :-
 	game_opened,
-	open('a.pl', write, A),
+	game_state(travelling), !,
+	open('backup.pl', write, A),
 	set_output(A),
 	write(':- dynamic(player_class/1).'),
 	nl,
@@ -1315,8 +1312,19 @@ save :-
 	nl,
 	listing,
 	close(A).
+save :-
+	write('You cannot save now').
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/map.pl
+load :-
+	file_exists('backup.pl'),
+	game_opened, !,
+	['backup.pl'].
+load :-
+	\+ file_exists('backup.pl'),
+	game_opened, !,
+	write('No save files detected').
+
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/map.pl
 
 isPagar(4, 7).
 isPagar(4, 8).
@@ -1586,6 +1594,7 @@ draw_entity(A, B) :-
 
 w :-
 	game_start,
+	game_state(travelling),
 	\+ game_state(in_battle),
 	map_entity(A, B, 'P'),
 	C is B - 1,
@@ -1598,8 +1607,10 @@ w :-
 	write('Game is not started, use "start." to play the game.').
 w :-
 	game_state(in_battle), !,
+	game_state(travelling),
 	write('You are in battle!! Use "help." to display the commands that you can use.').
 w :-
+	game_state(travelling),
 	write('Ouch, you hit a wall. Use "map." to open the map!!').
 
 a :-
@@ -1707,7 +1718,7 @@ execute_teleport(A, B) :-
 	\+ map_entity(A, B, 'T'), !,
 	write('Invalid Location!!').
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/player.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/player.pl
 
 choose_class :-
 	write(------------------------------------------------------------),
@@ -1737,7 +1748,7 @@ choose_class :-
 	nl,
 	write('Use ''quit.'' to exit the game.'),
 	nl,
-	write('Use ''check_inventory.'' to list all the items in your inventory.'),
+	write('Use ''inventory.'' to list all the items in your inventory.'),
 	nl,
 	initialize_resources.
 
@@ -1804,7 +1815,7 @@ assert_class(1) :-
 	assertz(equipped_weapon(E)),
 	write('You choose '),
 	write(A),
-	write(', letâ\x80\\x99\s explore the world!'),
+	write(', let\xe2\\x80\\x99\s explore the world!'),
 	nl, !.
 assert_class(2) :-
 	assertz(player_class(archer)),
@@ -1823,7 +1834,7 @@ assert_class(2) :-
 	assertz(equipped_weapon(E)),
 	write('You choose '),
 	write(A),
-	write(', letâ\x80\\x99\s explore the world!'),
+	write(', let\xe2\\x80\\x99\s explore the world!'),
 	nl, !.
 assert_class(3) :-
 	assertz(player_class(mage)),
@@ -1842,7 +1853,7 @@ assert_class(3) :-
 	assertz(equipped_weapon(E)),
 	write('You choose '),
 	write(A),
-	write(', letâ\x80\\x99\s explore the world!'),
+	write(', let\xe2\\x80\\x99\s explore the world!'),
 	nl, !.
 
 initialize_resources :-
@@ -1929,7 +1940,7 @@ add_player_gold(A) :-
 	write(' Gold! The gold is now kept in your pocket!'),
 	nl.
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/quest.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/quest.pl
 
 questExp(5000).
 
@@ -2087,13 +2098,21 @@ check_quest_done :-
 check_quest_done :-
 	\+ mage_counter(0), !.
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/shop.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/shop.pl
 
 shop :-
 	game_state(shopactive), !,
 	writeShopUsedMessage,
 	fail.
 shop :-
+	map_entity(A, B, 'P'),
+	map_entity(C, D, 'S'),
+	\+ A =:= C,
+	\+ B =:= D,
+	writeNotShopTile.
+shop :-
+	map_entity(A, B, 'P'),
+	map_entity(A, B, 'S'),
 	assertz(game_state(shopactive)), !,
 	write('What do you want to buy?'),
 	nl,
@@ -2277,6 +2296,10 @@ writeShopIsNotOpenMessage :-
 	write('Please open the shop first'),
 	nl.
 
+writeNotShopTile :-
+	write('You are not in the shop, use "map" to find the shop!'),
+	nl.
+
 writeNotEnoughGold :-
 	write('Not enough gold! go clear the quests to get some gold!'),
 	nl.
@@ -2289,7 +2312,7 @@ hehe :-
 	write('EHE TE NANDAYO?'),
 	nl.
 
-% file: C:/Users/Aphos/Documents/prolog-genshin/utility.pl
+% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/utility.pl
 
 power(_, 0, 1).
 power(A, B, C) :-
@@ -2335,5 +2358,17 @@ getItemAmount(A, [[_, _]|B], C) :-
 % file: user_input
 
 buff_att(0).
+buff_att(0).
+buff_att(0).
+buff_att(0).
+buff_att(0).
+buff_att(0).
+buff_att(0).
 
+buff_def(0).
+buff_def(0).
+buff_def(0).
+buff_def(0).
+buff_def(0).
+buff_def(0).
 buff_def(0).

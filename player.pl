@@ -4,12 +4,12 @@
 /* Dependency Files : items.pl */
 
 choose_class :-
-    write('------------------------------------------------------------'),nl,
-    write('|        Welcome to Genshin Asik. Choose your job          |'), nl,
-    write('|                        1. Knight                         |'), nl,
-    write('|                        2. Archer                         |'), nl,
-    write('|                        3. Mage                           |'), nl,
-    write('------------------------------------------------------------'),nl,
+    write('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %'),nl,
+    write('%                                                Welcome to Genshin Asik. Choose your job                                                       %'), nl,
+    write('%                                                                1. Knight                                                                      %'), nl,
+    write('%                                                                2. Archer                                                                      %'), nl,
+    write('%                                                                3. Mage                                                                        %'), nl,
+    write('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %'),nl,nl,
     write('Type the number associated with the job you chose followed with a periodt.'),nl,
     write('For example: 1. or 2. or 3.'),nl,
     write('Then, press return or enter.'),nl,
@@ -18,7 +18,7 @@ choose_class :-
     write('The game has been started. Use \'help.\' to look for available commands!'),nl,
     write('Use \'start.\' to restart the game'),nl,
     write('Use \'quit.\' to exit the game.'),nl,
-    write('Use \'check_inventory.\' to list all the items in your inventory.'),nl,
+    write('Use \'inventory.\' to list all the items in your inventory.'),nl,
     initialize_resources.
 
 status :-

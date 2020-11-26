@@ -111,7 +111,8 @@ draw_entity(X,Y) :-
 
 w :-
     game_start,
-    (\+ game_state(in_battle)),
+    \+(game_state(shopactive)),!,
+    (\+ game_state(in_battle)),!,
     map_entity(X, Y, 'P'),
     Y2 is Y-1,
     (\+ isPagar(X, Y2)), !,
@@ -125,20 +126,26 @@ w :-
 
 w :-
     game_state(in_battle), !,
+    \+(game_state(shopactive)),!,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 w :-
+    \+(game_state(shopactive)),!,
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
+w:-
+    game_state(shopactive),!,
+    write('Exit the shop first!'),nl.
 
 a :-
     game_start,
-    (\+ game_state(in_battle)),
+    \+(game_state(shopactive)),!,
+    (\+ game_state(in_battle)),!,
     map_entity(X, Y, 'P'),
     X2 is X-1,
     (\+isPagar(X2, Y)), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X2, Y,'P')),
-    chest_encounter.
+    chest_encounter,!.
 
 a :-
     (\+game_start), !,
@@ -148,70 +155,94 @@ a :-
     game_state(in_battle), !,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
-a :-
-    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
+a:-
+    game_state(shopactive),!,
+    write('Exit the shop first!'),nl.
 
+a :-
+    \+(game_state(shopactive)),!,
+    map_entity(X, Y, 'P'),
+    X2 is X-1,
+    isPagar(X2,Y),
+    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
+    
 s :-
     game_start,
-    (\+ game_state(in_battle)),
+    \+(game_state(shopactive)),!,
+    (\+ game_state(in_battle)),!,
     map_entity(X, Y, 'P'),
     Y2 is Y+1,
     (\+isPagar(X, Y2)), 
     (\+map_entity(X,Y2,'B')), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X, Y2,'P')),
-    chest_encounter.
+    chest_encounter,!.
 
 s :-
     game_start,
-    (\+ game_state(in_battle)),
+    \+(game_state(shopactive)),!,
+    (\+ game_state(in_battle)),!,
     map_entity(X, Y, 'P'),
     Y2 is Y+1,
     (\+isPagar(X, Y2)), !,
     map_entity(X,Y2,'B'), !, 
-    trigger_boss.
+    trigger_boss,!.
 
 s :-
     (\+game_start), !,
+    \+(game_state(shopactive)),!,
     write('Game is not started, use \"start.\" to play the game.').
 
 s :-
     game_state(in_battle), !,
+    \+(game_state(shopactive)),!,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 s :-
+    \+(game_state(shopactive)),!,
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
+s :-
+    game_state(shopactive),!,
+    write('Exit the shop first!'),nl.
 
 d :-
     game_start,
-    (\+ game_state(in_battle)),
+    \+(game_state(shopactive)),!,
+    (\+ game_state(in_battle)),!,
     map_entity(X, Y, 'P'),
     X2 is X+1,
     (\+isPagar(X2, Y)),
     (\+map_entity(X2, Y, 'B')), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X2, Y,'P')),
-    chest_encounter.
+    chest_encounter,!.
 
 d :-
     game_start,
-    (\+ game_state(in_battle)),
+    \+(game_state(shopactive)),!,
+    (\+ game_state(in_battle)),!,
     map_entity(X, Y, 'P'),
     X2 is X+1,
     (\+isPagar(X2,Y)), !,
     map_entity(X2,Y,'B'), !,
-    trigger_boss.
+    trigger_boss,!.
 
 d :-
     (\+game_start), !,
+    \+(game_state(shopactive)),!,
     write('Game is not started, use \"start.\" to play the game.').
 
 d :-
     game_state(in_battle), !,
+    \+(game_state(shopactive)),!,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 d :-
+    \+(game_state(shopactive)),!,
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
+d:-
+    game_state(shopactive),!,
+    write('Exit the shop first!'),nl.
 
 map :-
     retract(draw_done(_)),
