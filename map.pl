@@ -81,13 +81,13 @@ draw_entity(X,Y) :-
 
 w :-
     game_start,
-    (\+ game_state(in_battle)),game_state(travelling),
+    game_state(travelling),
     map_entity(X, Y, 'P'),
     Y2 is Y-1,
     (\+ isPagar(X, Y2)), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X, Y2,'P')),
-    chest_encounter.
+    chest_encounter,!.
 
 w :-
     (\+game_start), !,
@@ -95,7 +95,6 @@ w :-
 
 w :-
     game_state(in_battle), !,
-    \+(game_state(shopactive)),!,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 w :-
@@ -103,10 +102,12 @@ w :-
     write('Cannot travel now').
 
 w :-
-    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
-w:-
     game_state(shopactive),!,
     write('Exit the shop first!'),nl.
+
+w :-
+    write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
+
 
 a :-
     game_start,
@@ -126,7 +127,7 @@ a :-
     game_state(in_battle), !,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
-a:-
+a :-
     game_state(shopactive),!,
     write('Exit the shop first!'),nl.
 
@@ -139,7 +140,7 @@ a :-
     
 s :-
     game_start,
-    (\+ game_state(in_battle)),game_state(travelling),
+    game_state(travelling),
     map_entity(X, Y, 'P'),
     Y2 is Y+1,
     (\+isPagar(X, Y2)), 
@@ -150,23 +151,24 @@ s :-
 
 s :-
     game_start,
-    \+(game_state(shopactive)),!,
-    (\+ game_state(in_battle)),!,
+    game_state(travelling),
     map_entity(X, Y, 'P'),
     Y2 is Y+1,
-    (\+isPagar(X, Y2)), !,
+    (\+isPagar(X, Y2)),
     map_entity(X,Y2,'B'), !, 
-    trigger_boss,!.
+    trigger_boss.
 
 s :-
-    (\+game_start), !,
-    \+(game_state(shopactive)),!,
+    (\+game_start),!,
     write('Game is not started, use \"start.\" to play the game.').
 
 s :-
-    game_state(in_battle), !,
-    \+(game_state(shopactive)),!,
+    game_state(in_battle),!,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
+
+s :-
+    game_state(shopactive),!,
+    write('Exit the shop first!'),nl.
 
 s :-
     \+game_state(travelling),!,
@@ -174,13 +176,11 @@ s :-
 
 s :-
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
-s :-
-    game_state(shopactive),!,
-    write('Exit the shop first!'),nl.
+
 
 d :-
     game_start,
-    (\+ game_state(in_battle)),game_state(travelling),
+    game_state(travelling),
     map_entity(X, Y, 'P'),
     X2 is X+1,
     (\+isPagar(X2, Y)),
@@ -191,8 +191,7 @@ d :-
 
 d :-
     game_start,
-    \+(game_state(shopactive)),!,
-    (\+ game_state(in_battle)),!,
+    game_state(travelling),
     map_entity(X, Y, 'P'),
     X2 is X+1,
     (\+isPagar(X2,Y)), !,
@@ -201,23 +200,23 @@ d :-
 
 d :-
     (\+game_start), !,
-    \+(game_state(shopactive)),!,
     write('Game is not started, use \"start.\" to play the game.').
 
 d :-
     game_state(in_battle), !,
-    \+(game_state(shopactive)),!,
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
+d:-
+    game_state(shopactive),!,
+    write('Exit the shop first!'),nl.
+    
 d :-
     \+game_state(travelling),!,
     write('Cannot travel now').
 
 d :-
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
-d:-
-    game_state(shopactive),!,
-    write('Exit the shop first!'),nl.
+
 
 map :-
     retract(draw_done(_)),

@@ -5,6 +5,7 @@ shop:- game_state(shopactive),!,writeShopUsedMessage,fail.
 shop:-
     map_entity(X,Y,'P'),
     map_entity(X,Y,'S'),
+    retract(game_state(travelling)),
     assertz(game_state(shopactive)),!,
     write('What do you want to buy?'),nl,
     write('1. Gacha (1000 gold)'),nl,
