@@ -5,6 +5,7 @@
 :- dynamic(player_class/1).
 :- dynamic(player_level/1).
 :- dynamic(equipped_weapon/1).
+:- dynamic(equipped_cover/1).
 :- dynamic(player_health/1).
 :- dynamic(player_attack/1).
 :- dynamic(player_defense/1).
@@ -115,13 +116,13 @@ new :-
 
     assertz(game_start), assertz(game_state(travelling)), !,
     write('================================================================================================================================================'),nl,
-    write('             @@@@@@@@@   @@@@@@@@@   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @     @@@@@@     @                 '),nl,
-    write('             @       @   @           @           @      @   @   @@    @      @   @           @           @  @     @      @    @                 '),nl,
-    write('             @           @           @           @      @   @   @ @   @      @   @           @           @ @     @        @   @                 '),nl,
-    write('             @           @@@@@@@@@   @@@@@@@@@   @@@@@@@@   @   @  @  @      @   @@@@@@@@@   @@@@@@@@@   @       @        @   @                 '),nl,
-    write('             @  @@@@@@   @                   @   @      @   @   @   @ @      @           @   @           @ @     @@@@@@@@@@   @                 '),nl,
-    write('             @       @   @                   @   @      @   @   @    @@      @           @   @           @  @    @        @   @                 '),nl,
-    write('             @@@@@@@@@   @@@@@@@@@   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @   @        @   @                 '),nl,nl,
+    write('           @@@@@@@@@   @@@@@@@@@   @     @   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @     @@@@@@     @         '),nl,
+    write('           @       @   @           @@    @   @           @      @   @   @@    @      @   @           @           @  @     @      @    @         '),nl,
+    write('           @           @           @ @   @   @           @      @   @   @ @   @      @   @           @           @ @     @        @   @         '),nl,
+    write('           @           @@@@@@@@@   @  @  @   @@@@@@@@@   @@@@@@@@   @   @  @  @      @   @@@@@@@@@   @@@@@@@@@   @       @        @   @         '),nl,
+    write('           @  @@@@@@   @           @   @ @           @   @      @   @   @   @ @      @           @   @           @ @     @@@@@@@@@@   @         '),nl,
+    write('           @       @   @           @    @@           @   @      @   @   @    @@      @           @   @           @  @    @        @   @         '),nl,
+    write('           @@@@@@@@@   @@@@@@@@@   @     @   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @   @        @   @         '),nl,nl,
     write('================================================================================================================================================'),nl,nl,
     choose_class,
 
@@ -150,7 +151,7 @@ new :-
     asserta(map_entity(3, 14, 'T')),
     asserta(map_entity(14, 12, 'T')),
     asserta(draw_done(true)),
-    setBorder(0,0).
+    setBorder.
 
 new :-
     game_start, !,
@@ -215,6 +216,7 @@ save:-
     open('backup.pl',write,S), set_output(S), write(':- dynamic(player_class/1).'),nl,
     write(':- dynamic(player_level/1).'),nl,
     write(':- dynamic(equipped_weapon/1).'),nl,
+    write(':- dynamic(equipped_cover/1).'),nl,
     write(':- dynamic(player_health/1).'),nl,
     write(':- dynamic(player_attack/1).'),nl,
     write(':- dynamic(player_defense/1).'),nl,

@@ -25,6 +25,12 @@ calc_damage(Att, Def, Res) :-
 calc_status_upgrade(Status,Result) :-
   Result is truncate(Status * 1.4).
 
+calc_gold_after_sell(Name,Amount) :-
+  price(Name,X),
+  NewPrice is X / 2,
+  ObtainedGold is NewPrice * Amount,
+  add_player_gold(ObtainedGold).
+
 push(X, [], [X]).
 
 push(X, [Head|Tail], [Head|L]) :- push(X,Tail,L).

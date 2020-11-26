@@ -59,6 +59,12 @@ type(armor,'steel armor').
 type(armor,'golden armor').
 type(armor,'diamond armor').
 
+weapon(bow).
+weapon(catalyst).
+weapon(claymore).
+
+cover(armor).
+
 /*harga shop*/
 price('health potion', 100).
 price('panas spesial 2 mekdi',150).

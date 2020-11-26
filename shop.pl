@@ -156,4 +156,13 @@ writeShopUsedMessage :-
     write('You have already opened shop'), nl.
 
 hehe:-
-    write('EHE TE NANDAYO?'),nl.
+    write('EHE TO NANDAYO?'),nl.
+
+sell :-
+    game_state(shopactive),
+    inventory,
+    write('Type the item\'s name you wish to sell: '), read(Name),
+    write('Type the amount of that item: '), read(Amount),
+    calc_gold_after_sell(Name,Amount),
+    substractFromInventory([Name|Amount]),
+    write('The item has been successfully sold!'),nl.
