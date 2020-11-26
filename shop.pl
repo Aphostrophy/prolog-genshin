@@ -152,4 +152,8 @@ writeShopUsedMessage :-
     write('You have already opened shop'), nl.
 
 hehe:-
-    write('EHE TE NANDAYO?'),nl.
+    write('EHE TO NANDAYO?'),nl.
+
+sell :-
+    inventory,
+    
