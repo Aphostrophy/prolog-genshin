@@ -41,7 +41,7 @@ assert_class(1):-
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
-    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
+    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
 assert_class(2):-
@@ -49,7 +49,7 @@ assert_class(2):-
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
-    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
+    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
 assert_class(3):-
@@ -57,7 +57,7 @@ assert_class(3):-
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
-    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),
+    baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
 initialize_resources:-
