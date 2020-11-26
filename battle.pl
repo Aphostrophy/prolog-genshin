@@ -226,8 +226,8 @@ item :-
     read(ItemName),
     substractFromInventory([ItemName|1]),
 
-    property(ItemName, Hp),
-    heal(Hp),
+    consumable_type(ItemName, Type), !,
+    use_item(ItemName,Type),
     write('You used '), write(ItemName), nl.
 
 /* Saat boss battle */

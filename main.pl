@@ -134,8 +134,8 @@ new :-
     assertz(def_enemy(0)),
     assertz(lvl_enemy(0)),
     assertz(special_timer(0)),
-    assertz(buff_att(0)),
-    assertz(buff_def(0)),
+    retractall(buff_att(_)), assertz(buff_att(0)),
+    retractall(buff_def(_)), assertz(buff_def(0)),
 
     assertz(slime_counter(0)),
     assertz(hilichurl_counter(0)),
