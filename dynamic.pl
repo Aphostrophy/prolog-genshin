@@ -19,3 +19,23 @@
 :- dynamic(slime_counter/1).
 :- dynamic(hilichurl_counter/1).
 :- dynamic(mage_counter/1).
+
+:- dynamic(game_opened/0).
+:- dynamic(game_start/0).
+:- dynamic(game_state/1).
+
+:- dynamic(type_enemy/1).
+:- dynamic(hp_enemy/1).
+:- dynamic(att_enemy/1).
+:- dynamic(def_enemy/1).
+:- dynamic(lvl_enemy/1).
+
+:- dynamic(map_entity/3).
+:- dynamic(isPagar/2).
+:- dynamic(draw_done/1).
+
+:- dynamic(fight_or_run/0).
+:- dynamic(can_run/0).
+:- dynamic(special_timer/1).
+
+:- dynamic(shopactive/0).

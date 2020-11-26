@@ -1,8 +1,6 @@
-:- dynamic(map_entity/3).
-:- dynamic(isPagar/2).
-:- dynamic(draw_done/1).
-
 % pagar
+
+:- dynamic(isPagar/2).
 isPagar(4, 7).
 isPagar(4, 8).
 isPagar(5, 8).

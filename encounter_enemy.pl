@@ -2,12 +2,6 @@
 
 %:- include('enemy.pl').
 
-:- dynamic(type_enemy/1).
-:- dynamic(hp_enemy/1).
-:- dynamic(att_enemy/1).
-:- dynamic(def_enemy/1).
-:- dynamic(lvl_enemy/1).
-
 chestLoot(100).
 
 /* Encounter enemy randomizer */
