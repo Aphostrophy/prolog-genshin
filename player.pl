@@ -4,12 +4,12 @@
 /* Dependency Files : items.pl */
 
 choose_class :-
-    write('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %'),nl,
-    write('%                                                Welcome to Genshin Asik. Choose your job                                                       %'), nl,
-    write('%                                                                1. Knight                                                                      %'), nl,
-    write('%                                                                2. Archer                                                                      %'), nl,
-    write('%                                                                3. Mage                                                                        %'), nl,
-    write('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %'),nl,nl,
+    write('------------------------------------------------------------'),nl,
+    write('|                     Choose your job!                     |'), nl,
+    write('|                        1. Knight                         |'), nl,
+    write('|                        2. Archer                         |'), nl,
+    write('|                        3. Mage                           |'), nl,
+    write('------------------------------------------------------------'),nl,
     write('Type the number associated with the job you chose followed with a periodt.'),nl,
     write('For example: 1. or 2. or 3.'),nl,
     write('Then, press return or enter.'),nl,
@@ -111,4 +111,4 @@ add_player_gold(ObtainedGold) :-
     current_gold(X),
     AddedGold is X + ObtainedGold,
     retract(current_gold(X)), assertz(current_gold(AddedGold)),
-    write('You obtained '), write(AddedGold),write(' Gold! The gold is now kept in your pocket!'),nl.
+    write('You obtained '), write(ObtainedGold),write(' Gold! The gold is now kept in your pocket!'),nl.
