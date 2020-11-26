@@ -111,4 +111,4 @@ add_player_gold(ObtainedGold) :-
     current_gold(X),
     AddedGold is X + ObtainedGold,
     retract(current_gold(X)), assertz(current_gold(AddedGold)),
-    write('You obtained '), write(AddedGold),write(' Gold! The gold is now kept in your pocket!'),nl.
+    write('You obtained '), write(ObtainedGold),write(' Gold! The gold is now kept in your pocket!'),nl.
