@@ -34,12 +34,12 @@ enemy_special(3, 75).
 enemy_special(3, 2000).
 
 /* Enemy base loot */
-enemy_exp(0, 100).
-enemy_exp(1, 200).
-enemy_exp(2, 500).
-enemy_exp(3, 500).
+enemy_exp(0, 50).
+enemy_exp(1, 100).
+enemy_exp(2, 250).
+enemy_exp(3, 250).
 
-enemy_gold(0, 50).
-enemy_gold(1, 75).
-enemy_gold(2, 100).
-enemy_gold(3, 100).
+enemy_gold(0, 75).
+enemy_gold(1, 150).
+enemy_gold(2, 300).
+enemy_gold(3, 300).

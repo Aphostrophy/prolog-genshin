@@ -2,8 +2,10 @@
 /*Nanti disatuin semua ke main biar ada game state (battle,shop,inventory,travelling,dll). */
 
 shop:- game_state(shopactive),!,writeShopUsedMessage,fail.
-
 shop:-
+    map_entity(X,Y,'P'),
+    map_entity(X,Y,'S'),
+    retract(game_state(travelling)),
     assertz(game_state(shopactive)),!,
     write('What do you want to buy?'),nl,
     write('1. Gacha (1000 gold)'),nl,
@@ -12,6 +14,7 @@ shop:-
     write('4. Sadikin (200 gold)'),nl,
     write('5. Go milk (250 gold)'),nl,
     write('6. Crisbar (300 gold)'),nl.
+shop:- !,writeNotShopTile.
 
 % GACHA 
 listIdx([X], 0, X).
@@ -146,6 +149,8 @@ exitShop:-
 
 writeShopIsNotOpenMessage :-
     write('Please open the shop first'),nl.
+writeNotShopTile :-
+    write('You are not in the shop, use \"map\" to find the shop!'),nl.
 writeNotEnoughGold :-
     write('Not enough gold! go clear the quests to get some gold!'),nl.
 writeShopUsedMessage :-
