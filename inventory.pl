@@ -3,7 +3,7 @@
 inventoryMaxSize(100).
 
 inventory :-
-    inventory_bag(Inventory,_),
+    inventory_bag(Inventory,_), !,
     printInventory(Inventory).
 
 printInventory([]).
