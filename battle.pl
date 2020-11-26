@@ -102,13 +102,13 @@ run_gacha(Rate) :-
 /* Saat boss battle */
 attack :-
     game_state(boss_battle), (\+ fight_or_run), !,
-    hp_enemy(X),
+    hp_enemy(X), !,
     retract(hp_enemy(X)),
     att_enemy(AttEnemy),
-    def_enemy(DefEnemy),
+    def_enemy(DefEnemy), !,
 
-    player_attack(AttPlayer),
-    calc_damage(AttPlayer, DefEnemy, Atk),
+    player_attack(AttPlayer), !,
+    calc_damage(AttPlayer, DefEnemy, Atk), !,
 
     NewX is X - Atk,
     assertz(hp_enemy(NewX)),
@@ -121,13 +121,13 @@ attack :-
 attack :-
     game_state(in_battle), (\+ fight_or_run), !,
 
-    hp_enemy(X),
+    hp_enemy(X), !,
     retract(hp_enemy(X)),
     att_enemy(AttEnemy),
-    def_enemy(DefEnemy),
+    def_enemy(DefEnemy), !,
 
-    player_attack(AttPlayer),
-    calc_damage(AttPlayer, DefEnemy, Atk),
+    player_attack(AttPlayer), !,
+    calc_damage(AttPlayer, DefEnemy, Atk), !,
     
     NewX is X - Atk,
     assertz(hp_enemy(NewX)),
@@ -238,10 +238,16 @@ item :-
     read(ItemName),
     substractFromInventory([ItemName|1]),
 
-    property(ItemName, Hp),
-    heal(Hp),
+    consumable_type(ItemName, Type), !,
+    use_item(ItemName,Type),
     write('You used '), write(ItemName), nl,
-    enemy_turn.
+
+    special_timer(Timer),
+    NewTimer is Timer+1,
+    retract(special_timer(_)),
+    assertz(special_timer(NewTimer)),
+
+    enemy_turn, !.
 
 /* Saat bukan boss battle */
 item :-
@@ -251,8 +257,8 @@ item :-
     read(ItemName),
     substractFromInventory([ItemName|1]),
 
-    property(ItemName, Hp),
-    heal(Hp),
+    consumable_type(ItemName, Type),
+    use_item(ItemName,Type),
     write('You used '), write(ItemName), nl,
 
     special_timer(Timer),
@@ -260,10 +266,26 @@ item :-
     retract(special_timer(_)),
     assertz(special_timer(NewTimer)),
 
-    enemy_turn.
+    enemy_turn, !.
+
+/* use item sesuai typenya (heal, att, atau def) */
+use_item(ItemName,Type) :-
+    Type = heal,
+    property(ItemName, Hp), !,
+    heal(Hp).
+
+use_item(ItemName,Type) :-
+    Type = att,
+    property(ItemName, Att), !,
+    attUp(Att).
+
+use_item(ItemName,Type) :-
+    Type = def,
+    property(ItemName, Def), !,
+    defUp(Def).
 
 heal(Hp) :-
-    player_health(PlayerHealth),
+    player_health(PlayerHealth), !,
     player_max_health(PlayerMaxHealth),
     NewHealth is PlayerHealth+Hp,
     NewHealth < PlayerMaxHealth, !,
@@ -271,19 +293,35 @@ heal(Hp) :-
     assertz(player_health(NewHealth)).
 
 heal(Hp) :-
-    player_health(PlayerHealth),
+    player_health(PlayerHealth), !,
     player_max_health(PlayerMaxHealth),
     NewHealth is PlayerHealth+Hp,
     NewHealth >= PlayerMaxHealth, !,
     retract(player_health(_)),
     assertz(player_health(PlayerMaxHealth)).
 
+attUp(Att) :-
+    player_attack(PlayerAttack), !,
+    NewAttack is PlayerAttack+Att,
+    retract(buff_att(_)),
+    assertz(buff_att(3)),
+    retract(player_attack(_)),
+    assertz(player_attack(NewAttack)).
+
+defUp(Def) :-
+    player_defense(PlayerDefense), !,
+    NewDefense is PlayerDefense+Def,
+    retract(buff_def(_)),
+    assertz(buff_def(3)),
+    retract(player_defense(_)),
+    assertz(player_defense(NewDefense)).
+
 /* Saat bukan boss battle */
 check_death :-
     hp_enemy(X),
-    X =< 0,
+    X =< 0, !,
     type_enemy(Y),
-    enemy_type(Y, Name),
+    enemy_type(Y, Name), !,
 
     write(Name), write(' defeated! you got : '), nl, !,
 
@@ -298,9 +336,14 @@ check_death :-
     write(GoldLoot), write(' gold'), nl,
     
     add_player_exp(ExpLoot),
-    add_player_gold(GoldLoot),
+    add_player_gold(GoldLoot), !,
 
     update_quest(Y),
+
+    buff_att(BuffAtt),
+    buff_def(BuffDef), !,
+    check_buff_att(BuffAtt),
+    check_buff_def(BuffDef), !,
 
     retract(game_state(in_battle)),
     assertz(game_state(travelling)).
@@ -312,14 +355,19 @@ check_death :-
     NewTimer is Timer+1,
     retract(special_timer(_)),
     assertz(special_timer(NewTimer)),
+
+    buff_att(BuffAtt),
+    buff_def(BuffDef), !,
+    check_buff_att(BuffAtt),
+    check_buff_def(BuffDef), !,
     enemy_turn.
 
 /* Saat boss battle */
 check_death_boss :-
     hp_enemy(X),
-    X =< 0,
+    X =< 0, !,
     type_enemy(Y),
-    enemy_type(Y, Name),
+    enemy_type(Y, Name), !,
 
     write(Name), write(' defeated!!'), nl, !,
 
@@ -341,23 +389,55 @@ check_death_boss :-
     NewTimer is Timer+1,
     retract(special_timer(_)),
     assertz(special_timer(NewTimer)),
+
+    buff_att(BuffAtt),
+    buff_def(BuffDef), !,
+    check_buff_att(BuffAtt),
+    check_buff_def(BuffDef), !,
     enemy_turn.
+
+/* Check buff masih ada atau tidak */
+check_buff_att(X) :-
+    X > 0, !,
+    buff_att(Timer), !,
+    NewTimer is Timer-1,
+    retract(buff_att(_)),
+    assertz(buff_att(NewTimer)).
+
+check_buff_att(X) :-
+    X =:= 0, !,
+    player_max_attack(NewAttack), !,
+    retract(player_attack(_)),
+    assertz(player_attack(NewAttack)).
+
+check_buff_def(X) :-
+    X > 0, !,
+    buff_def(Timer), !,
+    NewTimer is Timer-1,
+    retract(buff_def(_)),
+    assertz(buff_def(NewTimer)).
+    
+check_buff_def(X) :-
+    X =:= 0, !,
+    player_max_defense(NewDefense), !,
+    retract(player_defense(_)),
+    assertz(player_defense(NewDefense)).
 
 /* Giliran enemy nyerang */
 enemy_turn :- 
     !,
     att_enemy(AttEnemy),
     player_defense(DefPlayer),
-    player_health(PlayerHealth),
+    player_health(PlayerHealth), !,
     retract(player_health(PlayerHealth)),
 
-    calc_damage(AttEnemy, DefPlayer, Atk),
+    calc_damage(AttEnemy, DefPlayer, Atk), !,
     NewX is PlayerHealth - Atk,
     
     assertz(player_health(NewX)), !,
 
     type_enemy(EnemyId),
-    enemy_type(EnemyId, EnemyName),
+    enemy_type(EnemyId, EnemyName), !,
     write(EnemyName), write(' deals '), write(Atk), write(' damage!!'), nl, nl,
 
     check_player_death.
@@ -377,7 +457,7 @@ show_battle_status :-
     /* Enemy Status */
     type_enemy(EnemyId),
     enemy_type(EnemyId, EnemyName),
-    hp_enemy(EnemyHealth),
+    hp_enemy(EnemyHealth), !,
 
     write('Enemy :'), write(EnemyName), nl,
     write('Health : '), write(EnemyHealth), nl, nl,
@@ -385,7 +465,7 @@ show_battle_status :-
     /* Player Status */
     write('Your status :'), nl,
     player_health(PlayerHealth),
-    player_max_health(PlayerMaxHealth),
+    player_max_health(PlayerMaxHealth), !,
     write('Health : '), write(PlayerHealth), write(' / '), write(PlayerMaxHealth), nl,
     special_timer(Timer),
     special_status(Timer).
