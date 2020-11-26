@@ -1,12 +1,6 @@
 /* File : battle.pl */
 /* Battle Mechanisms Go Here */
 
-:- dynamic(fight_or_run/0).
-:- dynamic(can_run/0).
-:- dynamic(special_timer/1).
-:- dynamic(buff_att/1).
-:- dynamic(buff_def/1).
-
 /* Saat bukan boss battle */
 trigger_battle :- 
     assertz(fight_or_run),
