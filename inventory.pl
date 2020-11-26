@@ -52,11 +52,11 @@ findItemAmount(Name,X) :-
     inventory_bag(Inventory,Size),
     \+member([Name|_],Inventory),!,X is 0.
 
-equip(Item) :- game_state(in_battle),!,write('Cannot equip item in battle').
+equip(Item) :- game_state(in_battle),!,write('Cannot equip item in battle.').
 
-equip(Item) :- \+item(Item),!,write('That is not an item').
+equip(Item) :- \+item(Item),!,write('That is not an item.').
 
-equip(Item) :- findItemAmount(Item,X),X =< 0,!,write('Item not in inventory').
+equip(Item) :- findItemAmount(Item,X),X =< 0,!,write('Item not in inventory.').
 
 equip(Item) :-
     type(ItemType,Item),player_class(Class),
@@ -71,7 +71,7 @@ equip(Item) :-
 equip(Item) :- 
     type(ItemType,Item),player_class(Class),
     weapon(ItemType),\+equipmentAllowed(Class,Item),!,
-    write('This weapon is not suitable for your class').
+    write('This weapon is not suitable for your class.').
 
 equip(Item) :-
     type(ItemType,Item),
