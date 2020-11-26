@@ -18,7 +18,7 @@ choose_class :-
     write('The game has been started. Use \'help.\' to look for available commands!'),nl,
     write('Use \'start.\' to restart the game'),nl,
     write('Use \'quit.\' to exit the game.'),nl,
-    write('Use \'check_inventory.\' to list all the items in your inventory.'),nl,
+    write('Use \'inventory.\' to list all the items in your inventory.'),nl,
     initialize_resources.
 
 status :-

@@ -69,7 +69,7 @@ start:-
     write('                                     |                   Main Menu:                       |                                                     '),nl,
     write('                                     |                  1. New Game                       |                                                     '),nl,
     write('                                     |                  2. Load Game                      |                                                     '),nl,
-    write('                                     |   Type \'new.\' or \'load.\' to start the game.    |                                                     '),nl,
+    write('                                     |   Type \'new.\' or \'load.\' to start the game.        |                                                 '),nl,
     write('================================================================================================================================================'),nl,
     assertz(game_opened).
 
@@ -130,49 +130,68 @@ quit :-
 
 help :-
     game_state(in_battle),!,
-    write('You are currently in a battle. Here are some commands to help you get through the battle.'), nl,
-    write('Use \'fight.\' to fight against the encountered enemy.'), nl,
-    write('Use \'run.\' to run away from the enemy. This command might as well not work as it is and you have no choice but to fight the enemy.'),nl,
-    write('Use \'attack.\' to attack di enemy you\'re currently facing.'),nl,
-    write('Use \'special_attack.\' to use special attack ONLY when you face the boss.'),nl,
-    write('Use \'item.\' to use items in your inventory.'),nl,
-    write('Use \'status.\' to get the player info.'),nl.
+    write('================================================================================================================================================'),nl,
+    write('|                          You are currently in a battle. Here are some commands to help you get through the battle.                           |'),nl,
+    write('================================================================================================================================================'),nl,
+    write('|        Commmand        |                                                           Function                                                  |'),nl,
+    write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),nl,
+    write('|       \'fight.\'         |     Fight against the encountered enemy.                                                                            |'),nl,
+    write('|        \'run.\'          |     Run away from the enemy. Might as well not work as it is and you have no choice but to fight the enemy.         |'),nl,
+    write('|       \'attack.\'        |     Attack the enemy you\'re currently facing.                                                                       |'),nl,
+    write('|   \'special_attack.\'    |     Use special attack ONLY when you face the boss.                                                                 |'),nl,
+    write('|       \'item.\'          |     Use items in your inventory.                                                                                    |'),nl,
+    write('|       \'status.\'        |     Get the player info.                                                                                            |'),nl,
+    write('================================================================================================================================================'),nl.
 
 help :-
     game_state(in_quest_dialogue),!,
-    write('You are currently negotiating a quest offered to you. Here are the valid commands for this state.'),nl,
-    write('Use \'yes.\' to accept the quest.'),nl,
-    write('Use \'no.\' to reject the quest.'),nl.
+    write('================================================================================================================================================'),nl,
+    write('|                       You are currently negotiating a quest offered to you. Here are the valid commands for this state.                      |'),nl,
+    write('================================================================================================================================================'),nl,
+    write('|        Commmand        |                                                           Function                                                  |'),nl,
+    write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),nl,
+    write('|        \'yes.\'          |     accept the quest.                                                                                               |'),nl,
+    write('|         \'no.\'          |     reject the quest.                                                                                               |'),nl,
+    write('================================================================================================================================================'),nl.
 
 help :-
     game_state(shopactive),!,
-    write('The shop is now open! Here are some commands to get the stuff you needed.'),nl,
-    write('Use \'gacha.\' to get a random item with a random class and keep it in your inventory.'),nl,
-    write('Use \'healthpotion.\' to buy a health potion.'),nl,
-    write('Use \'panas.\' to buy a panas spesial 2 mekdi.'),nl,
-    write('Use \'sadikin.\' to buy a sadikin.'),nl,
-    write('Use \'gomilk.\' to buy a go milk.'),nl,
-    write('Use \'crisbar.\' to buy a crisbar.'),nl,
-    write('Use \'exitshop.\' to exit the shop.'),nl.
+    write('================================================================================================================================================'),nl,
+    write('|                              The shop is now open! Here are some commands to get the stuff you needed.                                       |'),nl,
+    write('================================================================================================================================================'),nl,
+    write('|        Commmand        |                                                           Function                                                  |'),nl,
+    write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),nl,
+    write('|       \'gacha.\'         |     Get a random item with a random class and keep it in your inventory.                                            |'),nl,
+    write('|    \'healthpotion.\'     |     Buy a health potion.                                                                                            |'),nl,
+    write('|       \'panas.\'         |     Buy a panas spesial 2 mekdi.                                                                                    |'),nl,
+    write('|      \'sadikin.\'        |     Buy a sadikin.                                                                                                  |'),nl,
+    write('|       \'gomilk.\'        |     Buy a go milk.                                                                                                  |'),nl,
+    write('|      \'crisbar.\'        |     Buy a crisbar.                                                                                                  |'),nl,
+    write('|      \'exitshop.\'       |     Exit the shop.                                                                                                  |'),nl,
+    write('|        \'sell.\'         |     Sell items in your inventory.                                                                                   |'),nl,
+    write('================================================================================================================================================'),nl.
 
 help :-
     game_state(travelling),!,
-    write('You are currently travlling in the outside world! Here are some commands to guide you through this fantasy map.'), nl,
-    write('Use \'w.\' to move upward'), nl,
-    write('Use \'a.\' to move to the left'), nl,
-    write('Use \'s.\' to move downward'), nl,
-    write('Use \'d.\' to move to the right'), nl,
-    write('Use \'map.\' to print the map you are currently in.'),nl,
-    write('Use \'quest.\' to do a quest when arriving at a place labeled \'Q\'.'),nl,
-    write('Use \'shop.\' to open the shop.'),nl,
-    write('Use \'item.\' to use items in your inventory.'),nl,
-    write('Use \'quest_info.\' to get the remaining enemies to be killed when doing your quest.'),nl,
-    write('Use \'teleport.\' to move to a specific coordinate on the map.'),nl,
-    write('Use \'status.\' to get the player info.'),nl,
-    write('You might encounter an enemy while you\'re travelling, so be ready for them!'),nl.
-
-check_inventory :-
-    write('You have nothing in your inventory! You can buy some in the shop.').
+    write('================================================================================================================================================'),nl,
+    write('|              You are currently travlling in the outside world! Here are some commands to guide you through this fantasy map.                 |'),nl,
+    write('================================================================================================================================================'),nl,
+    write('|        Commmand        |                                                           Function                                                  |'),nl,
+    write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),nl,
+    write('|        \'w.\'            |     Move upward.                                                                                                    |'),nl,
+    write('|        \'a.\'            |     Move to the left.                                                                                               |'),nl,
+    write('|        \'s.\'            |     Move downward.                                                                                                  |'),nl,
+    write('|        \'d.\'            |     Move to the right.                                                                                              |'),nl,
+    write('|       \'map.\'           |     Print the map you are currently in.                                                                             |'),nl,
+    write('|      \'quest.\'          |     Do a quest when arriving at a place labeled \'Q\'.                                                                |'),nl,
+    write('|       \'shop.\'          |     Open the shop.                                                                                                  |'),nl,
+    write('|       \'item.\'          |     Use items in your inventory.                                                                                    |'),nl,
+    write('|    \'quest_info.\'       |     Get the remaining enemies to be killed when doing your quest.                                                   |'),nl,
+    write('|     \'teleport.\'        |     Move to a specific coordinate on the map.                                                                       |'),nl,
+    write('|      \'status.\'         |     Get the player info.                                                                                            |'),nl,
+    write('================================================================================================================================================'),nl,
+    write('|                               You might encounter an enemy while you\'re travelling, so be ready for them!                                    |'),nl,
+    write('================================================================================================================================================'),nl.
 
 save:-
     game_opened,game_state(travelling),!,
