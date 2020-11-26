@@ -10,8 +10,8 @@ choose_class :-
     write('|                        2. Archer                         |'), nl,
     write('|                        3. Mage                           |'), nl,
     write('------------------------------------------------------------'),nl,
-    write('Type the number associated with the job you chose followed with a periodt.'),nl,
-    write('For example: 1. or 2. or 3.'),nl,
+    write('Type the job you want to choose followed with a periodt.'),nl,
+    write('For example: Knight. or Archer. or Mage.'),nl,
     write('Then, press return or enter.'),nl,
     read(X),nl,
     assert_class(X),
@@ -36,7 +36,7 @@ status :-
 exp_level_up(Level,Exp):-
     Exp is 300*Level.
 
-assert_class(1):-
+assert_class(Knight):-
     assertz(player_class('knight')),baseHealth(X,BaseHealth),
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
@@ -44,7 +44,7 @@ assert_class(1):-
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
-assert_class(2):-
+assert_class(Archer):-
     assertz(player_class('archer')),
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
@@ -52,7 +52,7 @@ assert_class(2):-
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
 
-assert_class(3):-
+assert_class(Mage):-
     assertz(player_class('mage')),
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),

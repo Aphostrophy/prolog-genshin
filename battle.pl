@@ -327,9 +327,10 @@ check_death :-
 
     /* calculate gold and exp gain */
     enemy_exp(Y, Exp),
-    enemy_gold(Y, Gold), !,
-    ExpLoot is Exp + truncate(1.5*Exp),
-    GoldLoot is Gold + 10*Gold,
+    enemy_gold(Y, Gold), 
+    lvl_enemy(EnemyLevel), !,
+    ExpLoot is Exp + 5*EnemyLevel,
+    GoldLoot is Gold + 10*EnemyLevel,
 
     /* Loot and EXP gain */
     write(ExpLoot), write(' exp'), nl,

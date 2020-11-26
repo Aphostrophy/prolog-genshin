@@ -223,6 +223,14 @@ map :-
     asserta(draw_done(false)),
     draw_map(0,0), !.
 
+teleport :- 
+    game_start,
+    game_state(travelling),
+    map_entity(X,Y,'P'),
+    (\+map_entity(X,Y,'T')), !,
+    write('You\'re not on teleport point!!'), nl,
+    write('Use \"map.\" to open the map!!').
+
 teleport :-
     game_start,
     map_entity(X, Y, 'P'),
