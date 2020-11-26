@@ -5,7 +5,7 @@
 
 choose_class :-
     write('------------------------------------------------------------'),nl,
-    write('|        Welcome to Genshin Asik. Choose your job          |'), nl,
+    write('|                     Choose your job!                     |'), nl,
     write('|                        1. Knight                         |'), nl,
     write('|                        2. Archer                         |'), nl,
     write('|                        3. Mage                           |'), nl,

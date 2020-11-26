@@ -63,9 +63,13 @@ start:-
     write(' #     #       # #           ##        #         #         #             ##         #            #        # #           #   #            #      '), nl,
     write('#########       #          ##        ##        ## #        #           ##           #          ##          #     ########## #            #      '), nl,
     write('         #       #       ##        ##        ##    #        ####     ##              ####    ##             #                #######      ####  '), nl,
-    write('Main Menu:'),nl,
-    write('new'),nl,
-    write('load'),
+    write('================================================================================================================================================'),nl,
+    write('                                     |Welcome to Genshin Asik Cihuy Semoga Bagus Hasilnya!|                                                     '),nl,
+    write('                                     |                   Main Menu:                       |                                                     '),nl,
+    write('                                     |                  1. New Game                       |                                                     '),nl,
+    write('                                     |                  2. Load Game                      |                                                     '),nl,
+    write('                                     |   Type \'new.\' or \'load.\' to start the game.    |                                                     '),nl,
+    write('================================================================================================================================================'),nl,
     assertz(game_opened).
 
 new :-
