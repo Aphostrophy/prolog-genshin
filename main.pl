@@ -108,7 +108,7 @@ start:-
     write('                                     |                  2. Load Game                      |                                                     '),nl,
     write('                                     |   Type \'new.\' or \'load.\' to start the game.        |                                                 '),nl,
     write('================================================================================================================================================'),nl,
-    assertz(game_opened).
+    assertz(game_opened), retract(game_start).
 
 new :-
     game_opened,!,
