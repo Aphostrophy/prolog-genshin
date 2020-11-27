@@ -275,18 +275,24 @@ item :-
 /* use item sesuai typenya (heal, att, atau def) */
 use_item(ItemName,Type) :-
     Type = heal,
-    property(ItemName, Hp), !,
-    heal(Hp).
+    player_max_health(MaxHealth),
+    property(ItemName, HealPercentage), !,
+    HP is truncate(MaxHealth*HealPercentage),
+    heal(HP).
 
 use_item(ItemName,Type) :-
     Type = att,
-    property(ItemName, Att), !,
-    attUp(Att).
+    player_attack(Attack),
+    property(ItemName, AttackMult), !,
+    TotalAttack is truncate(Attack * AttackMult),
+    attUp(TotalAttack).
 
 use_item(ItemName,Type) :-
     Type = def,
-    property(ItemName, Def), !,
-    defUp(Def).
+    player_defense(Defense),
+    property(ItemName, DefenseMult), !,
+    TotalDefense is truncate(Defense * DefenseMult),
+    defUp(TotalDefPlayer).
 
 heal(Hp) :-
     player_health(PlayerHealth), 
@@ -434,16 +440,16 @@ enemy_turn :-
     att_enemy(AttEnemy),
     player_defense(DefPlayer),
     player_health(PlayerHealth), !,
-    retract(player_health(PlayerHealth)),
 
     equipped_cover(Armor),
     property(Armor,MultDefense,MultHealth),
     TotalDefPlayer is truncate(DefPlayer*MultDefense),
     TotalPlayerHealth is truncate(PlayerHealth*MultHealth),
 
-    calc_damage(AttEnemy, TotalDefPlayer, Atk), !,
+    calc_damage(AttEnemy, TotalDefPlayer, Atk), !,write(Atk),nl,write(TotalPlayerHealth),
     NewX is TotalPlayerHealth - Atk,
     
+    retract(player_health(PlayerHealth)),
     assertz(player_health(NewX)), !,
 
     type_enemy(EnemyId),
