@@ -21,6 +21,14 @@ calc_damage(Att, Def, Res) :-
     random(AttMin, AttMax, Random),
     AttRandom is Random,
     Res is truncate(AttRandom - 0.2*Def).
+
+decrease_health(X, Damage) :-
+  X =< 0,
+  Damage is 1.
+
+decrease_health(X, Hp) :-
+  X > 0,
+  Damage is X.
   
 calc_status_upgrade(Status,Result) :-
   Result is truncate(Status * 1.4).

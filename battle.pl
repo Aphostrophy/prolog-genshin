@@ -112,7 +112,9 @@ attack :-
     TotalAtt is AttPlayer * MultAttack,
     calc_damage(AttPlayer, DefEnemy, Atk), !,
 
-    NewX is X - Atk,
+    decrease_health(Atk, Damage), !,
+
+    NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
     write('You deal '), write(Atk), write(' damage!'), nl, nl,
@@ -133,7 +135,9 @@ attack :-
     TotalAtt is AttPlayer * MultAttack,
     calc_damage(TotalAtt, DefEnemy, Atk), !,
     
-    NewX is X - Atk,
+    decrease_health(Atk, Damage), !,
+
+    NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
     write('You deal '), write(Atk), write(' damage!'), nl, nl,
@@ -164,7 +168,9 @@ special_attack :-
     SpecialAtt is 2*AttPlayer,
     calc_damage(SpecialAtt, DefEnemy, Atk),
 
-    NewX is X - Atk,
+    decrease_health(Atk, Damage), !,
+
+    NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
     write('You deal '), write(Atk), write(' damage!'), nl, nl,
@@ -196,7 +202,9 @@ special_attack :-
     SpecialAtt is 2*AttPlayer,
     calc_damage(SpecialAtt, DefEnemy, Atk),
 
-    NewX is X - Atk,
+    decrease_health(Atk, Damage), !,
+
+    NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
     write('You deal '), write(Atk), write(' damage!'), nl, nl,
@@ -442,7 +450,10 @@ enemy_turn :-
     TotalPlayerHealth is truncate(PlayerHealth*MultHealth),
 
     calc_damage(AttEnemy, TotalDefPlayer, Atk), !,
-    NewX is TotalPlayerHealth - Atk,
+
+    decrease_health(Atk, Damage), !,
+
+    NewX is TotalPlayerHealth - Damage,
     
     assertz(player_health(NewX)), !,
 
