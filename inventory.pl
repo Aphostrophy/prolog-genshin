@@ -6,6 +6,8 @@ inventory :-
     write('==============================================='),nl,
     write('           I  N  V  E  N  T  O  R  Y           '),nl,
     write('==============================================='),nl,nl,
+    inventory_bag(Inventory,X),
+    format('~w/100',[X]),nl,nl,
     inventory_bag(Inventory,_),
     printInventory(Inventory),nl,
     write('==============================================='),!,nl.
@@ -23,13 +25,24 @@ printPair([H|T]) :- !.
 
 addToInventory([Name|Amount]) :-
     inventory_bag(Inventory,Size),
+    NewSize is Size+Amount,
+    inventoryMaxSize(X),
+    NewSize =< X,!,
+    handleAddToInventory([Name|Amount]).
+
+addToInventory([Name|Amount]) :-
+    !,
+    write('Your inventory is full! sell some item(s) to the shop first!').
+
+handleAddToInventory([Name|Amount]) :-
+    inventory_bag(Inventory,Size),
     member([Name|_],Inventory),!,
     modifyElement([Name|Amount], Inventory, NewInventory),
     NewSize is Size + Amount,
     retract(inventory_bag(Inventory,Size)),!,
     assertz(inventory_bag(NewInventory,NewSize)).
 
-addToInventory([Name|Amount]) :-
+handleAddToInventory([Name|Amount]) :-
     inventory_bag(Inventory,Size),
     \+member([Name|_],Inventory),
     push([Name,Amount],Inventory,NewInventory),

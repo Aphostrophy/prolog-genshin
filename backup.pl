@@ -1,12 +1,15 @@
 :- dynamic(player_class/1).
 :- dynamic(player_level/1).
 :- dynamic(equipped_weapon/1).
+:- dynamic(equipped_cover/1).
 :- dynamic(player_health/1).
 :- dynamic(player_attack/1).
 :- dynamic(player_defense/1).
+:- dynamic(buff_att/1).
+:- dynamic(buff_def/1).
 :- dynamic(player_max_health/1).
-:- dynamic(player_max_attack/1).
-:- dynamic(player_max_defense/1).
+:- dynamic(player_attack_mult/1).
+:- dynamic(player_defense_mult/1).
 :- dynamic(current_gold/1).
 :- dynamic(current_exp/1).
 :- dynamic(upgradable/0).
@@ -31,7 +34,7 @@
 :- dynamic(special_timer/1).
 :- dynamic(shopactive/0).
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/battle.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/battle.pl
 
 trigger_battle :-
 	assertz(fight_or_run),
@@ -119,12 +122,15 @@ attack :-
 	retract(hp_enemy(A)),
 	att_enemy(_),
 	def_enemy(B), !,
-	player_attack(C), !,
-	calc_damage(C, B, D), !,
-	E is A - D,
-	assertz(hp_enemy(E)),
+	player_attack(C),
+	player_attack_mult(D), !,
+	_ is C * D,
+	calc_damage(C, B, E), !,
+	attack_mutate(E, F), !,
+	G is A - F,
+	assertz(hp_enemy(G)),
 	write('You deal '),
-	write(D),
+	write(E),
 	write(' damage!'),
 	nl,
 	nl,
@@ -136,12 +142,15 @@ attack :-
 	retract(hp_enemy(A)),
 	att_enemy(_),
 	def_enemy(B), !,
-	player_attack(C), !,
-	calc_damage(C, B, D), !,
-	E is A - D,
-	assertz(hp_enemy(E)),
+	player_attack(C),
+	player_attack_mult(D), !,
+	E is C * D,
+	calc_damage(E, B, F), !,
+	attack_mutate(F, G), !,
+	H is A - G,
+	assertz(hp_enemy(H)),
 	write('You deal '),
-	write(D),
+	write(F),
 	write(' damage!'),
 	nl,
 	nl,
@@ -164,12 +173,15 @@ special_attack :-
 	att_enemy(_),
 	def_enemy(C),
 	player_attack(D),
-	E is 2 * D,
-	calc_damage(E, C, F),
-	G is B - F,
-	assertz(hp_enemy(G)),
+	player_attack_mult(E), !,
+	F is D * E,
+	G is 2 * F,
+	calc_damage(G, C, H),
+	attack_mutate(H, I), !,
+	J is B - I,
+	assertz(hp_enemy(J)),
 	write('You deal '),
-	write(F),
+	write(H),
 	write(' damage!'),
 	nl,
 	nl,
@@ -193,12 +205,15 @@ special_attack :-
 	att_enemy(_),
 	def_enemy(C),
 	player_attack(D),
-	E is 2 * D,
-	calc_damage(E, C, F),
-	G is B - F,
-	assertz(hp_enemy(G)),
+	player_attack_mult(E), !,
+	F is D * E,
+	G is 2 * F,
+	calc_damage(G, C, H),
+	attack_mutate(H, I), !,
+	J is B - I,
+	assertz(hp_enemy(J)),
 	write('You deal '),
-	write(F),
+	write(H),
 	write(' damage!'),
 	nl,
 	nl,
@@ -225,8 +240,8 @@ item :-
 	nl,
 	read(A),
 	substractFromInventory([A|1]),
-	property(A, B),
-	heal(B),
+	consumable_type(A, B), !,
+	use_item(A, B),
 	write('You used '),
 	write(A),
 	nl.
@@ -253,8 +268,8 @@ item :-
 	write('Input item name!!'),
 	nl,
 	read(A),
+	consumable_type(A, B), !,
 	substractFromInventory([A|1]),
-	consumable_type(A, B),
 	use_item(A, B),
 	write('You used '),
 	write(A),
@@ -267,8 +282,10 @@ item :-
 
 use_item(A, B) :-
 	B = heal,
-	property(A, C), !,
-	heal(C).
+	player_max_health(C),
+	property(A, D), !,
+	E is truncate(C * D),
+	heal(E).
 use_item(A, B) :-
 	B = att,
 	property(A, C), !,
@@ -279,14 +296,14 @@ use_item(A, B) :-
 	defUp(C).
 
 heal(A) :-
-	player_health(B), !,
+	player_health(B),
 	player_max_health(C),
 	D is B + A,
 	D < C, !,
 	retract(player_health(_)),
 	assertz(player_health(D)).
 heal(A) :-
-	player_health(B), !,
+	player_health(B),
 	player_max_health(C),
 	D is B + A,
 	D >= C, !,
@@ -294,20 +311,22 @@ heal(A) :-
 	assertz(player_health(C)).
 
 attUp(A) :-
-	player_attack(B), !,
-	C is B + A,
+	equipped_weapon(B),
+	property(B, C), !,
+	D is C + A,
 	retract(buff_att(_)),
 	assertz(buff_att(3)),
-	retract(player_attack(_)),
-	assertz(player_attack(C)).
+	retract(player_attack_mult(_)),
+	assertz(player_attack_mult(D)).
 
 defUp(A) :-
-	player_defense(B), !,
-	C is B + A,
+	equipped_cover(B),
+	property(B, C, _), !,
+	D is C + A,
 	retract(buff_def(_)),
 	assertz(buff_def(3)),
-	retract(player_defense(_)),
-	assertz(player_defense(C)).
+	retract(player_defense_mult(_)),
+	assertz(player_defense_mult(D)).
 
 check_death :-
 	hp_enemy(A),
@@ -318,22 +337,23 @@ check_death :-
 	write(' defeated! you got : '),
 	nl, !,
 	enemy_exp(B, D),
-	enemy_gold(B, E), !,
-	F is D + truncate(1.5 * D),
-	G is E + 10 * E,
-	write(F),
+	enemy_gold(B, E),
+	lvl_enemy(F), !,
+	G is D + 5 * F,
+	H is E + 10 * F,
+	write(G),
 	write(' exp'),
 	nl,
-	write(G),
+	write(H),
 	write(' gold'),
 	nl,
-	add_player_exp(F),
-	add_player_gold(G), !,
+	add_player_exp(G),
+	add_player_gold(H), !,
 	update_quest(B),
-	buff_att(H),
-	buff_def(I), !,
-	check_buff_att(H),
-	check_buff_def(I), !,
+	buff_att(I),
+	buff_def(J), !,
+	check_buff_att(I),
+	check_buff_def(J), !,
 	retract(game_state(in_battle)),
 	assertz(game_state(travelling)).
 check_death :-
@@ -394,9 +414,10 @@ check_buff_att(A) :-
 	assertz(buff_att(C)).
 check_buff_att(A) :-
 	A =:= 0, !,
-	player_max_attack(B), !,
-	retract(player_attack(_)),
-	assertz(player_attack(B)).
+	equipped_weapon(B),
+	property(B, C), !,
+	retract(player_attack_mult(_)),
+	assertz(player_attack_mult(C)).
 
 check_buff_def(A) :-
 	A > 0, !,
@@ -406,24 +427,28 @@ check_buff_def(A) :-
 	assertz(buff_def(C)).
 check_buff_def(A) :-
 	A =:= 0, !,
-	player_max_defense(B), !,
-	retract(player_defense(_)),
-	assertz(player_defense(B)).
+	equipped_cover(B),
+	property(B, C, _), !,
+	retract(player_defense_mult(_)),
+	assertz(player_defense_mult(C)).
 
 enemy_turn :-
 	!,
 	att_enemy(A),
 	player_defense(B),
-	player_health(C), !,
-	retract(player_health(C)),
-	calc_damage(A, B, D), !,
-	E is C - D,
-	assertz(player_health(E)), !,
-	type_enemy(F),
-	enemy_type(F, G), !,
-	write(G),
+	player_defense_mult(C),
+	player_health(D), !,
+	E is truncate(B * C),
+	calc_damage(A, E, F), !,
+	attack_mutate(F, G), !,
+	H is D - G,
+	retract(player_health(D)),
+	assertz(player_health(H)), !,
+	type_enemy(I),
+	enemy_type(I, J), !,
+	write(J),
 	write(' deals '),
-	write(D),
+	write(F),
 	write(' damage!!'),
 	nl,
 	nl,
@@ -467,7 +492,7 @@ special_status(A) :-
 	A >= 3, !,
 	write('Special attack : READY!!!!!').
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/class.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/class.pl
 
 class(knight).
 class(archer).
@@ -499,37 +524,7 @@ equipmentAllowed(archer, A) :-
 equipmentAllowed(mage, A) :-
 	type(catalyst, A).
 
-baseAttackScaling(knight, level, A) :-
-	baseAttack(knight, B),
-	A is B + 30 * level.
-baseAttackScaling(archer, level, A) :-
-	baseAttack(archer, B),
-	A is B + 30 * level.
-baseAttackScaling(archer, level, A) :-
-	baseAttack(archer, B),
-	A is B + 35 * level.
-
-baseHealthScaling(knight, level, A) :-
-	baseHealth(knight, B),
-	A is B + 300 * level.
-baseHealthScaling(archer, level, A) :-
-	baseHealth(archer, B),
-	A is B + 200 * level.
-baseHealthScaling(archer, level, A) :-
-	baseHealth(archer, B),
-	A is B + 150 * level.
-
-baseDefenseScaling(knight, level, A) :-
-	baseDefense(knight, B),
-	A is B + 300 * level.
-baseDefenseScaling(archer, level, A) :-
-	baseDefense(archer, B),
-	A is B + 200 * level.
-baseDefenseScaling(archer, level, A) :-
-	baseDefense(archer, B),
-	A is B + 150 * level.
-
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/encounter_enemy.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/encounter_enemy.pl
 
 chestLoot(100).
 
@@ -695,7 +690,9 @@ gacha_chest(A) :-
 	random(C, D, E),
 	write('You found a chest!! You get : '),
 	write(E),
-	write(' gold'), !.
+	write(' gold'),
+	nl, !,
+	add_player_gold(E).
 gacha_chest(A) :-
 	A > 70,
 	write('You encounter a '),
@@ -740,7 +737,7 @@ print_info :-
 	write(D),
 	nl.
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/enemy.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/enemy.pl
 
 enemy_type(0, slime).
 enemy_type(1, hilichurl).
@@ -766,29 +763,33 @@ enemy_defense(2, 30).
 enemy_defense(3, 30).
 enemy_defense(4, 1000).
 
-enemy_special(0, 30).
-enemy_special(1, 50).
-enemy_special(2, 75).
-enemy_special(3, 75).
-enemy_special(3, 2000).
+enemy_exp(0, 50).
+enemy_exp(1, 100).
+enemy_exp(2, 250).
+enemy_exp(3, 250).
 
-enemy_exp(0, 100).
-enemy_exp(1, 200).
-enemy_exp(2, 500).
-enemy_exp(3, 500).
+enemy_gold(0, 75).
+enemy_gold(1, 150).
+enemy_gold(2, 300).
+enemy_gold(3, 300).
 
-enemy_gold(0, 50).
-enemy_gold(1, 75).
-enemy_gold(2, 100).
-enemy_gold(3, 100).
-
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/inventory.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/inventory.pl
 
 inventoryMaxSize(100).
 
 inventory :-
+	write(===============================================),
+	nl,
+	write('           I  N  V  E  N  T  O  R  Y           '),
+	nl,
+	write(===============================================),
+	nl,
+	nl,
 	inventory_bag(A, _),
-	printInventory(A).
+	printInventory(A),
+	nl,
+	write(===============================================), !,
+	nl.
 
 printInventory([]).
 printInventory([A|B]) :-
@@ -797,20 +798,34 @@ printInventory([A|B]) :-
 
 printPair([A|B]) :-
 	[C|_] = B,
-	C > 0,
+	C > 0, !,
+	type(D, A),
+	format('[type : ~w] ', [D]),
 	write(A),
-	write(:),
+	write(' : '),
 	write(C),
 	nl.
+printPair([_|_]) :-
+	!.
 
 addToInventory([A|B]) :-
+	inventory_bag(_, C),
+	D is C + B,
+	inventoryMaxSize(E),
+	D =< E, !,
+	handleAddToInventory([A|B]).
+addToInventory([_|_]) :-
+	!,
+	write('Your inventory is full! sell some item(s) to the shop first!').
+
+handleAddToInventory([A|B]) :-
 	inventory_bag(C, D),
 	member([A|_], C), !,
 	modifyElement([A|B], C, E),
 	F is D + B,
 	retract(inventory_bag(C, D)), !,
 	assertz(inventory_bag(E, F)).
-addToInventory([A|B]) :-
+handleAddToInventory([A|B]) :-
 	inventory_bag(C, D),
 	\+ member([A|_], C),
 	push([A, B], C, E),
@@ -820,27 +835,107 @@ addToInventory([A|B]) :-
 
 substractFromInventory([A|B]) :-
 	inventory_bag(C, D),
-	member([A|_], C), !,
-	reduceElement([A|B], C, E),
-	F is D - B,
+	findItemAmount(A, E),
+	E >= B, !,
+	reduceElement([A|B], C, F),
+	G is D - B,
 	retract(inventory_bag(C, D)), !,
-	assertz(inventory_bag(E, F)).
+	assertz(inventory_bag(F, G)).
 substractFromInventory([_|_]) :-
 	write('Hey dont cheat!'),
 	nl,
 	fail.
 
-findItemAmount(A) :-
-	inventory_bag(B, _),
-	member([A|_], B), !,
-	getItemAmount(A, B, C),
-	write(C).
-findItemAmount(A) :-
-	inventory_bag(B, _),
-	\+ member([A|_], B), !,
-	write(0).
+findItemAmount(A, B) :-
+	inventory_bag(C, _),
+	member([A|_], C), !,
+	getItemAmount(A, C, B).
+findItemAmount(A, B) :-
+	inventory_bag(C, _),
+	\+ member([A|_], C), !,
+	B is 0.
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/items.pl
+equip(_) :-
+	game_state(in_battle), !,
+	write('Cannot equip item in battle.').
+equip(A) :-
+	\+ item(A), !,
+	write('That is not an item.').
+equip(A) :-
+	findItemAmount(A, B),
+	B =< 0, !,
+	write('Item not in inventory.').
+equip(A) :-
+	type(B, A),
+	player_class(C),
+	weapon(B),
+	equipmentAllowed(C, A), !,
+	player_attack_mult(D),
+	equipped_weapon(E),
+	property(E, _),
+	retract(equipped_weapon(E)),
+	assertz(equipped_weapon(A)),
+	property(_, F),
+	player_attack_mult(D),
+	G is D + F,
+	retract(player_attack_mult(_)),
+	assertz(player_attack_mult(G)),
+	substractFromInventory([A|1]),
+	addToInventory([E|1]),
+	write('Equipped '),
+	write(A).
+equip(A) :-
+	type(B, A),
+	player_class(C),
+	weapon(B),
+	\+ equipmentAllowed(C, A), !,
+	write('This weapon is not suitable for your class.').
+equip(A) :-
+	type(B, A),
+	cover(B), !,
+	equipped_cover(C),
+	player_defense_mult(D),
+	player_max_health(E),
+	player_health(F),
+	property(C, G, H),
+	property(A, I, J),
+	K is truncate(F * J / H),
+	L is truncate(E * J / H),
+	M is D + I - G,
+	retract(player_defense_mult(_)),
+	assertz(player_defense_mult(M)),
+	retract(player_max_health(_)),
+	assertz(player_max_health(L)),
+	retract(player_health(_)),
+	assertz(player_health(K)),
+	retract(equipped_cover(_)),
+	assertz(equipped_cover(A)),
+	substractFromInventory([A|1]),
+	addToInventory([C|1]),
+	write('Equipped '),
+	write(A).
+
+equipped_items :-
+	equipped_weapon(A),
+	write('Weapon:'),
+	write(A),
+	nl,
+	property(A, B),
+	write('Attack Bonus: '),
+	write(B),
+	nl,
+	equipped_cover(C),
+	property(C, D, E),
+	write('Armor:'),
+	write(C),
+	nl,
+	write('Bonus Defense: '),
+	write(D),
+	nl,
+	write('Bonus Health: '),
+	write(E).
+
+% file: C:/Users/Aphos/Documents/prolog-genshin/items.pl
 
 item('health potion').
 item('panas spesial 2 mekdi').
@@ -898,12 +993,24 @@ type(armor, 'steel armor').
 type(armor, 'golden armor').
 type(armor, 'diamond armor').
 
+weapon(bow).
+weapon(catalyst).
+weapon(claymore).
+
+cover(armor).
+
 price('health potion', 100).
 price('panas spesial 2 mekdi', 150).
 price(sadikin, 200).
 price('go milk', 250).
 price(crisbar, 300).
 price(gacha, 1000).
+price('attack potion S', 300).
+price('attack potion M', 350).
+price('attack potion L', 400).
+price('defense potion S', 250).
+price('defense potion M', 300).
+price('defense potion L', 350).
 
 ultraRareItem('wolf greatsword').
 ultraRareItem('skyward harp').
@@ -928,100 +1035,106 @@ consumable_type('defense potion M', def).
 consumable_type('defense potion L', def).
 
 property('health potion', A) :-
-	A is 75.
+	A is 0.10000000000000001.
 property('panas spesial 2 mekdi', A) :-
-	A is 150.
+	A is 0.14999999999999999.
 property(sadikin, A) :-
-	A is 250.
+	A is 0.25.
 property('go milk', A) :-
-	A is 320.
+	A is 0.32000000000000001.
 property(crisbar, A) :-
-	A is 450.
+	A is 0.45000000000000001.
 property('attack potion S', A) :-
-	A is 50.
+	A is 0.10000000000000001.
 property('attack potion M', A) :-
-	A is 100.
+	A is 0.29999999999999999.
 property('attack potion L', A) :-
-	A is 200.
+	A is 0.5.
 property('defense potion S', A) :-
-	A is 25.
+	A is 0.10000000000000001.
 property('defense potion M', A) :-
-	A is 50.
+	A is 0.29999999999999999.
 property('defense potion L', A) :-
-	A is 100.
+	A is 0.5.
 property('waster greatsword', A) :-
-	A is 30.
+	A is 1.0.
 property('old merc pal', A) :-
-	A is 70.
+	A is 1.2.
 property('debate club', A) :-
-	A is 120.
+	A is 1.3999999999999999.
 property('prototype aminus', A) :-
-	A is 180.
+	A is 1.7.
 property('wolf greatsword', A) :-
-	A is 250.
+	A is 3.0.
 property('hunter bow', A) :-
-	A is 40.
+	A is 1.0.
 property('seasoned hunter bow', A) :-
-	A is 90.
+	A is 1.2.
 property(messenger, A) :-
-	A is 150.
+	A is 1.3999999999999999.
 property('favonius warbow', A) :-
-	A is 230.
+	A is 1.7.
 property('skyward harp', A) :-
-	A is 300.
+	A is 3.0.
 property('apprentice notes', A) :-
-	A is 50.
+	A is 1.0.
 property('pocket grimoire', A) :-
-	A is 110.
+	A is 1.2.
 property('emerald orb', A) :-
-	A is 175.
+	A is 1.3999999999999999.
 property('mappa mare', A) :-
-	A is 320.
+	A is 1.7.
 property('skyward atlas', A) :-
-	A is 410.
+	A is 3.0.
 
 property('wooden armor', A, B) :-
-	A is 50,
-	B is 20.
+	A is 1.0,
+	B is 1.0.
 property('iron armor', A, B) :-
-	A is 120,
-	B is 60.
+	A is 1.2,
+	B is 1.2.
 property('steel armor', A, B) :-
-	A is 200,
-	B is 100.
-property('golden armor', A, B) :-
-	A is 290,
-	B is 150.
+	A is 1.3999999999999999,
+	B is 1.3999999999999999.
+property('golden armor', _, A) :-
+	_ is 1.7,
+	A is 1.7.
 property('diamond armor', A, B) :-
-	A is 400,
-	B is 200.
+	A is 3.0,
+	B is 3.0.
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/main.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/main.pl
 
 player_class(knight).
 
-player_level(6).
+player_level(37).
 
 equipped_weapon('waster greatsword').
 
-player_health(2683).
+equipped_cover('wooden armor').
 
-player_attack(53782400000).
+player_health(15352).
 
-player_defense(158).
+player_attack(309126805284).
 
-player_max_health(2683).
+player_defense(804).
 
-player_max_attack(53782400000).
+buff_att(0).
 
-player_max_defense(158).
+buff_def(0).
 
-current_gold(7050).
+player_attack_mult(1.0).
 
-current_exp(750).
+player_defense_mult(1.0).
+
+player_max_health(15352).
+
+current_gold(12140).
+
+current_exp(895).
 
 
-inventory_bag([['health potion', 10], ['attack potion S', 5]], 10).
+inventory_bag([['health potion', 10], ['attack potion S', 5], ['mappa mare', 3]], 18).
 
 quest_active(false).
 
@@ -1036,17 +1149,16 @@ game_opened.
 game_start.
 
 game_state(travelling).
-game_state(shopactive).
 
-type_enemy(1).
+type_enemy(2).
 
-hp_enemy(-53782399863).
+hp_enemy(-309126804797).
 
-att_enemy(40).
+att_enemy(175).
 
-def_enemy(16).
+def_enemy(84).
 
-lvl_enemy(3).
+lvl_enemy(27).
 
 map_entity(14, 12, 'T').
 map_entity(3, 14, 'T').
@@ -1055,13 +1167,11 @@ map_entity(13, 3, 'T').
 map_entity(2, 7, 'Q').
 map_entity(15, 15, 'B').
 map_entity(13, 1, 'S').
-map_entity(13, 1, 'P').
+map_entity(3, 4, 'P').
 
 draw_done(true).
 
 
-can_run.
-can_run.
 can_run.
 can_run.
 can_run.
@@ -1082,6 +1192,79 @@ start :-
 	['shop.pl'],
 	['battle.pl'],
 	['map.pl'],
+	nl,
+	write('                                .:-.`         ``......-:...-` `..-`.    ``..````.-///:.                 `.--.        '),
+	nl,
+	write('                              .--.        ...---.```  ```-``.  ...........```````.-----                   `.:-.      '),
+	nl,
+	write('                           `--.`    `-:::.````````..--.-..`:` -`.---````....--:------`                     `-:-`     '),
+	nl,
+	write('                           -:-`      ///--````.---.``  `..` -- .  ```      ```:::--.                          `-:.   '),
+	nl,
+	write('                         `--.        -::--.-::.`            .: .`` `   `.--....`                                .:-` '),
+	nl,
+	write('                        .--`          `.---:::-....`.`     `.. `..`  ```....`                                    `--`'),
+	nl,
+	write('                       .:-`                 ```````````    ..-` `-           ````                                 `'),
+	nl,
+	write('                      .:-`                       ```        `:: :                `.``                              '),
+	nl,
+	write('                 ------ `                      ``             :`.                   `.`                            '),
+	nl,
+	write('                     `                       ``               .-.                     `.`                          '),
+	nl,
+	write('                                           `                  `              ``         ``                         '),
+	nl,
+	write('                                         `                                    ::.         ``                       '),
+	nl,
+	write('                                       ``                                     /os+-.`       `.`                    '),
+	nl,
+	write('                                    `.`                           `           -ddmmNNmm:          ```.``````       '),
+	nl,
+	write('                                    ``               `             -`         :oshmNNNNs                ``..       '),
+	nl,
+	write('                                   ``                 .            ---           `.:smNm`       `       `.`        '),
+	nl,
+	write('                               ```                  `:-           ...-.`            .om+        `.``..-.`        `:'),
+	nl,
+	write('                 `         ``..`                  ``:`--           :  `--.    ``      -h.         ---`         `..+'),
+	nl,
+	write('                 .::..``....``       `            ./`  -:`         ..  ``.-.```.`      ./          ``...``````.``-:'),
+	nl,
+	write('                   .--..`          ``            `o.````.:-`        -`      `.-:/`      `               ````  ``:/ '),
+	nl,
+	write('                     `.--...`````````            ::`      .:-`       .` ``.---` ./             `````    ````..-/:  '),
+	nl,
+	write('                         ```.----:.``            /  ```.--.`.-:-.```  .:ydmmmdyo/--             ``.-........-::.   '),
+	nl,
+	write('                                :-``             :``/hhhhhs/   ..--//-.:hmddmmsoh//             ```.--.----:-.    `'),
+	nl,
+	write('                         `...` :-``.             /:dsymmhdm/        ````md/.hmm`o-::             ````--..:/.    `.``'),
+	nl,
+	write('                      ``.````-/-.``.             +yy`mNh.-hh            os+:+o/ .`-/       `      ````--..-:.  ..```'),
+	nl,
+	write('                    ``````````-:.``:`   `       `+./`ohs+://            `::--.`  .-/`       `     ````.:-.../..````'),
+	nl,
+	write('                 ``````````````:-../.   `       `/-`` ://-.`                    `::/-       `      ````::...-o`````'),
+	nl,
+	write('                 ````````````` `:.-/.`   `      `/:-           `  ```.`         :/.-:      ```     ````-+::..+```````'),
+	nl,
+	write('                 ````````       :oso/.`  ``     `+:+-         .:-....--        .+--:-     ````      ``.-/ -/-+. `````'),
+	nl,
+	write('                 ``````````     -::sh-``  ``    `::-+:`       `...``...      `-/---/`    ```.      ```--:  `++` ``````'),
+	nl,
+	write('                 `````````````  :o+:/s-`` `.`    .oyhmy/.`     ```````    `-oo/:--:.  `````.-     ``--./` ``:+.....```'),
+	nl,
+	write('                 ```````````----+dNNdhm+````..`  .+NNNNNmhy+:-.``    `.-+shmmmmds/.```````.:`  ````./.-+:--.``...:-` `'),
+	nl,
+	write('                  ``````` `-:-:/-hmmmmNNh/.``...``.oNNNNNNNNNNmdhyysyydmmmmmNmho-````````.-`       ://::-....``...    '),
+	nl,
+	write('                 ``        :      :sdmmmmNmy+--:-...+mNNNNmmmmmmNNNNNNmmmmmNNdyso//::-:+s-`       .+:.`.-.` ```       '),
+	nl,
+	write('                   ``      `.       ./sdmmNNNNNddho:--ohdddh+-dmmmmmNNNNNNNNNNNNNNNdysoo:``      -/` `-.            `.'),
+	nl,
+	nl,
+	nl,
 	write('     #                  ######   ##########          #   ######     ######        ######   ##########                       #          ######   '),
 	nl,
 	write('    #      ##########            #        #         #      #                        #      #        # ##########   ######   #   ###      #      '),
@@ -1096,11 +1279,20 @@ start :-
 	nl,
 	write('         #       #       ##        ##        ##    #        ####     ##              ####    ##             #                #######      ####  '),
 	nl,
-	write('Main Menu:'),
+	write(================================================================================================================================================),
 	nl,
-	write(new),
+	write('                                     |Welcome to Genshin Asik Cihuy Semoga Bagus Hasilnya!|                                                     '),
 	nl,
-	write(load),
+	write('                                     |                   Main Menu:                       |                                                     '),
+	nl,
+	write('                                     |                  1. New Game                       |                                                     '),
+	nl,
+	write('                                     |                  2. Load Game                      |                                                     '),
+	nl,
+	write('                                     |   Type ''new.'' or ''load.'' to start the game.        |                                                 '),
+	nl,
+	write(================================================================================================================================================),
+	nl,
 	assertz(game_opened).
 
 new :-
@@ -1110,19 +1302,19 @@ new :-
 	assertz(game_state(travelling)), !,
 	write(================================================================================================================================================),
 	nl,
-	write('             @@@@@@@@@   @@@@@@@@@   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @     @@@@@@     @                 '),
+	write('           @@@@@@@@@   @@@@@@@@@   @     @   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @     @@@@@@     @         '),
 	nl,
-	write('             @       @   @           @           @      @   @   @@    @      @   @           @           @  @     @      @    @                 '),
+	write('           @       @   @           @@    @   @           @      @   @   @@    @      @   @           @           @  @     @      @    @         '),
 	nl,
-	write('             @           @           @           @      @   @   @ @   @      @   @           @           @ @     @        @   @                 '),
+	write('           @           @           @ @   @   @           @      @   @   @ @   @      @   @           @           @ @     @        @   @         '),
 	nl,
-	write('             @           @@@@@@@@@   @@@@@@@@@   @@@@@@@@   @   @  @  @      @   @@@@@@@@@   @@@@@@@@@   @       @        @   @                 '),
+	write('           @           @@@@@@@@@   @  @  @   @@@@@@@@@   @@@@@@@@   @   @  @  @      @   @@@@@@@@@   @@@@@@@@@   @       @        @   @         '),
 	nl,
-	write('             @  @@@@@@   @                   @   @      @   @   @   @ @      @           @   @           @ @     @@@@@@@@@@   @                 '),
+	write('           @  @@@@@@   @           @   @ @           @   @      @   @   @   @ @      @           @   @           @ @     @@@@@@@@@@   @         '),
 	nl,
-	write('             @       @   @                   @   @      @   @   @    @@      @           @   @           @  @    @        @   @                 '),
+	write('           @       @   @           @    @@           @   @      @   @   @    @@      @           @   @           @  @    @        @   @         '),
 	nl,
-	write('             @@@@@@@@@   @@@@@@@@@   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @   @        @   @                 '),
+	write('           @@@@@@@@@   @@@@@@@@@   @     @   @@@@@@@@@   @      @   @   @     @      @   @@@@@@@@@   @@@@@@@@@   @   @   @        @   @         '),
 	nl,
 	nl,
 	write(================================================================================================================================================),
@@ -1150,7 +1342,7 @@ new :-
 	asserta(map_entity(3, 14, 'T')),
 	asserta(map_entity(14, 12, 'T')),
 	asserta(draw_done(true)),
-	setBorder(0, 0).
+	setBorder.
 new :-
 	game_start, !,
 	write('The game has already been started. Use ''help.'' to look for available commands!').
@@ -1169,77 +1361,124 @@ quit :-
 
 help :-
 	game_state(in_battle), !,
-	write('You are currently in a battle. Here are some commands to help you get through the battle.'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''fight.'' to fight against the encountered enemy.'),
+	write('|                          You are currently in a battle. Here are some commands to help you get through the battle.                           |'),
 	nl,
-	write('Use ''run.'' to run away from the enemy. This command might as well not work as it is and you have no choice but to fight the enemy.'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''attack.'' to attack di enemy you''re currently facing.'),
+	write('|        Commmand        |                                                           Function                                                  |'),
 	nl,
-	write('Use ''special_attack.'' to use special attack ONLY when you face the boss.'),
+	write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),
 	nl,
-	write('Use ''item.'' to use items in your inventory.'),
+	write('|       ''fight.''         |     Fight against the encountered enemy.                                                                            |'),
 	nl,
-	write('Use ''status.'' to get the player info.'),
+	write('|        ''run.''          |     Run away from the enemy. Might as well not work as it is and you have no choice but to fight the enemy.         |'),
+	nl,
+	write('|       ''attack.''        |     Attack the enemy you''re currently facing.                                                                       |'),
+	nl,
+	write('|   ''special_attack.''    |     Use special attack ONLY when you face the boss.                                                                 |'),
+	nl,
+	write('|       ''item.''          |     Use items in your inventory.                                                                                    |'),
+	nl,
+	write('|       ''status.''        |     Get the player info.                                                                                            |'),
+	nl,
+	write(================================================================================================================================================),
 	nl.
 help :-
 	game_state(in_quest_dialogue), !,
-	write('You are currently negotiating a quest offered to you. Here are the valid commands for this state.'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''yes.'' to accept the quest.'),
+	write('|                       You are currently negotiating a quest offered to you. Here are the valid commands for this state.                      |'),
 	nl,
-	write('Use ''no.'' to reject the quest.'),
+	write(================================================================================================================================================),
+	nl,
+	write('|        Commmand        |                                                           Function                                                  |'),
+	nl,
+	write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),
+	nl,
+	write('|        ''yes.''          |     accept the quest.                                                                                               |'),
+	nl,
+	write('|         ''no.''          |     reject the quest.                                                                                               |'),
+	nl,
+	write(================================================================================================================================================),
 	nl.
 help :-
 	game_state(shopactive), !,
-	write('The shop is now open! Here are some commands to get the stuff you needed.'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''gacha.'' to get a random item with a random class and keep it in your inventory.'),
+	write('|                              The shop is now open! Here are some commands to get the stuff you needed.                                       |'),
 	nl,
-	write('Use ''healthpotion.'' to buy a health potion.'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''panas.'' to buy a panas spesial 2 mekdi.'),
+	write('|        Commmand        |                                                           Function                                                  |'),
 	nl,
-	write('Use ''sadikin.'' to buy a sadikin.'),
+	write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),
 	nl,
-	write('Use ''gomilk.'' to buy a go milk.'),
+	write('|       ''gacha.''         |     Get a random item with a random class and keep it in your inventory.                                            |'),
 	nl,
-	write('Use ''crisbar.'' to buy a crisbar.'),
+	write('|    ''health potion.''     |     Buy a health potion.                                                                                            |'),
 	nl,
-	write('Use ''exitshop.'' to exit the shop.'),
+	write('|       ''panas.''         |     Buy a panas spesial 2 mekdi.                                                                                    |'),
+	nl,
+	write('|      ''sadikin.''        |     Buy a sadikin.                                                                                                  |'),
+	nl,
+	write('|       ''go milk.''        |     Buy a go milk.                                                                                                  |'),
+	nl,
+	write('|      ''crisbar.''        |     Buy a crisbar.                                                                                                  |'),
+	nl,
+	write('|      ''exitshop.''       |     Exit the shop.                                                                                                  |'),
+	nl,
+	write('|        ''sell.''         |     Sell items in your inventory.                                                                                   |'),
+	nl,
+	write(================================================================================================================================================),
 	nl.
 help :-
 	game_state(travelling), !,
-	write('You are currently travlling in the outside world! Here are some commands to guide you through this fantasy map.'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''w.'' to move upward'),
+	write('|              You are currently travlling in the outside world! Here are some commands to guide you through this fantasy map.                 |'),
 	nl,
-	write('Use ''a.'' to move to the left'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''s.'' to move downward'),
+	write('|        Commmand        |                                                           Function                                                  |'),
 	nl,
-	write('Use ''d.'' to move to the right'),
+	write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),
 	nl,
-	write('Use ''map.'' to print the map you are currently in.'),
+	write('|        ''w.''          |     Move upward.                                                                                                    |'),
 	nl,
-	write('Use ''quest.'' to do a quest when arriving at a place labeled ''Q''.'),
+	write('|        ''a.''          |     Move to the left.                                                                                               |'),
 	nl,
-	write('Use ''shop.'' to open the shop.'),
+	write('|        ''s.''          |     Move downward.                                                                                                  |'),
 	nl,
-	write('Use ''item.'' to use items in your inventory.'),
+	write('|        ''d.''          |     Move to the right.                                                                                              |'),
 	nl,
-	write('Use ''quest_info.'' to get the remaining enemies to be killed when doing your quest.'),
+	write('|       ''map.''         |     Print the map you are currently in.                                                                             |'),
 	nl,
-	write('Use ''teleport.'' to move to a specific coordinate on the map.'),
+	write('|      ''quest.''        |     Do a quest when arriving at a place labeled ''Q''.                                                              |'),
 	nl,
-	write('Use ''status.'' to get the player info.'),
+	write('|       ''shop.''        |     Open the shop.                                                                                                  |'),
 	nl,
-	write('You might encounter an enemy while you''re travelling, so be ready for them!'),
+	write('|     ''inventory.''     |     Check your inventory.                                                                                           |'),
+	nl,
+	write('|       ''item.''        |     Use items in your inventory.                                                                                    |'),
+	nl,
+	write('|   ''equipped_items.''  |     Check your equipped weapon and armor                                                                            |'),
+	nl,
+	write('|    ''quest_info.''     |     Get the remaining enemies to be killed when doing your quest.                                                   |'),
+	nl,
+	write('|     ''teleport.''      |     Move to a specific waypoint on the map when you are in a waypoint labelled T.                                   |'),
+	nl,
+	write('|      ''status.''       |     Get the player info.                                                                                            |'),
+	nl,
+	write('|      ''equip.''        |     Equip a weapon or armor from inventory. Usage : equip(''item name'') .                                          |'),
+	nl,
+	write(================================================================================================================================================),
+	nl,
+	write('|                               You might encounter an enemy while you''re travelling, so be ready for them!                                   |'),
+	nl,
+	write(================================================================================================================================================),
 	nl.
-
-check_inventory :-
-	write('You have nothing in your inventory! You can buy some in the shop.').
 
 save :-
 	game_opened,
@@ -1252,17 +1491,23 @@ save :-
 	nl,
 	write(':- dynamic(equipped_weapon/1).'),
 	nl,
+	write(':- dynamic(equipped_cover/1).'),
+	nl,
 	write(':- dynamic(player_health/1).'),
 	nl,
 	write(':- dynamic(player_attack/1).'),
 	nl,
 	write(':- dynamic(player_defense/1).'),
 	nl,
+	write(':- dynamic(buff_att/1).'),
+	nl,
+	write(':- dynamic(buff_def/1).'),
+	nl,
 	write(':- dynamic(player_max_health/1).'),
 	nl,
-	write(':- dynamic(player_max_attack/1).'),
+	write(':- dynamic(player_attack_mult/1).'),
 	nl,
-	write(':- dynamic(player_max_defense/1).'),
+	write(':- dynamic(player_defense_mult/1).'),
 	nl,
 	write(':- dynamic(current_gold/1).'),
 	nl,
@@ -1324,7 +1569,7 @@ load :-
 	game_opened, !,
 	write('No save files detected').
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/map.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/map.pl
 
 isPagar(4, 7).
 isPagar(4, 8).
@@ -1359,36 +1604,6 @@ isPagar(13, 0).
 isPagar(14, 0).
 isPagar(15, 0).
 isPagar(16, 0).
-isPagar(0, 1).
-isPagar(16, 1).
-isPagar(0, 2).
-isPagar(16, 2).
-isPagar(0, 3).
-isPagar(16, 3).
-isPagar(0, 4).
-isPagar(16, 4).
-isPagar(0, 5).
-isPagar(16, 5).
-isPagar(0, 6).
-isPagar(16, 6).
-isPagar(0, 7).
-isPagar(16, 7).
-isPagar(0, 8).
-isPagar(16, 8).
-isPagar(0, 9).
-isPagar(16, 9).
-isPagar(0, 10).
-isPagar(16, 10).
-isPagar(0, 11).
-isPagar(16, 11).
-isPagar(0, 12).
-isPagar(16, 12).
-isPagar(0, 13).
-isPagar(16, 13).
-isPagar(0, 14).
-isPagar(16, 14).
-isPagar(0, 15).
-isPagar(16, 15).
 isPagar(0, 16).
 isPagar(1, 16).
 isPagar(2, 16).
@@ -1405,141 +1620,47 @@ isPagar(12, 16).
 isPagar(13, 16).
 isPagar(14, 16).
 isPagar(15, 16).
-isPagar(16, 16).
-isPagar(16, 16).
-isPagar(0, 16).
-isPagar(1, 16).
-isPagar(2, 16).
-isPagar(3, 16).
-isPagar(4, 16).
-isPagar(5, 16).
-isPagar(6, 16).
-isPagar(7, 16).
-isPagar(8, 16).
-isPagar(9, 16).
-isPagar(10, 16).
-isPagar(11, 16).
-isPagar(12, 16).
-isPagar(13, 16).
-isPagar(14, 16).
-isPagar(15, 16).
-isPagar(16, 16).
 isPagar(16, 16).
 isPagar(0, 0).
-isPagar(1, 0).
-isPagar(2, 0).
-isPagar(3, 0).
-isPagar(4, 0).
-isPagar(5, 0).
-isPagar(6, 0).
-isPagar(7, 0).
-isPagar(8, 0).
-isPagar(9, 0).
-isPagar(10, 0).
-isPagar(11, 0).
-isPagar(12, 0).
-isPagar(13, 0).
-isPagar(14, 0).
-isPagar(15, 0).
-isPagar(16, 0).
 isPagar(0, 1).
-isPagar(16, 1).
 isPagar(0, 2).
-isPagar(16, 2).
 isPagar(0, 3).
-isPagar(16, 3).
 isPagar(0, 4).
-isPagar(16, 4).
 isPagar(0, 5).
-isPagar(16, 5).
 isPagar(0, 6).
-isPagar(16, 6).
 isPagar(0, 7).
-isPagar(16, 7).
 isPagar(0, 8).
-isPagar(16, 8).
 isPagar(0, 9).
-isPagar(16, 9).
 isPagar(0, 10).
-isPagar(16, 10).
 isPagar(0, 11).
-isPagar(16, 11).
 isPagar(0, 12).
-isPagar(16, 12).
 isPagar(0, 13).
-isPagar(16, 13).
 isPagar(0, 14).
-isPagar(16, 14).
 isPagar(0, 15).
+isPagar(0, 16).
+isPagar(16, 0).
+isPagar(16, 1).
+isPagar(16, 2).
+isPagar(16, 3).
+isPagar(16, 4).
+isPagar(16, 5).
+isPagar(16, 6).
+isPagar(16, 7).
+isPagar(16, 8).
+isPagar(16, 9).
+isPagar(16, 10).
+isPagar(16, 11).
+isPagar(16, 12).
+isPagar(16, 13).
+isPagar(16, 14).
 isPagar(16, 15).
-isPagar(0, 16).
-isPagar(1, 16).
-isPagar(2, 16).
-isPagar(3, 16).
-isPagar(4, 16).
-isPagar(5, 16).
-isPagar(6, 16).
-isPagar(7, 16).
-isPagar(8, 16).
-isPagar(9, 16).
-isPagar(10, 16).
-isPagar(11, 16).
-isPagar(12, 16).
-isPagar(13, 16).
-isPagar(14, 16).
-isPagar(15, 16).
-isPagar(16, 16).
-isPagar(16, 16).
-isPagar(0, 16).
-isPagar(1, 16).
-isPagar(2, 16).
-isPagar(3, 16).
-isPagar(4, 16).
-isPagar(5, 16).
-isPagar(6, 16).
-isPagar(7, 16).
-isPagar(8, 16).
-isPagar(9, 16).
-isPagar(10, 16).
-isPagar(11, 16).
-isPagar(12, 16).
-isPagar(13, 16).
-isPagar(14, 16).
-isPagar(15, 16).
-isPagar(16, 16).
 isPagar(16, 16).
 
-setBorder(A, B) :-
-	A =< 15,
-	A > 0,
-	B =< 15,
-	B > 0,
-	C is A + 1,
-	setBorder(C, B).
-setBorder(A, B) :-
-	B =:= 0,
-	A =< 15,
-	assertz(isPagar(A, B)),
-	C is A + 1,
-	setBorder(C, B).
-setBorder(A, B) :-
-	A =:= 0,
-	B =< 16,
-	assertz(isPagar(A, B)),
-	C is A + 1,
-	setBorder(C, B).
-setBorder(A, B) :-
-	A =:= 16,
-	B =< 16,
-	assertz(isPagar(A, B)),
-	C is B + 1,
-	setBorder(0, C).
-setBorder(A, B) :-
-	B =:= 16,
-	A =< 16,
-	assertz(isPagar(A, B)),
-	C is A + 1,
-	setBorder(C, B).
+setBorder :-
+	forall(between(0, 16, A), assertz(isPagar(A, 0))),
+	forall(between(0, 16, A), assertz(isPagar(A, 16))),
+	forall(between(0, 16, B), assertz(isPagar(0, B))),
+	forall(between(0, 16, B), assertz(isPagar(16, B))).
 
 draw_map(_, A) :-
 	A =:= 17,
@@ -1595,33 +1716,38 @@ draw_entity(A, B) :-
 w :-
 	game_start,
 	game_state(travelling),
-	\+ game_state(in_battle),
 	map_entity(A, B, 'P'),
 	C is B - 1,
 	\+ isPagar(A, C), !,
 	retract(map_entity(A, B, 'P')),
 	assertz(map_entity(A, C, 'P')),
-	chest_encounter.
+	chest_encounter, !.
 w :-
 	\+ game_start, !,
 	write('Game is not started, use "start." to play the game.').
 w :-
 	game_state(in_battle), !,
-	game_state(travelling),
 	write('You are in battle!! Use "help." to display the commands that you can use.').
 w :-
-	game_state(travelling),
+	game_state(shopactive), !,
+	write('Exit the shop first by using command "exitShop." !'),
+	nl.
+w :-
+	\+ game_state(travelling), !,
+	write('Cannot travel now').
+w :-
 	write('Ouch, you hit a wall. Use "map." to open the map!!').
 
 a :-
 	game_start,
 	\+ game_state(in_battle),
+	game_state(travelling),
 	map_entity(A, B, 'P'),
 	C is A - 1,
 	\+ isPagar(C, B), !,
 	retract(map_entity(A, B, 'P')),
 	assertz(map_entity(C, B, 'P')),
-	chest_encounter.
+	chest_encounter, !.
 a :-
 	\+ game_start, !,
 	write('Game is not started, use "start." to play the game.').
@@ -1629,24 +1755,31 @@ a :-
 	game_state(in_battle), !,
 	write('You are in battle!! Use "help." to display the commands that you can use.').
 a :-
+	game_state(shopactive), !,
+	write('Exit the shop first by using command "exitShop." !'),
+	nl.
+a :-
+	\+ game_state(travelling), !,
+	write('Cannot travel now').
+a :-
 	write('Ouch, you hit a wall. Use "map." to open the map!!').
 
 s :-
 	game_start,
-	\+ game_state(in_battle),
+	game_state(travelling),
 	map_entity(A, B, 'P'),
 	C is B + 1,
 	\+ isPagar(A, C),
 	\+ map_entity(A, C, 'B'), !,
 	retract(map_entity(A, B, 'P')),
 	assertz(map_entity(A, C, 'P')),
-	chest_encounter.
+	chest_encounter, !.
 s :-
 	game_start,
-	\+ game_state(in_battle),
+	game_state(travelling),
 	map_entity(A, B, 'P'),
 	C is B + 1,
-	\+ isPagar(A, C), !,
+	\+ isPagar(A, C),
 	map_entity(A, C, 'B'), !,
 	trigger_boss.
 s :-
@@ -1656,26 +1789,33 @@ s :-
 	game_state(in_battle), !,
 	write('You are in battle!! Use "help." to display the commands that you can use.').
 s :-
+	game_state(shopactive), !,
+	write('Exit the shop first by using command "exitShop." !'),
+	nl.
+s :-
+	\+ game_state(travelling), !,
+	write('Cannot travel now').
+s :-
 	write('Ouch, you hit a wall. Use "map." to open the map!!').
 
 d :-
 	game_start,
-	\+ game_state(in_battle),
+	game_state(travelling),
 	map_entity(A, B, 'P'),
 	C is A + 1,
 	\+ isPagar(C, B),
 	\+ map_entity(C, B, 'B'), !,
 	retract(map_entity(A, B, 'P')),
 	assertz(map_entity(C, B, 'P')),
-	chest_encounter.
+	chest_encounter, !.
 d :-
 	game_start,
-	\+ game_state(in_battle),
+	game_state(travelling),
 	map_entity(A, B, 'P'),
 	C is A + 1,
 	\+ isPagar(C, B), !,
 	map_entity(C, B, 'B'), !,
-	trigger_boss.
+	trigger_boss, !.
 d :-
 	\+ game_start, !,
 	write('Game is not started, use "start." to play the game.').
@@ -1683,13 +1823,38 @@ d :-
 	game_state(in_battle), !,
 	write('You are in battle!! Use "help." to display the commands that you can use.').
 d :-
+	game_state(shopactive), !,
+	write('Exit the shop first by using command "exitShop." !'),
+	nl.
+d :-
+	\+ game_state(travelling), !,
+	write('Cannot travel now').
+d :-
 	write('Ouch, you hit a wall. Use "map." to open the map!!').
 
 map :-
+	write(===============================================),
+	nl,
+	write('            W  O  R  L  D    M  A  P           '),
+	nl,
+	write(===============================================),
+	nl,
+	nl,
 	retract(draw_done(_)),
 	asserta(draw_done(false)),
-	draw_map(0, 0), !.
+	draw_map(0, 0),
+	nl,
+	write(===============================================), !,
+	nl.
 
+teleport :-
+	game_start,
+	game_state(travelling),
+	map_entity(A, B, 'P'),
+	\+ map_entity(A, B, 'T'), !,
+	write('You''re not on teleport point!!'),
+	nl,
+	write('Use "map." to open the map!!').
 teleport :-
 	game_start,
 	map_entity(A, B, 'P'),
@@ -1718,37 +1883,49 @@ execute_teleport(A, B) :-
 	\+ map_entity(A, B, 'T'), !,
 	write('Invalid Location!!').
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/player.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/player.pl
 
 choose_class :-
-	write(------------------------------------------------------------),
+	write(================================================================================================================================================),
 	nl,
-	write('|        Welcome to Genshin Asik. Choose your job          |'),
+	write('                                        |                     Choose your job!                     |                                            '),
 	nl,
-	write('|                        1. Knight                         |'),
+	write('                                        |                        1. Knight                         |                                            '),
 	nl,
-	write('|                        2. Archer                         |'),
+	write('                                        |                        2. Archer                         |                                            '),
 	nl,
-	write('|                        3. Mage                           |'),
+	write('                                        |                        3. Mage                           |                                            '),
 	nl,
-	write(------------------------------------------------------------),
+	write(================================================================================================================================================),
 	nl,
-	write('Type the number associated with the job you chose followed with a periodt.'),
+	write('|                                        Type the job you want to choose followed with a periodt.                                              |'),
 	nl,
-	write('For example: 1. or 2. or 3.'),
+	write('|                                           For example: ''Knight''.  or ''Archer.''. or ''Mage''.                                                   |'),
 	nl,
-	write('Then, press return or enter.'),
+	write('|                                    Make sure to include the apostrophe! Then, press return or enter.                                         |'),
+	nl,
+	write(================================================================================================================================================),
 	nl,
 	read(A),
 	nl,
 	assert_class(A),
-	write('The game has been started. Use ''help.'' to look for available commands!'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''start.'' to restart the game'),
+	write('|                      The game has been started. Use ''help.'' to look for available commands! Here are some of them.                           |'),
 	nl,
-	write('Use ''quit.'' to exit the game.'),
+	write(================================================================================================================================================),
 	nl,
-	write('Use ''inventory.'' to list all the items in your inventory.'),
+	write('|        Commmand        |                                                           Function                                                  |'),
+	nl,
+	write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),
+	nl,
+	write('|       ''start.''         |     Restart the game.                                                                                               |'),
+	nl,
+	write('|        ''quit.''         |     Exit the game.                                                                                                  |'),
+	nl,
+	write('|      ''inventory.''      |     List all the items in your inventory.                                                                           |'),
+	nl,
+	write(================================================================================================================================================),
 	nl,
 	initialize_resources.
 
@@ -1759,47 +1936,54 @@ status :-
 	player_attack(D),
 	player_defense(E),
 	player_max_health(F),
-	player_max_attack(G),
-	player_max_defense(H),
-	current_gold(I),
-	current_exp(J),
-	exp_level_up(B, K),
-	write('Job:     '),
+	equipped_weapon(_),
+	equipped_cover(_),
+	player_attack_mult(G),
+	player_defense_mult(H),
+	I is truncate(D * G),
+	J is truncate(E * H),
+	current_gold(K),
+	current_exp(L),
+	exp_level_up(B, M),
+	write(===============================================),
+	nl,
+	write('             S   T   A   T   U   S             '),
+	nl,
+	write(===============================================),
+	nl,
+	write('Job      : '),
 	write(A),
 	nl,
-	write('Level:   '),
+	write('Level    : '),
 	write(B),
 	nl,
-	write('Health:  '),
+	write('Health   : '),
 	write(C),
 	write(/),
 	write(F),
 	nl,
-	write('Attack:  '),
-	write(D),
-	write(/),
-	write(G),
-	nl,
-	write('Defense: '),
-	write(E),
-	write(/),
-	write(H),
-	nl,
-	write('Gold:    '),
+	write('Attack   : '),
 	write(I),
 	nl,
-	write('Exp:     '),
+	write('Defense  : '),
 	write(J),
-	write(/),
+	nl,
+	write('Gold     : '),
 	write(K),
+	nl,
+	write('Exp      : '),
+	write(L),
+	write(/),
+	write(M),
+	nl,
+	write(===============================================),
 	nl.
 
 exp_level_up(A, B) :-
 	B is 300 * A.
 
-assert_class(1) :-
+assert_class('Knight') :-
 	assertz(player_class(knight)),
-	baseHealth(A, B),
 	player_class(A),
 	assertz(player_level(1)),
 	baseHealth(A, B),
@@ -1813,11 +1997,17 @@ assert_class(1) :-
 	assertz(player_max_defense(D)),
 	baseWeapon(A, E),
 	assertz(equipped_weapon(E)),
-	write('You choose '),
+	assertz(equipped_cover('wooden armor')),
+	assertz(player_health_mult(1.0)),
+	assertz(player_attack_mult(1.0)),
+	assertz(player_defense_mult(1.0)),
+	write(================================================================================================================================================),
+	nl,
+	write('                                               |You choose '),
 	write(A),
-	write(', let\xe2\\x80\\x99\s explore the world!'),
+	write(', letâ\x80\\x99\s explore the world!|'),
 	nl, !.
-assert_class(2) :-
+assert_class('Archer') :-
 	assertz(player_class(archer)),
 	player_class(A),
 	assertz(player_level(1)),
@@ -1832,11 +2022,17 @@ assert_class(2) :-
 	assertz(player_max_defense(D)),
 	baseWeapon(A, E),
 	assertz(equipped_weapon(E)),
-	write('You choose '),
+	assertz(equipped_cover('wooden armor')),
+	assertz(player_health_mult(1.0)),
+	assertz(player_attack_mult(1.0)),
+	assertz(player_defense_mult(1.0)),
+	write(================================================================================================================================================),
+	nl,
+	write('                                               |You choose '),
 	write(A),
-	write(', let\xe2\\x80\\x99\s explore the world!'),
+	write(', letâ\x80\\x99\s explore the world!|'),
 	nl, !.
-assert_class(3) :-
+assert_class('Mage') :-
 	assertz(player_class(mage)),
 	player_class(A),
 	assertz(player_level(1)),
@@ -1851,15 +2047,21 @@ assert_class(3) :-
 	assertz(player_max_defense(D)),
 	baseWeapon(A, E),
 	assertz(equipped_weapon(E)),
-	write('You choose '),
+	assertz(equipped_cover('wooden armor')),
+	assertz(player_health_mult(1.0)),
+	assertz(player_attack_mult(1.0)),
+	assertz(player_defense_mult(1.0)),
+	write(================================================================================================================================================),
+	nl,
+	write('                                               |You choose '),
 	write(A),
-	write(', let\xe2\\x80\\x99\s explore the world!'),
+	write(', letâ\x80\\x99\s explore the world!|'),
 	nl, !.
 
 initialize_resources :-
 	assertz(current_gold(1000)),
 	assertz(current_exp(0)),
-	assertz(inventory_bag([['health potion', 10], ['attack potion S', 5]], 10)).
+	assertz(inventory_bag([['health potion', 10], ['attack potion S', 5]], 15)).
 
 add_player_exp(A) :-
 	current_exp(B),
@@ -1894,18 +2096,31 @@ upgrade_player_level(A, B, C) :-
 	exp_level_up(D, F),
 	G is F - E,
 	upgrade_player_status,
+	print_level_up_util(G, D, E),
+	call_level_up(D, E, F).
+
+call_level_up(A, B, C) :-
+	B >= C, !,
+	upgrade_player_level(A, B, C).
+call_level_up(_, _, _) :-
+	!.
+
+print_level_up_util(A, B, C) :-
+	A > 0, !,
 	write('Your character has been upgraded to level '),
-	write(D),
+	write(B),
 	write(!),
 	nl,
 	write('You now have '),
-	write(E),
+	write(C),
 	write(' Exp'),
 	nl,
 	write('You need '),
-	write(G),
+	write(A),
 	write(' Exp to get upgraded to the next level. Keep exploring the game!'),
 	nl.
+print_level_up_util(_, _, _) :-
+	!.
 
 upgrade_player_status :-
 	player_max_attack(A),
@@ -1936,11 +2151,11 @@ add_player_gold(A) :-
 	retract(current_gold(B)),
 	assertz(current_gold(C)),
 	write('You obtained '),
-	write(C),
+	write(A),
 	write(' Gold! The gold is now kept in your pocket!'),
 	nl.
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/quest.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/quest.pl
 
 questExp(5000).
 
@@ -1956,9 +2171,16 @@ quest :-
 	random(1, 11, C),
 	random(1, 6, D),
 	random(1, 3, E),
-	write('Hi there traveler!!!'),
+	write(===============================================),
 	nl,
-	write('Could you help me out?? I want you to go kill: '),
+	write('                Q   U   E   S   T              '),
+	nl,
+	write(===============================================),
+	nl,
+	nl,
+	write('Hello there traveler!'),
+	nl,
+	write('Could you help me out? I want you to slay : '),
 	nl,
 	write(C),
 	write(' slime(s)'),
@@ -1969,7 +2191,10 @@ quest :-
 	write(E),
 	write(' mage(s)'),
 	nl,
-	write('Would you help me?? (yes/no)'),
+	write('Would you help me out? (yes/no)'),
+	nl,
+	nl,
+	write(=================================================),
 	nl,
 	retract(slime_counter(_)),
 	retract(hilichurl_counter(_)),
@@ -2010,6 +2235,7 @@ yes :-
 	slime_counter(A),
 	hilichurl_counter(B),
 	mage_counter(C),
+	retract(quest_active(false)),
 	assertz(quest_active(true)),
 	write('You accepted the quest!!'),
 	nl,
@@ -2037,7 +2263,10 @@ no :-
 	assertz(game_state(travelling)),
 	retract(slime_counter(_)),
 	retract(hilichurl_counter(_)),
-	retract(mage_counter(_)).
+	retract(mage_counter(_)),
+	assertz(slime_counter(0)),
+	assertz(hilichurl_counter(0)),
+	assertz(mage_counter(0)).
 no :-
 	\+ game_state(in_quest_dialogue), !,
 	write('You are not in quest dialogue!!').
@@ -2084,11 +2313,15 @@ check_quest_done :-
 	mage_counter(0),
 	write('Quest finished!!! You get :'),
 	questExp(A),
+	write(A),
 	write(' Exp'),
 	nl,
 	questGold(B),
+	write(B),
 	write(' Gold'),
 	nl,
+	retract(quest_active(true)),
+	assertz(quest_active(false)),
 	add_player_exp(A),
 	add_player_gold(B).
 check_quest_done :-
@@ -2098,7 +2331,7 @@ check_quest_done :-
 check_quest_done :-
 	\+ mage_counter(0), !.
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/shop.pl
+% file: C:/Users/Aphos/Documents/prolog-genshin/shop.pl
 
 shop :-
 	game_state(shopactive), !,
@@ -2106,28 +2339,55 @@ shop :-
 	fail.
 shop :-
 	map_entity(A, B, 'P'),
-	map_entity(C, D, 'S'),
-	\+ A =:= C,
-	\+ B =:= D,
-	writeNotShopTile.
-shop :-
-	map_entity(A, B, 'P'),
 	map_entity(A, B, 'S'),
+	retract(game_state(travelling)),
 	assertz(game_state(shopactive)), !,
-	write('What do you want to buy?'),
+	write(===========================================================================================),
 	nl,
-	write('1. Gacha (1000 gold)'),
+	write('|                                        S   H   O   P                                    |'),
 	nl,
-	write('2. Health Potion (100 gold)'),
+	write(===========================================================================================),
 	nl,
-	write('3. Panas spesial 2 mekdi (150 gold)'),
+	write('|                      Welcome to the shop! What do you want to do?                       |'),
 	nl,
-	write('4. Sadikin (200 gold)'),
+	write(===========================================================================================),
 	nl,
-	write('5. Go milk (250 gold)'),
+	write('|    Activity    |         Item          |        Price          |        Command         |'),
 	nl,
-	write('6. Crisbar (300 gold)'),
+	write('-----------------|-----------------------|-----------------------|------------------------|'),
+	nl,
+	write('|     Gacha      |   Weapon and Armor    |      1000 gold        |       ''gacha.''         |'),
+	nl,
+	write('|      Buy       |     Health Potion     |      100 gold         |    ''healthpotion.''     |'),
+	nl,
+	write('|      Buy       | Panas Spesial 2 Mekdi |      150 gold         |       ''panas.''         |'),
+	nl,
+	write('|      Buy       |       Sadikin         |      200 gold         |      ''sadikin.''        |'),
+	nl,
+	write('|      Buy       |       Go Milk         |      250 gold         |       ''gomilk.''        |'),
+	nl,
+	write('|      Buy       |       Crisbar         |      300 gold         |      ''crisbar.''        |'),
+	nl,
+	write('|      Buy       |   Attack Potion S     |      300 gold         |    ''attackPotionS.''    |'),
+	nl,
+	write('|      Buy       |   Attack Potion M     |      350 gold         |    ''attackPotionM.''    |'),
+	nl,
+	write('|      Buy       |   Attack Potion L     |      400 gold         |    ''attackPotionL.''    |'),
+	nl,
+	write('|      Buy       |   Defense Potion S    |      250 gold         |    ''defensePotionS.''   |'),
+	nl,
+	write('|      Buy       |   Defense Potion M    |      300 gold         |    ''defensePotionM.''   |'),
+	nl,
+	write('|      Buy       |   Defense Potion L    |      350 gold         |    ''defensePotionL.''   |'),
+	nl,
+	write('|      Sell      |       All items       |   Depends on item     |        ''sell.''         |'),
+	nl,
+	nl,
+	write(===========================================================================================),
 	nl.
+shop :-
+	!,
+	writeNotShopTile.
 
 listIdx([A], 0, A).
 listIdx([A|_], 0, A).
@@ -2159,18 +2419,23 @@ gacha :-
 	random(0, 59, E),
 	listIdx(A, E, F),
 	addToInventory([F|1]),
+	inventory_bag(_, G),
+	\+ G =:= 100,
 	writeGacha(F), !.
 
 writeGacha(A) :-
 	\+ ultraRareItem(A),
 	\+ rareItem(A),
-	format('You got ~w.~n', [A]).
+	type(B, A),
+	format('You got ~w [type : ~w].~n', [A, B]).
 writeGacha(A) :-
 	ultraRareItem(A),
-	format('Congratulation! you got ~w (ULTRA RARE).~n', [A]).
+	type(B, A),
+	format('Congratulation! you got ~w [type : ~w] (ULTRA RARE).~n', [A, B]).
 writeGacha(A) :-
 	rareItem(A),
-	format('Congratulation! you got ~w (RARE).~n', [A]).
+	type(B, A),
+	format('Congratulation! you got ~w [type : ~w] (RARE).~n', [A, B]).
 
 healthpotion :-
 	\+ game_state(shopactive), !,
@@ -2178,7 +2443,7 @@ healthpotion :-
 	fail.
 healthpotion :-
 	current_gold(A),
-	price(healthpotion, B),
+	price('health potion', B),
 	A < B,
 	writeNotEnoughGold,
 	fail.
@@ -2191,6 +2456,8 @@ healthpotion :-
 	C is A - B,
 	assertz(current_gold(C)),
 	addToInventory(['health potion'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
 	write('Thanks for buying!'),
 	nl.
 
@@ -2213,6 +2480,8 @@ panas :-
 	C is A - B,
 	assertz(current_gold(C)),
 	addToInventory(['panas 2 spesial mekdi'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
 	write('Thanks for buying!'),
 	nl.
 
@@ -2235,6 +2504,8 @@ sadikin :-
 	C is A - B,
 	assertz(current_gold(C)),
 	addToInventory([sadikin|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
 	write('Thanks for buying!'),
 	nl.
 
@@ -2244,7 +2515,7 @@ gomilk :-
 	fail.
 gomilk :-
 	current_gold(A),
-	price(gomilk, B),
+	price('go milk', B),
 	A < B,
 	writeNotEnoughGold,
 	fail.
@@ -2257,6 +2528,8 @@ gomilk :-
 	C is A - B,
 	assertz(current_gold(C)),
 	addToInventory(['go milk'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
 	write('Thanks for buying!'),
 	nl.
 
@@ -2279,6 +2552,152 @@ crisbar :-
 	C is A - B,
 	assertz(current_gold(C)),
 	addToInventory([crisbar|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
+	write('Thanks for buying!'),
+	nl.
+
+attackPotionS :-
+	\+ game_state(shopactive), !,
+	writeShopIsNotOpenMessage,
+	fail.
+attackPotionS :-
+	current_gold(A),
+	price('attack potion S', B),
+	A < B,
+	writeNotEnoughGold,
+	fail.
+attackPotionS :-
+	game_state(shopactive),
+	current_gold(A),
+	price('attack potion S', B),
+	A >= B,
+	retract(current_gold(A)),
+	C is A - B,
+	assertz(current_gold(C)),
+	addToInventory(['attack potion S'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
+	write('Thanks for buying!'),
+	nl.
+
+attackPotionM :-
+	\+ game_state(shopactive), !,
+	writeShopIsNotOpenMessage,
+	fail.
+attackPotionM :-
+	current_gold(A),
+	price('attack potion M', B),
+	A < B,
+	writeNotEnoughGold,
+	fail.
+attackPotionM :-
+	game_state(shopactive),
+	current_gold(A),
+	price('attack potion M', B),
+	A >= B,
+	retract(current_gold(A)),
+	C is A - B,
+	assertz(current_gold(C)),
+	addToInventory(['attack potion M'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
+	write('Thanks for buying!'),
+	nl.
+
+attackPotionL :-
+	\+ game_state(shopactive), !,
+	writeShopIsNotOpenMessage,
+	fail.
+attackPotionL :-
+	current_gold(A),
+	price('attack potion L', B),
+	A < B,
+	writeNotEnoughGold,
+	fail.
+attackPotionL :-
+	game_state(shopactive),
+	current_gold(A),
+	price('attack potion L', B),
+	A >= B,
+	retract(current_gold(A)),
+	C is A - B,
+	assertz(current_gold(C)),
+	addToInventory(['attack potion L'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
+	write('Thanks for buying!'),
+	nl.
+
+defensePotionS :-
+	\+ game_state(shopactive), !,
+	writeShopIsNotOpenMessage,
+	fail.
+defensePotionS :-
+	current_gold(A),
+	price('defense potion S', B),
+	A < B,
+	writeNotEnoughGold,
+	fail.
+defensePotionS :-
+	game_state(shopactive),
+	current_gold(A),
+	price('defense potion S', B),
+	A >= B,
+	retract(current_gold(A)),
+	C is A - B,
+	assertz(current_gold(C)),
+	addToInventory(['defense potion S'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
+	write('Thanks for buying!'),
+	nl.
+
+defensePotionM :-
+	\+ game_state(shopactive), !,
+	writeShopIsNotOpenMessage,
+	fail.
+defensePotionM :-
+	current_gold(A),
+	price('defense potion M', B),
+	A < B,
+	writeNotEnoughGold,
+	fail.
+defensePotionM :-
+	game_state(shopactive),
+	current_gold(A),
+	price('defense potion M', B),
+	A >= B,
+	retract(current_gold(A)),
+	C is A - B,
+	assertz(current_gold(C)),
+	addToInventory(['defense potion M'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
+	write('Thanks for buying!'),
+	nl.
+
+defensePotionL :-
+	\+ game_state(shopactive), !,
+	writeShopIsNotOpenMessage,
+	fail.
+defensePotionL :-
+	current_gold(A),
+	price('defense potion L', B),
+	A < B,
+	writeNotEnoughGold,
+	fail.
+defensePotionL :-
+	game_state(shopactive),
+	current_gold(A),
+	price('defense potion L', B),
+	A >= B,
+	retract(current_gold(A)),
+	C is A - B,
+	assertz(current_gold(C)),
+	addToInventory(['defense potion L'|1]),
+	inventory_bag(_, D),
+	\+ D =:= 100,
 	write('Thanks for buying!'),
 	nl.
 
@@ -2312,7 +2731,20 @@ hehe :-
 	write('EHE TE NANDAYO?'),
 	nl.
 
-% file: /mnt/c/Users/hrshf/OneDrive/Documents/code/logkomie/prolog-genshin/utility.pl
+sell :-
+	\+ game_state(shopactive), !,
+	writeShopIsNotOpenMessage,
+	fail.
+sell :-
+	game_state(shopactive),
+	inventory,
+	write('Type the item''s name you wish to sell: '),
+	read(A),
+	write('Type the amount of that item: '),
+	read(B),
+	handle_sell(A, B).
+
+% file: C:/Users/Aphos/Documents/prolog-genshin/utility.pl
 
 power(_, 0, 1).
 power(A, B, C) :-
@@ -2333,8 +2765,58 @@ calc_damage(A, B, C) :-
 	G is F,
 	C is truncate(G - 0.20000000000000001 * B).
 
+attack_mutate(A, B) :-
+	A =< 0,
+	B is 1.
+attack_mutate(A, B) :-
+	A > 0,
+	B is A.
+
 calc_status_upgrade(A, B) :-
-	B is truncate(A * 1.3999999999999999).
+	B is truncate(A * 1.1000000000000001).
+
+handle_sell(_, A) :-
+	A =< 0,
+	write('enter the correct amount of item(s) (greater than zero)!'), !.
+handle_sell(A, B) :-
+	findItemAmount(A, C),
+	B > C,
+	write('Dont lie! you dont have that much of this item!'), !.
+handle_sell(A, B) :-
+	price(A, C),
+	type(consumable, A),
+	D is C // 2,
+	E is D * B,
+	add_player_gold(E),
+	substractFromInventory([A|B]), !,
+	write('The item has been successfully sold!'),
+	nl.
+handle_sell(A, B) :-
+	\+ type(consumable, A),
+	ultraRareItem(A),
+	C is 10000,
+	D is C * B,
+	add_player_gold(D),
+	substractFromInventory([A|B]), !,
+	write('The item has been successfully sold!'),
+	nl.
+handle_sell(A, B) :-
+	\+ type(consumable, A),
+	rareItem(A),
+	C is 5000,
+	D is C * B,
+	add_player_gold(D),
+	substractFromInventory([A|B]), !,
+	write('The item has been successfully sold!'),
+	nl.
+handle_sell(A, B) :-
+	!,
+	C is 500,
+	D is C * B,
+	add_player_gold(D),
+	substractFromInventory([A|B]), !,
+	write('The item has been successfully sold!'),
+	nl.
 
 push(A, [], [A]).
 push(A, [B|C], [B|D]) :-
@@ -2357,18 +2839,8 @@ getItemAmount(A, [[_, _]|B], C) :-
 
 % file: user_input
 
-buff_att(0).
-buff_att(0).
-buff_att(0).
-buff_att(0).
-buff_att(0).
-buff_att(0).
-buff_att(0).
+player_health_mult(1.0).
 
-buff_def(0).
-buff_def(0).
-buff_def(0).
-buff_def(0).
-buff_def(0).
-buff_def(0).
-buff_def(0).
+player_max_attack(309126805284).
+
+player_max_defense(804).

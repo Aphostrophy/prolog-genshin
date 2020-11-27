@@ -58,7 +58,7 @@ assert_class('Knight'):-
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     assertz(player_health_mult(1.0)),assertz(player_attack_mult(1.0)),assertz(player_defense_mult(1.0)),
     write('================================================================================================================================================'),nl,
-    write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
+    write('                                               |You choose '), write(X), write(', let\'s explore the world!|'),nl,!.
 
 assert_class('Archer'):-
     assertz(player_class('archer')),
@@ -68,7 +68,7 @@ assert_class('Archer'):-
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     assertz(player_health_mult(1.0)),assertz(player_attack_mult(1.0)),assertz(player_defense_mult(1.0)),
     write('================================================================================================================================================'),nl,
-    write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
+    write('                                               |You choose '), write(X), write(', let\'s explore the world!|'),nl,!.
 
 assert_class('Mage'):-
     assertz(player_class('mage')),
@@ -78,7 +78,7 @@ assert_class('Mage'):-
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
     assertz(player_health_mult(1.0)),assertz(player_attack_mult(1.0)),assertz(player_defense_mult(1.0)),
     write('================================================================================================================================================'),nl,
-    write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
+    write('                                               |You choose '), write(X), write(', let\'s explore the world!|'),nl,!.
 
 initialize_resources:-
     assertz(current_gold(1000)),
@@ -95,24 +95,37 @@ add_player_exp(ObtainedExp) :-
     upgrade_player_level(X1,Result,LevelExp),
     write('You can now check your updated current Exp and Gold with \'status\' command!'),nl.
 
-upgrade_player_level(X,Y,Z) :-
-    Y < Z, !,
-    RemainingExp is Z - Y,
-    write('You now have '), write(Y), write(' Exp'), nl,
+upgrade_player_level(CurrentPlayerLevel,Exp,ExpNeeded) :-
+    Exp < ExpNeeded, !,
+    RemainingExp is ExpNeeded - Exp,
+    write('You now have '), write(Exp), write(' Exp'), nl,
     write('You need '), write(RemainingExp), write(' Exp to get upgraded to the next level. Keep exploring the game!'),nl.
 
-upgrade_player_level(X,Y,Z) :-
-    Y >= Z,
-    UpgradedLevel is X + 1,
-    UpgradedExp is Y - Z,
-    retract(player_level(X)), assertz(player_level(UpgradedLevel)),
-    retract(current_exp(Y)), assertz(current_exp(UpgradedExp)),
+upgrade_player_level(CurrentPlayerLevel,Exp,ExpNeeded) :-
+    Exp >= ExpNeeded,
+    UpgradedLevel is CurrentPlayerLevel + 1,
+    UpgradedExp is Exp - ExpNeeded,
+    retract(player_level(CurrentPlayerLevel)), assertz(player_level(UpgradedLevel)),
+    retract(current_exp(Exp)), assertz(current_exp(UpgradedExp)),
     exp_level_up(UpgradedLevel,NewLevelExp),
     RemainingExp is NewLevelExp - UpgradedExp,
     upgrade_player_status,
+    print_level_up_util(RemainingExp,UpgradedLevel,UpgradedExp),
+    call_level_up(UpgradedLevel,UpgradedExp,NewLevelExp).
+
+call_level_up(CurrentPlayerLevel,Exp,ExpNeeded) :-
+    Exp>=ExpNeeded,!,
+    upgrade_player_level(CurrentPlayerLevel,Exp,ExpNeeded).
+
+call_level_up(CurrentPlayerLevel,Exp,ExpNeeded) :- !.
+
+print_level_up_util(RemainingExp,UpgradedLevel,UpgradedExp) :- 
+    RemainingExp>0,!,
     write('Your character has been upgraded to level '), write(UpgradedLevel), write('!'), nl,
     write('You now have '), write(UpgradedExp), write(' Exp'), nl,
     write('You need '), write(RemainingExp), write(' Exp to get upgraded to the next level. Keep exploring the game!'),nl.
+
+print_level_up_util(RemainingExp,UpgradedLevel,UpgradedExp) :- !.
 
 upgrade_player_status :-
     player_max_attack(X), player_max_defense(Y), player_max_health(Z),

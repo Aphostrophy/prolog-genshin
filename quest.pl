@@ -81,7 +81,10 @@ no :-
     assertz(game_state(travelling)),
     retract(slime_counter(_)),
     retract(hilichurl_counter(_)),
-    retract(mage_counter(_)).
+    retract(mage_counter(_)),
+    assertz(slime_counter(0)),
+    assertz(hilichurl_counter(0)),
+    assertz(mage_counter(0)).
 
 no :- 
     (\+ game_state(in_quest_dialogue)), !,
@@ -135,8 +138,8 @@ check_quest_done :-
     hilichurl_counter(0),
     mage_counter(0),
     write('Quest finished!!! You get :'),
-    questExp(ExpLoot), write(' Exp'), nl,
-    questGold(GoldLoot), write(' Gold'), nl,
+    questExp(ExpLoot),write(ExpLoot), write(' Exp'), nl,
+    questGold(GoldLoot),write(GoldLoot), write(' Gold'), nl,
 
     retract(quest_active(true)),
     assertz(quest_active(false)),

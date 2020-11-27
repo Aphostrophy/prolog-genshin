@@ -141,19 +141,23 @@ encounter(X) :-
     random(1, MaxRandom, EnemyLevel),
     retract(lvl_enemy(_)),
     assertz(lvl_enemy(EnemyLevel)),
+
+    DecEnemyLevel is EnemyLevel - 1,
     
     enemy_health(X, Hp),
-    ScaleHp is Hp + 10*EnemyLevel,
+    power(1.1,DecEnemyLevel,Scaler),
+    ScaleHp is truncate(Hp*Scaler + 10*EnemyLevel),
+
     retract(hp_enemy(_)),
     assertz(hp_enemy(ScaleHp)),
     
     enemy_attack(X, Att),
-    ScaleAtt is Att + 5*EnemyLevel,
+    ScaleAtt is truncate(Att*Scaler + 5*EnemyLevel),
     retract(att_enemy(_)),
     assertz(att_enemy(ScaleAtt)),
 
     enemy_defense(X, Def),
-    ScaleDef is Def + 2*EnemyLevel,
+    ScaleDef is truncate(Def*Scaler + 2*EnemyLevel),
     retract(def_enemy(_)),
     assertz(def_enemy(ScaleDef)),
 
@@ -174,7 +178,7 @@ gacha_chest(ChestRate) :-
     chestLoot(MinGold),
     MaxGold is MinGold + 100*PlayerLevel,
     random(MinGold, MaxGold, Loot),    
-    write('You found a chest!! You get : '), write(Loot), write(' gold'), !,
+    write('You found a chest!! You get : '), write(Loot), write(' gold'), nl, !,
     add_player_gold(Loot).
 
 gacha_chest(ChestRate) :-
@@ -189,19 +193,23 @@ gacha_chest(ChestRate) :-
     random(1, MaxRandom, EnemyLevel),
     retract(lvl_enemy(_)),
     assertz(lvl_enemy(EnemyLevel)),
+
+    DecEnemyLevel is EnemyLevel - 1,
     
     enemy_health(3, Hp),
-    ScaleHp is Hp + 10*EnemyLevel,
+    power(1.1,DecEnemyLevel,Scaler),
+    ScaleHp is truncate(Hp*Scaler + 10*EnemyLevel),
+
     retract(hp_enemy(_)),
     assertz(hp_enemy(ScaleHp)),
     
     enemy_attack(3, Att),
-    ScaleAtt is Att + 5*EnemyLevel,
+    ScaleAtt is truncate(Att*Scaler + 5*EnemyLevel),
     retract(att_enemy(_)),
     assertz(att_enemy(ScaleAtt)),
 
     enemy_defense(3, Def),
-    ScaleDef is Def + 2*EnemyLevel,
+    ScaleDef is truncate(Def*Scaler + 2*EnemyLevel),
     retract(def_enemy(_)),
     assertz(def_enemy(ScaleDef)),
 
