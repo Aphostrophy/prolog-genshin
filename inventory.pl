@@ -39,8 +39,11 @@ addToInventory([Name|Amount]) :-
 
 substractFromInventory([Name|Amount]) :-
     inventory_bag(Inventory,Size),
-    member([Name|_],Inventory),!,
+    findItemAmount(Name,Supply),
+    Supply>=Amount,!,
+
     reduceElement([Name|Amount],Inventory,NewInventory),
+
     NewSize is Size - Amount,
     retract(inventory_bag(Inventory,Size)),!,
     assertz(inventory_bag(NewInventory,NewSize)).
