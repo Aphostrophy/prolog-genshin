@@ -1,6 +1,6 @@
 /* File : quest.pl */
 
-questExp(5000).
+questExp(2500).
 questGold(5000).
 
 /* Quest Generator */
@@ -56,6 +56,7 @@ yes :-
     slime_counter(SlimeCount),
     hilichurl_counter(HilichurlCount),
     mage_counter(MageCount),
+    retract(quest_active(false)),
     assertz(quest_active(true)),
     write('You accepted the quest!!'), nl,
     write('You agreed to go kill: '), nl,
@@ -132,6 +133,9 @@ check_quest_done :-
     write('Quest finished!!! You get :'),
     questExp(ExpLoot), write(' Exp'), nl,
     questGold(GoldLoot), write(' Gold'), nl,
+
+    retract(quest_active(true)),
+    assertz(quest_active(false)),
 
     add_player_exp(ExpLoot),
     add_player_gold(GoldLoot).
