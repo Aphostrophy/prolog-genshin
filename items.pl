@@ -9,6 +9,7 @@ item('sadikin').
 item('go milk').
 item('crisbar').
 item('waster greatsword').
+item('old merc pal').
 item('debate club').
 item('prototype aminus').
 item('wolf greatsword').

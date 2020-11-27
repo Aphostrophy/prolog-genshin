@@ -205,7 +205,7 @@ help :-
     write('|    \'health potion.\'    |     Buy a health potion.                                                                                            |'),nl,
     write('|       \'panas.\'         |     Buy a panas spesial 2 mekdi.                                                                                    |'),nl,
     write('|      \'sadikin.\'        |     Buy a sadikin.                                                                                                  |'),nl,
-    write('|       \'go milk.\'       |     Buy a go milk.                                                                                                  |'),nl,
+    write('|       \'gomilk.\'       |     Buy a go milk.                                                                                                  |'),nl,
     write('|      \'crisbar.\'        |     Buy a crisbar.                                                                                                  |'),nl,
     write('|      \'exitShop.\'       |     Exit the shop.                                                                                                  |'),nl,
     write('|        \'sell.\'         |     Sell items in your inventory.                                                                                   |'),nl,
