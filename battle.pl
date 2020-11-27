@@ -113,7 +113,7 @@ attack :-
     TotalAtt is AttPlayer * MultAttack,
     calc_damage(AttPlayer, DefEnemy, Atk), !,
 
-    decrease_health(Atk, Damage), !,
+    attack_mutate(Atk, Damage), !,
 
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
@@ -137,7 +137,7 @@ attack :-
     TotalAtt is AttPlayer * MultAttack,
     calc_damage(TotalAtt, DefEnemy, Atk), !,
     
-    decrease_health(Atk, Damage), !,
+    attack_mutate(Atk, Damage), !,
 
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
@@ -173,7 +173,7 @@ special_attack :-
     SpecialAtt is 2*TotalAtt,
     calc_damage(SpecialAtt, DefEnemy, Atk),
 
-    decrease_health(Atk, Damage), !,
+    attack_mutate(Atk, Damage), !,
 
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
@@ -210,7 +210,7 @@ special_attack :-
     SpecialAtt is 2*TotalAtt,
     calc_damage(SpecialAtt, DefEnemy, Atk),
 
-    decrease_health(Atk, Damage), !,
+    attack_mutate(Atk, Damage), !,
 
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
@@ -322,17 +322,19 @@ heal(Hp) :-
     retract(player_health(_)),
     assertz(player_health(PlayerMaxHealth)).
 
-attUp(Att) :-
-    player_attack_mult(CurrentAttMult), !,
-    NewAttMult is CurrentAttMult+Att,
+attUp(AttMult) :-
+    equipped_weapon(CurrentWeapon),property(CurrentWeapon,MultAttack),
+    !,
+    NewAttMult is MultAttack+AttMult,
     retract(buff_att(_)),
     assertz(buff_att(3)),
     retract(player_attack_mult(_)),
     assertz(player_attack_mult(NewAttMult)).
 
-defUp(Def) :-
-    player_defense_mult(CurrentDefMult), !,
-    NewDefMult is CurrentDefMult+Def,
+defUp(DefMult) :-
+    equipped_cover(Armor),property(Armor,MultDefense,_),
+    !,
+    NewDefMult is MultDefense+DefMult,
     retract(buff_def(_)),
     assertz(buff_def(3)),
     retract(player_defense_mult(_)),
@@ -374,6 +376,7 @@ check_death :-
 check_death :- 
     show_battle_status, 
     nl, nl,
+
     special_timer(Timer),
     NewTimer is Timer+1,
     retract(special_timer(_)),
@@ -408,6 +411,7 @@ check_death_boss :-
 check_death_boss :- 
     show_battle_status, 
     nl, nl,
+
     special_timer(Timer),
     NewTimer is Timer+1,
     retract(special_timer(_)),
@@ -417,6 +421,7 @@ check_death_boss :-
     buff_def(BuffDef), !,
     check_buff_att(BuffAtt),
     check_buff_def(BuffDef), !,
+
     enemy_turn.
 
 /* Check buff masih ada atau tidak */
@@ -429,9 +434,11 @@ check_buff_att(X) :-
 
 check_buff_att(X) :-
     X =:= 0, !,
-    player_max_attack(NewAttack), !,
-    retract(player_attack(_)),
-    assertz(player_attack(NewAttack)).
+    equipped_weapon(Weapon),
+    property(Weapon, MultAttack), !,
+
+    retract(player_attack_mult(_)),
+    assertz(player_attack_mult(MultAttack)).
 
 check_buff_def(X) :-
     X > 0, !,
@@ -442,27 +449,27 @@ check_buff_def(X) :-
     
 check_buff_def(X) :-
     X =:= 0, !,
-    player_max_defense(NewDefense), !,
-    retract(player_defense(_)),
-    assertz(player_defense(NewDefense)).
+    equipped_cover(Armor),
+    property(Armor, MultDefense,_), !,
+
+    retract(player_defense_mult(_)),
+    assertz(player_defense_mult(MultDefense)).
 
 /* Giliran enemy nyerang */
 enemy_turn :- 
     !,
     att_enemy(AttEnemy),
     player_defense(DefPlayer),
+    player_defense_mult(DefPlayerMult),
     player_health(PlayerHealth), !,
 
-    equipped_cover(Armor),
-    property(Armor,MultDefense,MultHealth),
-    TotalDefPlayer is truncate(DefPlayer*MultDefense),
-    TotalPlayerHealth is truncate(PlayerHealth*MultHealth),
+    TotalDefPlayer is truncate(DefPlayer*DefPlayerMult),
 
     calc_damage(AttEnemy, TotalDefPlayer, Atk), !,
 
-    decrease_health(Atk, Damage), !,
+    attack_mutate(Atk, Damage), !,
 
-    NewX is TotalPlayerHealth - Damage,
+    NewX is PlayerHealth - Damage,
     
     retract(player_health(PlayerHealth)),
     assertz(player_health(NewX)), !,

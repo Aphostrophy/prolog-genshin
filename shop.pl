@@ -252,7 +252,7 @@ writeShopUsedMessage :-
     write('You have already opened shop'), nl.
 
 hehe:-
-    write('EHE TO NANDAYO?'),nl.
+    write('EHE TE NANDAYO?'),nl.
 
 sell:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
 sell :-

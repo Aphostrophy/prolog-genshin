@@ -22,11 +22,11 @@ calc_damage(Att, Def, Res) :-
     AttRandom is Random,
     Res is truncate(AttRandom - 0.2*Def).
 
-decrease_health(X, Damage) :-
+attack_mutate(X, Damage) :-
   X =< 0,
   Damage is 1.
 
-decrease_health(X, Hp) :-
+attack_mutate(X, Damage) :-
   X > 0,
   Damage is X.
   

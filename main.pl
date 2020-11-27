@@ -12,7 +12,6 @@
 :- dynamic(buff_att/1).
 :- dynamic(buff_def/1).
 
-:- dynamic(player_health_mult/1).
 :- dynamic(player_attack_mult/1).
 :- dynamic(player_defense_mult/1).
 
@@ -247,7 +246,6 @@ save:-
     write(':- dynamic(player_attack/1).'),nl,
     write(':- dynamic(player_defense/1).'),nl,
     write(':- dynamic(player_max_health/1).'),nl,
-    write(':- dynamic(player_health_mult/1).'),nl,
     write(':- dynamic(player_attack_mult/1'),nl,
     write(':- dynamic(player_defense_mult/1'),nl,
     write(':- dynamic(current_gold/1).'),nl,

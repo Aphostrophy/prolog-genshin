@@ -68,8 +68,9 @@ equip(Item) :- findItemAmount(Item,X),X =< 0,!,write('Item not in inventory.').
 equip(Item) :-
     type(ItemType,Item),player_class(Class),
     weapon(ItemType),equipmentAllowed(Class,Item),!,
-    equipped_weapon(CurrentWeapon),property(CurrentWeapon,CurrentWeaponAttack),
-    NewMaxAttack is CurrentAttack + NewWeaponAttack - CurrentWeaponAttack,
+
+    player_attack_mult(CurrentAttackMult),
+    equipped_weapon(CurrentWeapon),property(CurrentWeapon,CurrentWeaponAttackMult),
     retract(equipped_weapon(CurrentWeapon)),assertz(equipped_weapon(Item)),
     property(Weapon, MultAttack),player_attack_mult(CurrentAttackMult), NewMultAtt is CurrentAttackMult + MultAttack,
     retract(player_attack_mult(_)),assertz(player_attack_mult(NewMultAtt)),
@@ -85,12 +86,19 @@ equip(Item) :-
     type(ItemType,Item),
     cover(ItemType),!,
     equipped_cover(CurrentCover),
-    player_max_health(CurrentMaxHealth),
-    property(CurrentCover,OldArmorDefense,OldArmorHealth),property(Item,NewArmorDefense,NewArmorHealth),
-    NewMaxHealth is CurrentMaxHealth + NewArmorHealth - OldArmorHealth,
-    NewMaxDefense is CurrentMaxDefense + NewArmorDefense - OldArmorDefense,
+    player_defense_mult(CurrentDefenseMult),player_max_health(CurrentMaxHealth),player_health(CurrentHealth),
+    property(CurrentCover,OldArmorDefenseMult,OldArmorHealthMult),property(Item,NewArmorDefenseMult,NewArmorHealthMult),
+
+    NewCurrentHealth is truncate(CurrentHealth * NewArmorHealthMult/OldArmorHealthMult),
+    NewMaxHealth is truncate(CurrentMaxHealth *  NewArmorHealthMult/OldArmorHealthMult),
+    NewDefenseMult is CurrentDefenseMult + NewArmorDefenseMult - OldArmorDefenseMult,
+    retract(player_defense_mult(_)),
+    assertz(player_defense_mult(NewDefenseMult)),
+    
+    retract(player_max_health(_)),assertz(player_max_health(NewMaxHealth)),
+    retract(player_health(_)),assertz(player_health(NewCurrentHealth)),
+
     retract(equipped_cover(_)),assertz(equipped_cover(Item)),
-    property(Armor,MultDefense,MultHealth),
     substractFromInventory([Item|1]),addToInventory([CurrentCover|1]),
     write('Equipped '),write(Item).
 
