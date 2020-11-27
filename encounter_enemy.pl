@@ -143,7 +143,7 @@ encounter(X) :-
     assertz(lvl_enemy(EnemyLevel)),
 
     enemy_health(X, Hp),
-    power(1.15,EnemyLevel,Scaler),
+    power(1.1,EnemyLevel,Scaler),
     ScaleHp is truncate(Hp*Scaler) + 10*EnemyLevel,
 
     retract(hp_enemy(_)),
@@ -193,7 +193,7 @@ gacha_chest(ChestRate) :-
     assertz(lvl_enemy(EnemyLevel)),
 
     enemy_health(3, Hp),
-    power(1.15,EnemyLevel,Scaler),
+    power(1.1,EnemyLevel,Scaler),
     ScaleHp is truncate(Hp*Scaler) + 10*EnemyLevel,
 
     retract(hp_enemy(_)),
