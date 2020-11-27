@@ -94,7 +94,7 @@ equip(Item) :-
     retract(player_defense(_)),assertz(player_defense(NewMaxDefense)),
     retract(player_max_defense(_)),assertz(player_max_defense(NewMaxDefense)).
 
-equippedItems:-
+equipped_items:-
     equipped_weapon(X),
     write('Weapon:'),write(X),nl,
     property(X,Attack),write('Attack Bonus: '),write(Attack),nl,
