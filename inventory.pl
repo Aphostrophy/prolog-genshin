@@ -70,6 +70,8 @@ equip(Item) :-
     NewMaxAttack is CurrentAttack + NewWeaponAttack - CurrentWeaponAttack,
     retract(equipped_weapon(CurrentWeapon)),assertz(equipped_weapon(Item)),
     substractFromInventory([Item|1]),addToInventory([CurrentWeapon|1]),
+    write('Equipped '),write(Item),
+    retract(player_attack(_)),assertz(player_attack(NewMaxAttack)),
     retract(player_max_attack(_)),assertz(player_max_attack(NewMaxAttack)).
 
 equip(Item) :- 
@@ -87,6 +89,7 @@ equip(Item) :-
     NewMaxDefense is CurrentMaxDefense + NewArmorDefense - OldArmorDefense,
     retract(equipped_cover(_)),assertz(equipped_cover(Item)),
     substractFromInventory([Item|1]),addToInventory([CurrentCover|1]),
+    write('Equipped '),write(Item),nl,
     retract(player_max_health(_)),assertz(player_max_health(NewMaxHealth)),
     retract(player_defense(_)),assertz(player_defense(NewMaxDefense)),
     retract(player_max_defense(_)),assertz(player_max_defense(NewMaxDefense)).
