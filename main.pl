@@ -9,10 +9,14 @@
 :- dynamic(player_health/1).
 :- dynamic(player_attack/1).
 :- dynamic(player_defense/1).
+:- dynamic(buff_att/1).
+:- dynamic(buff_def/1).
+
+:- dynamic(player_health_mult/1).
+:- dynamic(player_attack_mult/1).
+:- dynamic(player_defense_mult/1).
 
 :- dynamic(player_max_health/1).
-:- dynamic(player_max_attack/1).
-:- dynamic(player_max_defense/1).
 
 :- dynamic(current_gold/1).
 :- dynamic(current_exp/1).
@@ -134,8 +138,8 @@ new :-
     assertz(def_enemy(0)),
     assertz(lvl_enemy(0)),
     assertz(special_timer(0)),
-    retractall(buff_att(_)), assertz(buff_att(0)),
-    retractall(buff_def(_)), assertz(buff_def(0)),
+    assertz(buff_att(0)),
+    assertz(buff_def(0)),
 
     assertz(slime_counter(0)),
     assertz(hilichurl_counter(0)),
@@ -243,8 +247,9 @@ save:-
     write(':- dynamic(player_attack/1).'),nl,
     write(':- dynamic(player_defense/1).'),nl,
     write(':- dynamic(player_max_health/1).'),nl,
-    write(':- dynamic(player_max_attack/1).'),nl,
-    write(':- dynamic(player_max_defense/1).'),nl,
+    write(':- dynamic(player_health_mult/1).'),nl,
+    write(':- dynamic(player_attack_mult/1'),nl,
+    write(':- dynamic(player_defense_mult/1'),nl,
     write(':- dynamic(current_gold/1).'),nl,
     write(':- dynamic(current_exp/1).'),nl,
     write(':- dynamic(upgradable/0).'),nl,

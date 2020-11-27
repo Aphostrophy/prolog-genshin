@@ -39,8 +39,11 @@ addToInventory([Name|Amount]) :-
 
 substractFromInventory([Name|Amount]) :-
     inventory_bag(Inventory,Size),
-    member([Name|_],Inventory),!,
+    findItemAmount(Name,Supply),
+    Supply>=Amount,!,
+
     reduceElement([Name|Amount],Inventory,NewInventory),
+
     NewSize is Size - Amount,
     retract(inventory_bag(Inventory,Size)),!,
     assertz(inventory_bag(NewInventory,NewSize)).
@@ -66,9 +69,10 @@ equip(Item) :-
     type(ItemType,Item),player_class(Class),
     weapon(ItemType),equipmentAllowed(Class,Item),!,
     equipped_weapon(CurrentWeapon),property(CurrentWeapon,CurrentWeaponAttack),
-    player_max_attack(CurrentAttack),property(Item,NewWeaponAttack),
     NewMaxAttack is CurrentAttack + NewWeaponAttack - CurrentWeaponAttack,
     retract(equipped_weapon(CurrentWeapon)),assertz(equipped_weapon(Item)),
+    property(Weapon, MultAttack),
+    retract(player_attack_mult(_)),assertz(player_attack_mult())
     substractFromInventory([Item|1]),addToInventory([CurrentWeapon|1]),
     write('Equipped '),write(Item).
 
@@ -81,11 +85,12 @@ equip(Item) :-
     type(ItemType,Item),
     cover(ItemType),!,
     equipped_cover(CurrentCover),
-    player_max_health(CurrentMaxHealth),player_max_defense(CurrentMaxDefense),
+    player_max_health(CurrentMaxHealth),
     property(CurrentCover,OldArmorDefense,OldArmorHealth),property(Item,NewArmorDefense,NewArmorHealth),
     NewMaxHealth is CurrentMaxHealth + NewArmorHealth - OldArmorHealth,
     NewMaxDefense is CurrentMaxDefense + NewArmorDefense - OldArmorDefense,
     retract(equipped_cover(_)),assertz(equipped_cover(Item)),
+    property(Armor,MultDefense,MultHealth),
     substractFromInventory([Item|1]),addToInventory([CurrentCover|1]),
     write('Equipped '),write(Item).
 

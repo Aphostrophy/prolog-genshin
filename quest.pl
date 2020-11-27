@@ -1,6 +1,6 @@
 /* File : quest.pl */
 
-questExp(2500).
+questExp(5000).
 questGold(5000).
 
 /* Quest Generator */
