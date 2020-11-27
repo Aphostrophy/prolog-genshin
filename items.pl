@@ -114,37 +114,37 @@ property('defense potion M', Defense) :- Defense is 50.
 property('defense potion L', Defense) :- Defense is 100.
 
 /* Properti buat claymore, bow, catalyst. Attack nambah sebesar Arrity kedua */
-property('waster greatsword', Attack) :- Attack is 30.
-property('old merc pal', Attack) :- Attack is 70.
-property('debate club', Attack) :- Attack is 120.
-property('prototype aminus', Attack) :- Attack is 180.
-property('wolf greatsword', Attack) :- Attack is 250.
+property('waster greatsword', MultAttack) :- MultAttack is 1.0.
+property('old merc pal', MultAttack) :- MultAttack is 1.2.
+property('debate club', MultAttack) :- MultAttack is 1.4.
+property('prototype aminus', MultAttack) :- MultAttack is 1.6.
+property('wolf greatsword', MultAttack) :- MultAttack is 3.0.
 
-property('hunter bow', Attack) :- Attack is 40.
-property('seasoned hunter bow', Attack) :- Attack is 90.
-property('messenger', Attack) :- Attack is 150.
-property('favonius warbow', Attack) :- Attack is 230.
-property('skyward harp', Attack) :- Attack is 300.
+property('hunter bow', MultAttack) :- MultAttack is 1.0.
+property('seasoned hunter bow', MultAttack) :- MultAttack is 1.2.
+property('messenger', MultAttack) :- MultAttack is 1.4.
+property('favonius warbow', MultAttack) :- MultAttack is 1.7.
+property('skyward harp', MultAttack) :- MultAttack is 3.0.
 
-property('apprentice notes', Attack) :- Attack is 50.
-property('pocket grimoire', Attack) :- Attack is 110.
-property('emerald orb', Attack) :- Attack is 175.
-property('mappa mare', Attack) :- Attack is 320.
-property('skyward atlas', Attack) :- Attack is 410.
+property('apprentice notes', MultAttack) :- MultAttack is 1.0.
+property('pocket grimoire', MultAttack) :- MultAttack is 1.2.
+property('emerald orb', MultAttack) :- MultAttack is 1.4.
+property('mappa mare', MultAttack) :- MultAttack is 1.7.
+property('skyward atlas', MultAttack) :- MultAttack is 3.0.
 
 /* Properti buat armor. Defense dan Health nambah sebesar Arrity kedua dan ketiga */
-property('wooden armor', Defense, Health) :-
-    Defense is 50,
-    Health is 20.
-property('iron armor', Defense, Health) :-
-    Defense is 120,
-    Health is 60.
-property('steel armor', Defense, Health) :-
-    Defense is 200,
-    Health is 100.
-property('golden armor', Defense, Health) :-
-    Defense is 290,
-    Health is 150.
-property('diamond armor', Defense, Health) :-
-    Defense is 400,
-    Health is 200.
+property('wooden armor', MultDefense, MultHealth) :-
+    MultDefense is 1.1,
+    MultHealth is 1.1.
+property('iron armor', MultDefense, MultHealth) :-
+    MultDefense is 1.2,
+    MultHealth is 1.2.
+property('steel armor', MultDefense, MultHealth) :-
+    MultDefense is 1.4,
+    MultHealth is 1.4.
+property('golden armor', MultDefense, MultHealth) :-
+    Defense is 1.7,
+    MultHealth is 1.7.
+property('diamond armor', MultDefense, MultHealth) :-
+    MultDefense is 3.0,
+    MultHealth is 3.0.
