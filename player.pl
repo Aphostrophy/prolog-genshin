@@ -47,7 +47,7 @@ exp_level_up(Level,Exp):-
     Exp is 300*Level.
 
 assert_class('Knight'):-
-    assertz(player_class('knight')),baseHealth(X,BaseHealth),
+    assertz(player_class('knight')),
     player_class(X),assertz(player_level(1)),baseHealth(X,BaseHealth),baseAttack(X,BaseAttack),baseDefense(X,BaseDefense),
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
