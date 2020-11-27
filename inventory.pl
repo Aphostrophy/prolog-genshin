@@ -39,8 +39,11 @@ addToInventory([Name|Amount]) :-
 
 substractFromInventory([Name|Amount]) :-
     inventory_bag(Inventory,Size),
-    member([Name|_],Inventory),!,
+    findItemAmount(Name,Supply),
+    Supply>=Amount,!,
+
     reduceElement([Name|Amount],Inventory,NewInventory),
+
     NewSize is Size - Amount,
     retract(inventory_bag(Inventory,Size)),!,
     assertz(inventory_bag(NewInventory,NewSize)).
@@ -65,10 +68,13 @@ equip(Item) :- findItemAmount(Item,X),X =< 0,!,write('Item not in inventory.').
 equip(Item) :-
     type(ItemType,Item),player_class(Class),
     weapon(ItemType),equipmentAllowed(Class,Item),!,
-    equipped_weapon(CurrentWeapon),property(CurrentWeapon,CurrentWeaponAttack),
-    player_max_attack(CurrentAttack),property(Item,NewWeaponAttack),
-    NewMaxAttack is CurrentAttack + NewWeaponAttack - CurrentWeaponAttack,
+
+    player_attack_mult(CurrentAttackMult),
+    equipped_weapon(CurrentWeapon),property(CurrentWeapon,CurrentWeaponAttackMult),
     retract(equipped_weapon(CurrentWeapon)),assertz(equipped_weapon(Item)),
+    property(Item, NewWeaponMultAttack),
+    NewMultAtt is CurrentAttackMult + NewWeaponMultAttack - CurrentWeaponAttackMult,
+    retract(player_attack_mult(_)),assertz(player_attack_mult(NewMultAtt)),
     substractFromInventory([Item|1]),addToInventory([CurrentWeapon|1]),
     write('Equipped '),write(Item).
 
@@ -81,10 +87,18 @@ equip(Item) :-
     type(ItemType,Item),
     cover(ItemType),!,
     equipped_cover(CurrentCover),
-    player_max_health(CurrentMaxHealth),player_max_defense(CurrentMaxDefense),
-    property(CurrentCover,OldArmorDefense,OldArmorHealth),property(Item,NewArmorDefense,NewArmorHealth),
-    NewMaxHealth is CurrentMaxHealth + NewArmorHealth - OldArmorHealth,
-    NewMaxDefense is CurrentMaxDefense + NewArmorDefense - OldArmorDefense,
+    player_defense_mult(CurrentDefenseMult),player_max_health(CurrentMaxHealth),player_health(CurrentHealth),
+    property(CurrentCover,OldArmorDefenseMult,OldArmorHealthMult),property(Item,NewArmorDefenseMult,NewArmorHealthMult),
+
+    NewCurrentHealth is truncate(CurrentHealth * NewArmorHealthMult/OldArmorHealthMult),
+    NewMaxHealth is truncate(CurrentMaxHealth *  NewArmorHealthMult/OldArmorHealthMult),
+    NewDefenseMult is CurrentDefenseMult + NewArmorDefenseMult - OldArmorDefenseMult,
+    retract(player_defense_mult(_)),
+    assertz(player_defense_mult(NewDefenseMult)),
+    
+    retract(player_max_health(_)),assertz(player_max_health(NewMaxHealth)),
+    retract(player_health(_)),assertz(player_health(NewCurrentHealth)),
+
     retract(equipped_cover(_)),assertz(equipped_cover(Item)),
     substractFromInventory([Item|1]),addToInventory([CurrentCover|1]),
     write('Equipped '),write(Item).

@@ -31,17 +31,16 @@ status :-
     player_class(X),player_level(Y),player_health(Health),player_attack(Attack),player_defense(Defense),
     player_max_health(MaxHealth),
     equipped_weapon(Weapon),equipped_cover(Armor),
-    property(Weapon, MultAttack),property(Armor, MultDefense, MultHealth),
+    player_attack_mult(MultAttack),player_defense_mult(MultDefense),
     TotalAttack is truncate(Attack * MultAttack),
     TotalDefense is truncate(Defense * MultDefense),
-    TotalHealth is truncate(Health * MultHealth), TotalMaxHealth is truncate(MaxHealth * MultHealth),
     current_gold(Gold),current_exp(Exp),exp_level_up(Y,MaxExp),
     write('==============================================='),nl,
     write('             S   T   A   T   U   S             '),nl,
     write('==============================================='),nl,
     write('Job      : '),write(X),nl,
     write('Level    : '),write(Y),nl,
-    write('Health   : '),write(TotalHealth),write('/'),write(TotalMaxHealth),nl,
+    write('Health   : '),write(Health),write('/'),write(MaxHealth),nl,
     write('Attack   : '),write(TotalAttack),nl,
     write('Defense  : '),write(TotalDefense),nl,
     write('Gold     : '),write(Gold),nl,
@@ -57,6 +56,7 @@ assert_class('Knight'):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
+    assertz(player_health_mult(1.0)),assertz(player_attack_mult(1.0)),assertz(player_defense_mult(1.0)),
     write('================================================================================================================================================'),nl,
     write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
 
@@ -66,6 +66,7 @@ assert_class('Archer'):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
+    assertz(player_health_mult(1.0)),assertz(player_attack_mult(1.0)),assertz(player_defense_mult(1.0)),
     write('================================================================================================================================================'),nl,
     write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
 
@@ -75,6 +76,7 @@ assert_class('Mage'):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
+    assertz(player_health_mult(1.0)),assertz(player_attack_mult(1.0)),assertz(player_defense_mult(1.0)),
     write('================================================================================================================================================'),nl,
     write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
 

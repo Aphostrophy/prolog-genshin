@@ -27,12 +27,6 @@ enemy_defense(2, 30).
 enemy_defense(3, 30).
 enemy_defense(4, 1000).
 
-enemy_special(0, 30).
-enemy_special(1, 50).
-enemy_special(2, 75).
-enemy_special(3, 75).
-enemy_special(3, 2000).
-
 /* Enemy base loot */
 enemy_exp(0, 50).
 enemy_exp(1, 100).

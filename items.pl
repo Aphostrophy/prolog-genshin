@@ -99,25 +99,25 @@ consumable_type('defense potion M', def).
 consumable_type('defense potion L', def).
 
 /* Properti buat consumable. Health, Attack, atau Defense nambah sebesar Arrity kedua */
-property('health potion', Health) :- Health is 75.
-property('panas spesial 2 mekdi', Health) :- Health is 150.
-property('sadikin', Health) :- Health is 250.
-property('go milk', Health) :- Health is 320.
-property('crisbar', Health) :- Health is 450.
+property('health potion', Heal) :- Heal is 0.1.
+property('panas spesial 2 mekdi', Heal) :- Heal is 0.15.
+property('sadikin', Heal) :- Heal is 0.25.
+property('go milk', Heal) :- Heal is 0.32.
+property('crisbar', Heal) :- Heal is 0.45.
 
-property('attack potion S', Attack) :- Attack is 50.
-property('attack potion M', Attack) :- Attack is 100.
-property('attack potion L', Attack) :- Attack is 200.
+property('attack potion S', MultAttack) :- MultAttack is 0.1.
+property('attack potion M', MultAttack) :- MultAttack is 0.3.
+property('attack potion L', MultAttack) :- MultAttack is 0.5.
 
-property('defense potion S', Defense) :- Defense is 25.
-property('defense potion M', Defense) :- Defense is 50.
-property('defense potion L', Defense) :- Defense is 100.
+property('defense potion S', MultDefense) :- MultDefense is 0.1.
+property('defense potion M', MultDefense) :- MultDefense is 0.3.
+property('defense potion L', MultDefense) :- MultDefense is 0.5.
 
 /* Properti buat claymore, bow, catalyst. Attack nambah sebesar Arrity kedua */
 property('waster greatsword', MultAttack) :- MultAttack is 1.0.
 property('old merc pal', MultAttack) :- MultAttack is 1.2.
 property('debate club', MultAttack) :- MultAttack is 1.4.
-property('prototype aminus', MultAttack) :- MultAttack is 1.6.
+property('prototype aminus', MultAttack) :- MultAttack is 1.7.
 property('wolf greatsword', MultAttack) :- MultAttack is 3.0.
 
 property('hunter bow', MultAttack) :- MultAttack is 1.0.
@@ -134,8 +134,8 @@ property('skyward atlas', MultAttack) :- MultAttack is 3.0.
 
 /* Properti buat armor. Defense dan Health nambah sebesar Arrity kedua dan ketiga */
 property('wooden armor', MultDefense, MultHealth) :-
-    MultDefense is 1.1,
-    MultHealth is 1.1.
+    MultDefense is 1.0,
+    MultHealth is 1.0.
 property('iron armor', MultDefense, MultHealth) :-
     MultDefense is 1.2,
     MultHealth is 1.2.
