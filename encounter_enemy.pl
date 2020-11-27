@@ -142,10 +142,8 @@ encounter(X) :-
     retract(lvl_enemy(_)),
     assertz(lvl_enemy(EnemyLevel)),
 
-    DecEnemyLevel is EnemyLevel - 1,
-    
     enemy_health(X, Hp),
-    power(1.1,DecEnemyLevel,Scaler),
+    power(1.1,EnemyLevel,Scaler),
     ScaleHp is truncate(Hp*Scaler) + 10*EnemyLevel,
 
     retract(hp_enemy(_)),
@@ -194,10 +192,8 @@ gacha_chest(ChestRate) :-
     retract(lvl_enemy(_)),
     assertz(lvl_enemy(EnemyLevel)),
 
-    DecEnemyLevel is EnemyLevel - 1,
-    
     enemy_health(3, Hp),
-    power(1.1,DecEnemyLevel,Scaler),
+    power(1.1,EnemyLevel,Scaler),
     ScaleHp is truncate(Hp*Scaler) + 10*EnemyLevel,
 
     retract(hp_enemy(_)),
