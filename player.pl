@@ -11,7 +11,7 @@ choose_class :-
     write('                                        |                        3. Mage                           |                                            '), nl,
     write('================================================================================================================================================'),nl,
     write('|                                        Type the job you want to choose followed with a periodt.                                              |'),nl,
-    write('|                                           For example: \'Knight\'.  or \'Archer.\'. or \'Mage\'.                                                    |'),nl,
+    write('|                                           For example: \'Knight\'.  or \'Archer.\'. or \'Mage\'.                                                   |'),nl,
     write('|                                    Make sure to include the apostrophe! Then, press return or enter.                                         |'),nl,
     write('================================================================================================================================================'),nl,
     read(X),nl,

@@ -7,18 +7,27 @@ shop:-
     map_entity(X,Y,'S'),
     retract(game_state(travelling)),
     assertz(game_state(shopactive)),!,
-    write('==============================================='),nl,
-    write('                  S   H   O   P                '),nl,
-    write('==============================================='),nl,nl,
-    write('Welcome! what do you want to do?'),nl,
-    write('1. Gacha (1000 gold)'),nl,
-    write('2. Buy health Potion (100 gold)'),nl,
-    write('3. Buy panas spesial 2 mekdi (150 gold)'),nl,
-    write('4. Buy sadikin (200 gold)'),nl,
-    write('5. Buy go milk (250 gold)'),nl,
-    write('6. Buy crisbar (300 gold)'),nl,
-    write('7. Sell item(s)'),nl,nl,
-    write('================================================'),nl.
+    write('==========================================================================================='),nl,
+    write('|                                        S   H   O   P                                    |'),nl,
+    write('==========================================================================================='),nl,
+    write('|                      Welcome to the shop! What do you want to do?                       |'),nl,
+    write('==========================================================================================='),nl,
+    write('|    Activity    |         Item          |        Price          |        Command         |'),nl,
+    write('-----------------|-----------------------|-----------------------|------------------------|'),nl,
+    write('|     Gacha      |   Weapon and Armor    |      1000 gold        |       \'gacha.\'         |'),nl,
+    write('|      Buy       |     Health Potion     |      100 gold         |    \'healthpotion.\'     |'),nl,
+    write('|      Buy       | Panas Spesial 2 Mekdi |      150 gold         |       \'panas.\'         |'),nl,
+    write('|      Buy       |       Sadikin         |      200 gold         |      \'sadikin.\'        |'),nl,
+    write('|      Buy       |       Go Milk         |      250 gold         |       \'gomilk.\'        |'),nl,
+    write('|      Buy       |       Crisbar         |      300 gold         |      \'crisbar.\'        |'),nl,
+    write('|      Buy       |   Attack Potion S     |      300 gold         |    \'attackPotionS.\'    |'),nl,
+    write('|      Buy       |   Attack Potion M     |      350 gold         |    \'attackPotionM.\'    |'),nl,
+    write('|      Buy       |   Attack Potion L     |      400 gold         |    \'attackPotionL.\'    |'),nl,
+    write('|      Buy       |   Defense Potion S    |      250 gold         |    \'defensePotionS.\'   |'),nl,
+    write('|      Buy       |   Defense Potion M    |      300 gold         |    \'defensePotionM.\'   |'),nl,
+    write('|      Buy       |   Defense Potion L    |      350 gold         |    \'defensePotionL.\'   |'),nl,
+    write('|      Sell      |       All items       |   Depends on item     |        \'sell.\'         |'),nl,nl,
+    write('==========================================================================================='),nl.
 shop:- !,writeNotShopTile.
 
 % GACHA 
@@ -146,6 +155,84 @@ crisbar:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['crisbar'|1]),
+    write('Thanks for buying!'),nl.
+
+attackPotionS :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+attackPotionS:- current_gold(G),price('attack potion S',P),G<P,writeNotEnoughGold,fail.
+attackPotionS:-
+    game_state(shopactive),
+    current_gold(G),
+    price('attack potion S',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
+    addToInventory(['attack potion S'|1]),
+    write('Thanks for buying!'),nl.
+
+attackPotionM :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+attackPotionM:- current_gold(G),price('attack potion M',P),G<P,writeNotEnoughGold,fail.
+attackPotionM:-
+    game_state(shopactive),
+    current_gold(G),
+    price('attack potion M',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
+    addToInventory(['attack potion M'|1]),
+    write('Thanks for buying!'),nl.
+
+attackPotionL :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+attackPotionL:- current_gold(G),price('attack potion L',P),G<P,writeNotEnoughGold,fail.
+attackPotionL:-
+    game_state(shopactive),
+    current_gold(G),
+    price('attack potion L',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
+    addToInventory(['attack potion L'|1]),
+    write('Thanks for buying!'),nl.
+
+defensePotionS :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+defensePotionS:- current_gold(G),price('defense potion S',P),G<P,writeNotEnoughGold,fail.
+defensePotionS:-
+    game_state(shopactive),
+    current_gold(G),
+    price('defense potion S',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
+    addToInventory(['defense potion S'|1]),
+    write('Thanks for buying!'),nl.
+
+defensePotionM :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+defensePotionM:- current_gold(G),price('defense potion M',P),G<P,writeNotEnoughGold,fail.
+defensePotionM:-
+    game_state(shopactive),
+    current_gold(G),
+    price('defense potion M',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
+    addToInventory(['defense potion M'|1]),
+    write('Thanks for buying!'),nl.
+
+defensePotionL :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
+defensePotionL:- current_gold(G),price('defense potion L',P),G<P,writeNotEnoughGold,fail.
+defensePotionL:-
+    game_state(shopactive),
+    current_gold(G),
+    price('defense potion L',P),
+    G >= P,
+    retract(current_gold(G)),
+    G2 is G-P,
+    assertz(current_gold(G2)),
+    addToInventory(['defense potion L'|1]),
     write('Thanks for buying!'),nl.
 
 exitShop:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
