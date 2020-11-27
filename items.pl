@@ -117,7 +117,7 @@ property('defense potion L', MultDefense) :- MultDefense is 0.5.
 property('waster greatsword', MultAttack) :- MultAttack is 1.0.
 property('old merc pal', MultAttack) :- MultAttack is 1.2.
 property('debate club', MultAttack) :- MultAttack is 1.4.
-property('prototype aminus', MultAttack) :- MultAttack is 1.6.
+property('prototype aminus', MultAttack) :- MultAttack is 1.7.
 property('wolf greatsword', MultAttack) :- MultAttack is 3.0.
 
 property('hunter bow', MultAttack) :- MultAttack is 1.0.
@@ -134,8 +134,8 @@ property('skyward atlas', MultAttack) :- MultAttack is 3.0.
 
 /* Properti buat armor. Defense dan Health nambah sebesar Arrity kedua dan ketiga */
 property('wooden armor', MultDefense, MultHealth) :-
-    MultDefense is 1.1,
-    MultHealth is 1.1.
+    MultDefense is 1.0,
+    MultHealth is 1.0.
 property('iron armor', MultDefense, MultHealth) :-
     MultDefense is 1.2,
     MultHealth is 1.2.
