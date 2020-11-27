@@ -106,8 +106,10 @@ attack :-
     retract(hp_enemy(X)),
     att_enemy(AttEnemy),
     def_enemy(DefEnemy), !,
-
+    equipped_weapon(Weapon),
+    property(Weapon, MultAttack),
     player_attack(AttPlayer), !,
+    TotalAtt is AttPlayer * MultAttack,
     calc_damage(AttPlayer, DefEnemy, Atk), !,
 
     NewX is X - Atk,
@@ -434,8 +436,13 @@ enemy_turn :-
     player_health(PlayerHealth), !,
     retract(player_health(PlayerHealth)),
 
-    calc_damage(AttEnemy, DefPlayer, Atk), !,
-    NewX is PlayerHealth - Atk,
+    equipped_cover(Armor),
+    property(Armor,MultDefense,MultHealth),
+    TotalDefPlayer is truncate(DefPlayer*MultDefense),
+    TotalPlayerHealth is truncate(PlayerHealth*MultHealth),
+
+    calc_damage(AttEnemy, TotalDefPlayer, Atk), !,
+    NewX is TotalPlayerHealth - Atk,
     
     assertz(player_health(NewX)), !,
 
