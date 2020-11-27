@@ -88,7 +88,7 @@ equip(Item) :-
     property(Weapon, MultAttack),player_attack_mult(CurrentAttackMult), NewMultAtt is CurrentAttackMult + MultAttack,
     retract(player_attack_mult(_)),assertz(player_attack_mult(NewMultAtt)),
     substractFromInventory([Item|1]),addToInventory([CurrentWeapon|1]),
-    write('Equipped '),write(Item).
+    write('Equipped '),write(Item),!.
 
 equip(Item) :- 
     type(ItemType,Item),player_class(Class),
@@ -113,7 +113,7 @@ equip(Item) :-
 
     retract(equipped_cover(_)),assertz(equipped_cover(Item)),
     substractFromInventory([Item|1]),addToInventory([CurrentCover|1]),
-    write('Equipped '),write(Item).
+    write('Equipped '),write(Item),!.
 
 equipped_items:-
     equipped_weapon(X),

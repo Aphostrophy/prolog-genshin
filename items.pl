@@ -28,6 +28,13 @@ item('steel armor').
 item('golden armor').
 item('diamond armor').
 
+item('attack potion S').
+item('attack potion M').
+item('attack potion L').
+item('defense potion S').
+item('defense potion M').
+item('defense potion L').
+
 type(consumable, 'health potion').
 type(consumable, 'panas spesial 2 mekdi').
 type(consumable, 'sadikin').
