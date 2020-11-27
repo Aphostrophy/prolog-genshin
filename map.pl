@@ -98,12 +98,12 @@ w :-
     write('You are in battle!! Use \"help.\" to display the commands that you can use.').
 
 w :-
-    \+game_state(travelling),!,
-    write('Cannot travel now').
+    game_state(shopactive),!,
+    write('Exit the shop first by using command \"exitShop.\" !'),nl.
 
 w :-
-    game_state(shopactive),!,
-    write('Exit the shop first!'),nl.
+    \+game_state(travelling),!,
+    write('Cannot travel now').
 
 w :-
     write('Ouch, you hit a wall. Use \"map.\" to open the map!!').
@@ -129,7 +129,7 @@ a :-
 
 a :-
     game_state(shopactive),!,
-    write('Exit the shop first!'),nl.
+    write('Exit the shop first by using command \"exitShop.\" !'),nl.
 
 a :-
     \+game_state(travelling),!,
@@ -168,7 +168,7 @@ s :-
 
 s :-
     game_state(shopactive),!,
-    write('Exit the shop first!'),nl.
+    write('Exit the shop first by using command \"exitShop.\" !'),nl.
 
 s :-
     \+game_state(travelling),!,
@@ -208,7 +208,7 @@ d :-
 
 d:-
     game_state(shopactive),!,
-    write('Exit the shop first!'),nl.
+    write('Exit the shop first by using command \"exitShop.\" !'),nl.
     
 d :-
     \+game_state(travelling),!,
@@ -219,9 +219,13 @@ d :-
 
 
 map :-
+    write('==============================================='),nl,
+    write('            W  O  R  L  D    M  A  P           '),nl,
+    write('==============================================='),nl,nl,
     retract(draw_done(_)),
     asserta(draw_done(false)),
-    draw_map(0,0), !.
+    draw_map(0,0), nl,
+    write('==============================================='), !,nl.
 
 teleport :- 
     game_start,

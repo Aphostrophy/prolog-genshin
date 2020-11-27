@@ -25,11 +25,50 @@ calc_damage(Att, Def, Res) :-
 calc_status_upgrade(Status,Result) :-
   Result is truncate(Status * 1.4).
 
-calc_gold_after_sell(Name,Amount) :-
+
+handle_sell(Name,Amount) :-
+  Amount =<0,
+  write('enter the correct amount of item(s) (greater than zero)!'),!.
+
+handle_sell(Name,Amount):-
+  findItemAmount(Name,X),
+  Amount > X,
+  write('Dont lie! you dont have that much of this item!'),!.
+
+handle_sell(Name,Amount) :-
   price(Name,X),
-  NewPrice is X / 2,
+  type(consumable,Name),
+  NewPrice is X // 2,
   ObtainedGold is NewPrice * Amount,
-  add_player_gold(ObtainedGold).
+  add_player_gold(ObtainedGold),
+  substractFromInventory([Name|Amount]),
+  write('The item has been successfully sold!'),nl.
+
+handle_sell(Name,Amount) :-
+  \+(type(consumable,Name)),
+  ultraRareItem(Name),
+  NewPrice is 10000,
+  ObtainedGold is NewPrice * Amount,
+  add_player_gold(ObtainedGold),
+  substractFromInventory([Name|Amount]),
+  write('The item has been successfully sold!'),nl.
+
+handle_sell(Name,Amount) :-
+  \+(type(consumable,Name)),
+  rareItem(Name),
+  NewPrice is 5000,
+  ObtainedGold is NewPrice * Amount,
+  add_player_gold(ObtainedGold),
+  substractFromInventory([Name|Amount]),
+  write('The item has been successfully sold!'),nl.
+
+handle_sell(Name,Amount) :-
+  !,
+  NewPrice is 500,
+  ObtainedGold is NewPrice * Amount,
+  add_player_gold(ObtainedGold),
+  substractFromInventory([Name|Amount]),
+  write('The item has been successfully sold!'),nl.
 
 push(X, [], [X]).
 

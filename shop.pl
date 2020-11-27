@@ -7,13 +7,18 @@ shop:-
     map_entity(X,Y,'S'),
     retract(game_state(travelling)),
     assertz(game_state(shopactive)),!,
-    write('What do you want to buy?'),nl,
+    write('==============================================='),nl,
+    write('                  S   H   O   P                '),nl,
+    write('==============================================='),nl,nl,
+    write('Welcome! what do you want to do?'),nl,
     write('1. Gacha (1000 gold)'),nl,
-    write('2. Health Potion (100 gold)'),nl,
-    write('3. Panas spesial 2 mekdi (150 gold)'),nl,
-    write('4. Sadikin (200 gold)'),nl,
-    write('5. Go milk (250 gold)'),nl,
-    write('6. Crisbar (300 gold)'),nl.
+    write('2. Buy health Potion (100 gold)'),nl,
+    write('3. Buy panas spesial 2 mekdi (150 gold)'),nl,
+    write('4. Buy sadikin (200 gold)'),nl,
+    write('5. Buy go milk (250 gold)'),nl,
+    write('6. Buy crisbar (300 gold)'),nl,
+    write('7. Sell item(s)'),nl,nl,
+    write('================================================'),nl.
 shop:- !,writeNotShopTile.
 
 % GACHA 
@@ -63,15 +68,18 @@ gacha:-
 writeGacha(E):-
     \+(ultraRareItem(E)),
     \+(rareItem(E)),
-    format('You got ~w.~n',[E]).
+    type(C,E),
+    format('You got ~w [type : ~w].~n',[E,C]).
 
 writeGacha(E):-
     ultraRareItem(E),
-    format('Congratulation! you got ~w (ULTRA RARE).~n',[E]).
+    type(C,E),
+    format('Congratulation! you got ~w [type : ~w] (ULTRA RARE).~n',[E,C]).
 
 writeGacha(E):-
     rareItem(E),
-    format('Congratulation! you got ~w (RARE).~n',[E]).
+    type(C,E),
+    format('Congratulation! you got ~w [type : ~w] (RARE).~n',[E,C]).
     
 % POTION
 
@@ -159,11 +167,12 @@ writeShopUsedMessage :-
 hehe:-
     write('EHE TO NANDAYO?'),nl.
 
+sell:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
 sell :-
     game_state(shopactive),
     inventory,
     write('Type the item\'s name you wish to sell: '), read(Name),
     write('Type the amount of that item: '), read(Amount),
-    calc_gold_after_sell(Name,Amount),
-    substractFromInventory([Name|Amount]),
-    write('The item has been successfully sold!'),nl.
+    handle_sell(Name,Amount).
+
+

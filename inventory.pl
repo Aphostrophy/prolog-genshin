@@ -3,8 +3,12 @@
 inventoryMaxSize(100).
 
 inventory :-
-    inventory_bag(Inventory,_), !,
-    printInventory(Inventory).
+    write('==============================================='),nl,
+    write('           I  N  V  E  N  T  O  R  Y           '),nl,
+    write('==============================================='),nl,nl,
+    inventory_bag(Inventory,_),
+    printInventory(Inventory),nl,
+    write('==============================================='),!,nl.
 
 printInventory([]).
 
@@ -13,7 +17,7 @@ printInventory([H|T]) :-
 
 printPair([H|T]) :-
     [Amount|None] = T,Amount>0,!,
-    write(H),write(':'),write(Amount),nl.
+    type(C,H),format('[type : ~w] ',[C]),write(H),write(' : '),write(Amount),nl.
 
 printPair([H|T]) :- !.
 
@@ -90,7 +94,7 @@ equip(Item) :-
 equippedItems:-
     equipped_weapon(X),
     write('Weapon:'),write(X),nl,
-    property(X,Attack),write('Attack Bonus: '),write(Attack),
+    property(X,Attack),write('Attack Bonus: '),write(Attack),nl,
     equipped_cover(Y),property(Y,Defense,HP),
     write('Armor:'),write(Y),nl,
     write('Bonus Defense: '),write(Defense),nl,
