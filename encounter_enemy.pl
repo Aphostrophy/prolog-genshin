@@ -174,7 +174,7 @@ gacha_chest(ChestRate) :-
     chestLoot(MinGold),
     MaxGold is MinGold + 100*PlayerLevel,
     random(MinGold, MaxGold, Loot),    
-    write('You found a chest!! You get : '), write(Loot), write(' gold'), !,
+    write('You found a chest!! You get : '), write(Loot), write(' gold'), nl, !,
     add_player_gold(Loot).
 
 gacha_chest(ChestRate) :-

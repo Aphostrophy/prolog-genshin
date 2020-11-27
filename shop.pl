@@ -84,7 +84,7 @@ writeGacha(E):-
 % POTION
 
 healthpotion:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
-healthpotion:- current_gold(G),price('healthpotion',P),G<P,writeNotEnoughGold,fail.
+healthpotion:- current_gold(G),price('health potion',P),G<P,writeNotEnoughGold,fail.
 healthpotion:-
     game_state(shopactive),
     current_gold(G),
@@ -123,7 +123,7 @@ sadikin:-
     write('Thanks for buying!'),nl.
 
 gomilk:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
-gomilk:- current_gold(G),price('gomilk',P),G<P,writeNotEnoughGold,fail.
+gomilk:- current_gold(G),price('go milk',P),G<P,writeNotEnoughGold,fail.
 gomilk:-
     game_state(shopactive),
     current_gold(G),

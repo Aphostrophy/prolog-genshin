@@ -49,7 +49,7 @@ handle_sell(Name,Amount) :-
   NewPrice is X // 2,
   ObtainedGold is NewPrice * Amount,
   add_player_gold(ObtainedGold),
-  substractFromInventory([Name|Amount]),
+  substractFromInventory([Name|Amount]),!,
   write('The item has been successfully sold!'),nl.
 
 handle_sell(Name,Amount) :-
@@ -58,7 +58,7 @@ handle_sell(Name,Amount) :-
   NewPrice is 10000,
   ObtainedGold is NewPrice * Amount,
   add_player_gold(ObtainedGold),
-  substractFromInventory([Name|Amount]),
+  substractFromInventory([Name|Amount]),!,
   write('The item has been successfully sold!'),nl.
 
 handle_sell(Name,Amount) :-
@@ -67,7 +67,7 @@ handle_sell(Name,Amount) :-
   NewPrice is 5000,
   ObtainedGold is NewPrice * Amount,
   add_player_gold(ObtainedGold),
-  substractFromInventory([Name|Amount]),
+  substractFromInventory([Name|Amount]),!,
   write('The item has been successfully sold!'),nl.
 
 handle_sell(Name,Amount) :-
@@ -75,7 +75,7 @@ handle_sell(Name,Amount) :-
   NewPrice is 500,
   ObtainedGold is NewPrice * Amount,
   add_player_gold(ObtainedGold),
-  substractFromInventory([Name|Amount]),
+  substractFromInventory([Name|Amount]),!,
   write('The item has been successfully sold!'),nl.
 
 push(X, [], [X]).

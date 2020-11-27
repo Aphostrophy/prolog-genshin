@@ -695,7 +695,7 @@ gacha_chest(A) :-
 	random(C, D, E),
 	write('You found a chest!! You get : '),
 	write(E),
-	write(' gold'), !.
+	write(' gold'),nl, !.
 gacha_chest(A) :-
 	A > 70,
 	write('You encounter a '),
