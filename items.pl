@@ -32,6 +32,7 @@ type(consumable, 'health potion').
 type(consumable, 'panas spesial 2 mekdi').
 type(consumable, 'sadikin').
 type(consumable, 'go milk').
+type(consumable, 'crisbar').
 type(consumable, 'attack potion S').
 type(consumable, 'attack potion M').
 type(consumable, 'attack potion L').
