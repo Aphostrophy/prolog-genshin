@@ -4,34 +4,44 @@
 /* Dependency Files : items.pl */
 
 choose_class :-
-    write('------------------------------------------------------------'),nl,
-    write('|                     Choose your job!                     |'), nl,
-    write('|                        1. Knight                         |'), nl,
-    write('|                        2. Archer                         |'), nl,
-    write('|                        3. Mage                           |'), nl,
-    write('------------------------------------------------------------'),nl,
-    write('Type the job you want to choose followed with a periodt.'),nl,
-    write('For example: \'Knight.\'  or \'Archer.\' or \'Mage.\''),nl,
-    write('Then, press return or enter.'),nl,
+    write('================================================================================================================================================'),nl,
+    write('                                        |                     Choose your job!                     |                                            '), nl,
+    write('                                        |                        1. Knight                         |                                            '), nl,
+    write('                                        |                        2. Archer                         |                                            '), nl,
+    write('                                        |                        3. Mage                           |                                            '), nl,
+    write('================================================================================================================================================'),nl,
+    write('|                                        Type the job you want to choose followed with a periodt.                                              |'),nl,
+    write('|                                           For example: \'Knight.\'  or \'Archer.\' or \'Mage.\'                                                    |'),nl,
+    write('|                                                        Then, press return or enter.                                                          |'),nl,
+    write('================================================================================================================================================'),nl,
     read(X),nl,
     assert_class(X),
-    write('The game has been started. Use \'help.\' to look for available commands!'),nl,
-    write('Use \'start.\' to restart the game'),nl,
-    write('Use \'quit.\' to exit the game.'),nl,
-    write('Use \'inventory.\' to list all the items in your inventory.'),nl,
+    write('================================================================================================================================================'),nl,
+    write('|                      The game has been started. Use \'help.\' to look for available commands! Here are some of them.                           |'),nl,
+    write('================================================================================================================================================'),nl,
+    write('|        Commmand        |                                                           Function                                                  |'),nl,
+    write('|------------------------|---------------------------------------------------------------------------------------------------------------------|'),nl,
+    write('|       \'start.\'         |     Restart the game.                                                                                               |'),nl,
+    write('|        \'quit.\'         |     Exit the game.                                                                                                  |'),nl,
+    write('|      \'inventory.\'      |     List all the items in your inventory.                                                                           |'),nl,
+    write('================================================================================================================================================'),nl,
     initialize_resources.
 
 status :-
     player_class(X),player_level(Y),player_health(Health),player_attack(Attack),player_defense(Defense),
     player_max_health(MaxHealth),player_max_attack(MaxAttack),player_max_defense(MaxDefense),
     current_gold(Gold),current_exp(Exp),exp_level_up(Y,MaxExp),
-    write('Job:     '),write(X),nl,
-    write('Level:   '),write(Y),nl,
-    write('Health:  '),write(Health),write('/'),write(MaxHealth),nl,
-    write('Attack:  '),write(Attack),write('/'),write(MaxAttack),nl,
-    write('Defense: '),write(Defense),write('/'),write(MaxDefense),nl,
-    write('Gold:    '),write(Gold),nl,
-    write('Exp:     '),write(Exp),write('/'),write(MaxExp),nl.
+    write('==============================================='),nl,
+    write('             S   T   A   T   U   S             '),nl,
+    write('==============================================='),nl,
+    write('Job      : '),write(X),nl,
+    write('Level    : '),write(Y),nl,
+    write('Health   : '),write(Health),write('/'),write(MaxHealth),nl,
+    write('Attack   : '),write(Attack),write('/'),write(MaxAttack),nl,
+    write('Defense  : '),write(Defense),write('/'),write(MaxDefense),nl,
+    write('Gold     : '),write(Gold),nl,
+    write('Exp      : '),write(Exp),write('/'),write(MaxExp),nl,
+    write('==============================================='),nl.
 
 exp_level_up(Level,Exp):-
     Exp is 300*Level.
@@ -42,7 +52,8 @@ assert_class('Knight'):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
-    write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
+    write('================================================================================================================================================'),nl,
+    write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
 
 assert_class('Archer'):-
     assertz(player_class('archer')),
@@ -50,7 +61,8 @@ assert_class('Archer'):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
-    write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
+    write('================================================================================================================================================'),nl,
+    write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
 
 assert_class('Mage'):-
     assertz(player_class('mage')),
@@ -58,7 +70,8 @@ assert_class('Mage'):-
     assertz(player_health(BaseHealth)),assertz(player_attack(BaseAttack)),assertz(player_defense(BaseDefense)),
     assertz(player_max_health(BaseHealth)),assertz(player_max_attack(BaseAttack)),assertz(player_max_defense(BaseDefense)),
     baseWeapon(X,BaseWeapon),assertz(equipped_weapon(BaseWeapon)),assertz(equipped_cover('wooden armor')),
-    write('You choose '), write(X), write(', let’s explore the world!'),nl,!.
+    write('================================================================================================================================================'),nl,
+    write('                                               |You choose '), write(X), write(', let’s explore the world!|'),nl,!.
 
 initialize_resources:-
     assertz(current_gold(1000)),
