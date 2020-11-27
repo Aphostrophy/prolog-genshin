@@ -81,7 +81,10 @@ no :-
     assertz(game_state(travelling)),
     retract(slime_counter(_)),
     retract(hilichurl_counter(_)),
-    retract(mage_counter(_)).
+    retract(mage_counter(_)),
+    assertz(slime_counter(0)),
+    assertz(hilichurl_counter(0)),
+    assertz(mage_counter(0)).
 
 no :- 
     (\+ game_state(in_quest_dialogue)), !,
