@@ -8,20 +8,25 @@ item('panas spesial 2 mekdi').
 item('sadikin').
 item('go milk').
 item('crisbar').
+
 item('waster greatsword').
+item('old merc pal').
 item('debate club').
 item('prototype aminus').
 item('wolf greatsword').
+
 item('hunter bow').
 item('seasoned hunter bow').
 item('messenger').
 item('favonius warbow').
 item('skyward harp').
+
 item('apprentice notes').
 item('pocket grimoire').
 item('emerald orb').
 item('mappa mare').
 item('skyward atlas').
+
 item('wooden armor').
 item('iron armor').
 item('steel armor').
