@@ -178,7 +178,7 @@ help :-
     write('|       \'fight.\'         |     Fight against the encountered enemy.                                                                            |'),nl,
     write('|        \'run.\'          |     Run away from the enemy. Might as well not work as it is and you have no choice but to fight the enemy.         |'),nl,
     write('|       \'attack.\'        |     Attack the enemy you\'re currently facing.                                                                       |'),nl,
-    write('|   \'special_attack.\'    |     Use special attack ONLY when you face the boss.                                                                 |'),nl,
+    write('|   \'special_attack.\'    |     Use special attack when in battle                                                                               |'),nl,
     write('|       \'item.\'          |     Use items in your inventory.                                                                                    |'),nl,
     write('|       \'status.\'        |     Get the player info.                                                                                            |'),nl,
     write('================================================================================================================================================'),nl.
@@ -205,7 +205,7 @@ help :-
     write('|    \'health potion.\'    |     Buy a health potion.                                                                                            |'),nl,
     write('|       \'panas.\'         |     Buy a panas spesial 2 mekdi.                                                                                    |'),nl,
     write('|      \'sadikin.\'        |     Buy a sadikin.                                                                                                  |'),nl,
-    write('|       \'gomilk.\'       |     Buy a go milk.                                                                                                  |'),nl,
+    write('|       \'gomilk.\'        |     Buy a go milk.                                                                                                  |'),nl,
     write('|      \'crisbar.\'        |     Buy a crisbar.                                                                                                  |'),nl,
     write('|      \'exitShop.\'       |     Exit the shop.                                                                                                  |'),nl,
     write('|        \'sell.\'         |     Sell items in your inventory.                                                                                   |'),nl,
