@@ -72,6 +72,12 @@ price('sadikin',200).
 price('go milk',250).
 price('crisbar',300).
 price('gacha',1000).
+price('attack potion S',300).
+price('attack potion M',350).
+price('attack potion L',400).
+price('defense potion S',250).
+price('defense potion M',300).
+price('defense potion L',350).
 
 /*item rare*/
 ultraRareItem('wolf greatsword').

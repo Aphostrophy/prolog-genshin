@@ -483,8 +483,6 @@ check_player_death :-
 check_player_death :-
     show_battle_status, !.
 
-check_buff()
-
 /* Nampilin status enemy dan player */
 show_battle_status :-
     /* Enemy Status */
