@@ -87,7 +87,8 @@ w :-
     (\+ isPagar(X, Y2)), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X, Y2,'P')),
-    chest_encounter,!.
+    chest_encounter, !,
+    check_in_battle(w).
 
 w :-
     (\+game_start), !,
@@ -117,7 +118,8 @@ a :-
     (\+isPagar(X2, Y)), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X2, Y,'P')),
-    chest_encounter,!.
+    chest_encounter,!, 
+    check_in_battle(a).
 
 a :-
     (\+game_start), !,
@@ -147,7 +149,8 @@ s :-
     (\+map_entity(X,Y2,'B')), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X, Y2,'P')),
-    chest_encounter,!.
+    chest_encounter,!,
+    check_in_battle(s).
 
 s :-
     game_start,
@@ -187,7 +190,8 @@ d :-
     (\+map_entity(X2, Y, 'B')), !,
     retract(map_entity(X, Y, 'P')),
     assertz(map_entity(X2, Y,'P')),
-    chest_encounter,!.
+    chest_encounter,!,
+    check_in_battle(d).
 
 d :-
     game_start,
@@ -255,3 +259,23 @@ execute_teleport(X,Y) :-
 execute_teleport(X,Y) :-
     (\+map_entity(X,Y,'T')), !,
     write('Invalid Location!!').
+
+check_in_battle(X) :-
+    X = w,
+    (\+game_state(in_battle)), !,
+    write('You go north.'), nl.
+
+check_in_battle(X) :-
+    X = a,
+    (\+game_state(in_battle)), !,
+    write('You go west.'), nl.
+
+check_in_battle(X) :-
+    X = s,
+    (\+game_state(in_battle)), !,
+    write('You go south.'), nl.
+
+check_in_battle(X) :-
+    X = d,
+    (\+game_state(in_battle)), !,
+    write('You go east.'), nl.

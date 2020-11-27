@@ -366,9 +366,6 @@ check_death :-
     assertz(game_state(travelling)).
 
 check_death :- 
-    show_battle_status, 
-    nl, nl,
-
     special_timer(Timer),
     NewTimer is Timer+1,
     retract(special_timer(_)),
@@ -489,7 +486,7 @@ show_battle_status :-
     enemy_type(EnemyId, EnemyName),
     hp_enemy(EnemyHealth), !,
 
-    write('Enemy :'), write(EnemyName), nl,
+    write('Enemy : '), write(EnemyName), nl,
     write('Health : '), write(EnemyHealth), nl, nl,
 
     /* Player Status */
