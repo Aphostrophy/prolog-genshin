@@ -113,7 +113,7 @@ attack :-
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
-    write('You deal '), write(Atk), write(' damage!'), nl, nl,
+    write('You deal '), write(Damage), write(' damage!'), nl, nl,
 
     check_death_boss.
 
@@ -137,7 +137,7 @@ attack :-
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
-    write('You deal '), write(Atk), write(' damage!'), nl, nl,
+    write('You deal '), write(Damage), write(' damage!'), nl, nl,
 
     check_death.
 
@@ -173,7 +173,7 @@ special_attack :-
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
-    write('You deal '), write(Atk), write(' damage!'), nl, nl,
+    write('You deal '), write(Damage), write(' damage!'), nl, nl,
 
     retract(special_timer(_)),
     assertz(special_timer(0)),
@@ -210,7 +210,7 @@ special_attack :-
     NewX is X - Damage,
     assertz(hp_enemy(NewX)),
     
-    write('You deal '), write(Atk), write(' damage!'), nl, nl,
+    write('You deal '), write(Damage), write(' damage!'), nl, nl,
 
     retract(special_timer(_)),
     assertz(special_timer(0)),
@@ -468,7 +468,7 @@ enemy_turn :-
 
     type_enemy(EnemyId),
     enemy_type(EnemyId, EnemyName), !,
-    write(EnemyName), write(' deals '), write(Atk), write(' damage!!'), nl, nl,
+    write(EnemyName), write(' deals '), write(Damage), write(' damage!!'), nl, nl,
 
     check_player_death.
 
