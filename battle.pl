@@ -125,9 +125,11 @@ attack :-
     retract(hp_enemy(X)),
     att_enemy(AttEnemy),
     def_enemy(DefEnemy), !,
-
+    equipped_weapon(Weapon),
+    property(Weapon, MultAttack),
     player_attack(AttPlayer), !,
-    calc_damage(AttPlayer, DefEnemy, Atk), !,
+    TotalAtt is AttPlayer * MultAttack,
+    calc_damage(TotalAtt, DefEnemy, Atk), !,
     
     NewX is X - Atk,
     assertz(hp_enemy(NewX)),
