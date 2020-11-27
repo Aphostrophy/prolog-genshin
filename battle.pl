@@ -19,23 +19,15 @@ trigger_boss :-
 
     retract(lvl_enemy(_)),
     assertz(lvl_enemy(70)),
-
-    lvl_enemy(EnemyLevel),
     
     enemy_health(4, Hp),
-    ScaleHp is Hp + 10*EnemyLevel,
-    retract(hp_enemy(_)),
-    assertz(hp_enemy(ScaleHp)),
+    assertz(hp_enemy(Hp)),
     
     enemy_attack(4, Att),
-    ScaleAtt is Att + 5*EnemyLevel,
-    retract(att_enemy(_)),
-    assertz(att_enemy(ScaleAtt)),
+    assertz(att_enemy(Att)),
 
     enemy_defense(4, Def),
-    ScaleDef is Def + 2*EnemyLevel,
-    retract(def_enemy(_)),
-    assertz(def_enemy(ScaleDef)),
+    assertz(def_enemy(Def)),
     write('You feel the ground tremble, the wind rages around you. You see a humongous being, it was an overweight Paimon.'), nl,
     write('Seems like she wants to eat you to satisfy her unsatisfiable appetite.'), nl,
     write('You can\'t\' run. You have to defeat her!!').
