@@ -85,8 +85,8 @@ equip(Item) :-
     player_attack_mult(CurrentAttackMult),
     equipped_weapon(CurrentWeapon),property(CurrentWeapon,CurrentWeaponAttackMult),
     retract(equipped_weapon(CurrentWeapon)),assertz(equipped_weapon(Item)),
-    property(Weapon, MultAttack),player_attack_mult(CurrentAttackMult), NewMultAtt is CurrentAttackMult + MultAttack,
-    retract(player_attack_mult(_)),assertz(player_attack_mult(NewMultAtt)),
+    property(Item, MultAttack),
+    retract(player_attack_mult(_)),assertz(player_attack_mult(MultAttack)),
     substractFromInventory([Item|1]),addToInventory([CurrentWeapon|1]),
     write('Equipped '),write(Item),!.
 
