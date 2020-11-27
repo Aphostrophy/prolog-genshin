@@ -31,7 +31,7 @@ attack_mutate(X, Damage) :-
   Damage is X.
   
 calc_status_upgrade(Status,Result) :-
-  Result is truncate(Status * 1.4).
+  Result is truncate(Status * 1.1).
 
 
 handle_sell(Name,Amount) :-

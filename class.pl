@@ -33,39 +33,3 @@ equipmentAllowed(archer,Y) :-
 
 equipmentAllowed(mage,Y) :-
     type(catalyst,Y).
-
-baseAttackScaling(knight, level, Attack) :-
-    baseAttack(knight, BaseAttack),
-    Attack is BaseAttack+30*level.
-
-baseAttackScaling(archer,level, Attack) :-
-    baseAttack(archer, BaseAttack),
-    Attack is BaseAttack+30*level.
-
-baseAttackScaling(archer,level,Attack):-
-    baseAttack(archer,BaseAttack),
-    Attack is BaseAttack+35*level.
-    
-baseHealthScaling(knight, level, Health) :-
-    baseHealth(knight, BaseHealth),
-    Health is BaseHealth+300*level.
-
-baseHealthScaling(archer,level, Health) :-
-    baseHealth(archer, BaseHealth),
-    Health is BaseHealth+200*level.
-
-baseHealthScaling(archer,level,Health):-
-    baseHealth(archer,BaseHealth),
-    Health is BaseHealth+150*level.
-
-baseDefenseScaling(knight, level, Defense) :-
-    baseDefense(knight, BaseDefense),
-    Defense is BaseDefense+300*level.
-
-baseDefenseScaling(archer,level, Defense) :-
-    baseDefense(archer, BaseDefense),
-    Defense is BaseDefense+200*level.
-
-baseDefenseScaling(archer,level,Defense):-
-    baseDefense(archer,BaseDefense),
-    Defense is BaseDefense+150*level.

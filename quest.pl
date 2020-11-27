@@ -138,8 +138,8 @@ check_quest_done :-
     hilichurl_counter(0),
     mage_counter(0),
     write('Quest finished!!! You get :'),
-    questExp(ExpLoot), write(' Exp'), nl,
-    questGold(GoldLoot), write(' Gold'), nl,
+    questExp(ExpLoot),write(ExpLoot), write(' Exp'), nl,
+    questGold(GoldLoot),write(GoldLoot), write(' Gold'), nl,
 
     retract(quest_active(true)),
     assertz(quest_active(false)),

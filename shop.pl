@@ -72,6 +72,8 @@ gacha:-
     random(0,59,X),
     listIdx(L,X,E),
     addToInventory([E|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     writeGacha(E),!.
 
 writeGacha(E):-
@@ -103,6 +105,8 @@ healthpotion:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['health potion'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 panas:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -116,6 +120,8 @@ panas:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['panas 2 spesial mekdi'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 sadikin:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -129,6 +135,8 @@ sadikin:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['sadikin'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 gomilk:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -142,6 +150,8 @@ gomilk:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['go milk'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 crisbar :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -155,6 +165,8 @@ crisbar:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['crisbar'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 attackPotionS :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -168,6 +180,8 @@ attackPotionS:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['attack potion S'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 attackPotionM :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -181,6 +195,8 @@ attackPotionM:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['attack potion M'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 attackPotionL :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -194,6 +210,8 @@ attackPotionL:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['attack potion L'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 defensePotionS :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -207,6 +225,8 @@ defensePotionS:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['defense potion S'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 defensePotionM :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -220,6 +240,8 @@ defensePotionM:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['defense potion M'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 defensePotionL :- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
@@ -233,6 +255,8 @@ defensePotionL:-
     G2 is G-P,
     assertz(current_gold(G2)),
     addToInventory(['defense potion L'|1]),
+    inventory_bag(Inventory,Size),
+    Size =< 100,
     write('Thanks for buying!'),nl.
 
 exitShop:- \+game_state(shopactive),!,writeShopIsNotOpenMessage,fail.
