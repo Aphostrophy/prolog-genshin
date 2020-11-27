@@ -21,12 +21,15 @@ trigger_boss :-
     assertz(lvl_enemy(70)),
     
     enemy_health(4, Hp),
+    retract(hp_enemy(_)),
     assertz(hp_enemy(Hp)),
     
     enemy_attack(4, Att),
+    retract(att_enemy(_)),
     assertz(att_enemy(Att)),
 
     enemy_defense(4, Def),
+    retract(def_enemy(_)),
     assertz(def_enemy(Def)),
     write('You feel the ground tremble, the wind rages around you. You see a humongous being, it was an overweight Paimon.'), nl,
     write('Seems like she wants to eat you to satisfy her unsatisfiable appetite.'), nl,
