@@ -285,7 +285,7 @@ use_item(ItemName,Type) :-
     defUp(Def).
 
 heal(Hp) :-
-    player_health(PlayerHealth), !,
+    player_health(PlayerHealth), 
     player_max_health(PlayerMaxHealth),
     NewHealth is PlayerHealth+Hp,
     NewHealth < PlayerMaxHealth, !,
@@ -293,7 +293,7 @@ heal(Hp) :-
     assertz(player_health(NewHealth)).
 
 heal(Hp) :-
-    player_health(PlayerHealth), !,
+    player_health(PlayerHealth), 
     player_max_health(PlayerMaxHealth),
     NewHealth is PlayerHealth+Hp,
     NewHealth >= PlayerMaxHealth, !,
