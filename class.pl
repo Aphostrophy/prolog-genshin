@@ -15,7 +15,7 @@ baseDefense(knight, 30).
 baseDefense(archer, 20).
 baseDefense(mage,15).
 
-baseAttack(knight, 10000000000).
+baseAttack(knight, 30).
 baseAttack(archer,40).
 baseAttack(mage,40).
 
