@@ -106,9 +106,10 @@ attack :-
     retract(hp_enemy(X)),
     att_enemy(AttEnemy),
     def_enemy(DefEnemy), !,
-    equipped_weapon(Weapon),
-    property(Weapon, MultAttack),
-    player_attack(AttPlayer), !,
+
+    player_attack(AttPlayer),
+    player_attack_mult(MultAttack), !,
+    
     TotalAtt is AttPlayer * MultAttack,
     calc_damage(AttPlayer, DefEnemy, Atk), !,
 
@@ -129,9 +130,10 @@ attack :-
     retract(hp_enemy(X)),
     att_enemy(AttEnemy),
     def_enemy(DefEnemy), !,
-    equipped_weapon(Weapon),
-    property(Weapon, MultAttack),
-    player_attack(AttPlayer), !,
+
+    player_attack(AttPlayer),
+    player_attack_mult(MultAttack), !,
+
     TotalAtt is AttPlayer * MultAttack,
     calc_damage(TotalAtt, DefEnemy, Atk), !,
     
@@ -165,7 +167,10 @@ special_attack :-
     def_enemy(DefEnemy),
 
     player_attack(AttPlayer),
-    SpecialAtt is 2*AttPlayer,
+    player_attack_mult(MultAttack), !,
+    
+    TotalAtt is AttPlayer * MultAttack,
+    SpecialAtt is 2*TotalAtt,
     calc_damage(SpecialAtt, DefEnemy, Atk),
 
     decrease_health(Atk, Damage), !,
@@ -199,7 +204,10 @@ special_attack :-
     def_enemy(DefEnemy),
 
     player_attack(AttPlayer),
-    SpecialAtt is 2*AttPlayer,
+    player_attack_mult(MultAttack), !,
+    
+    TotalAtt is AttPlayer * MultAttack,
+    SpecialAtt is 2*TotalAtt,
     calc_damage(SpecialAtt, DefEnemy, Atk),
 
     decrease_health(Atk, Damage), !,
@@ -267,9 +275,9 @@ item :-
     inventory,
     write('Input item name!!'), nl,
     read(ItemName),
+    consumable_type(ItemName, Type), !,
     substractFromInventory([ItemName|1]),
 
-    consumable_type(ItemName, Type),
     use_item(ItemName,Type),
     write('You used '), write(ItemName), nl,
 
@@ -290,17 +298,13 @@ use_item(ItemName,Type) :-
 
 use_item(ItemName,Type) :-
     Type = att,
-    player_attack(Attack),
     property(ItemName, AttackMult), !,
-    TotalAttack is truncate(Attack * AttackMult),
-    attUp(TotalAttack).
+    attUp(AttackMult).
 
 use_item(ItemName,Type) :-
     Type = def,
-    player_defense(Defense),
     property(ItemName, DefenseMult), !,
-    TotalDefense is truncate(Defense * DefenseMult),
-    defUp(TotalDefPlayer).
+    defUp(DefenseMult).
 
 heal(Hp) :-
     player_health(PlayerHealth), 
@@ -319,20 +323,20 @@ heal(Hp) :-
     assertz(player_health(PlayerMaxHealth)).
 
 attUp(Att) :-
-    player_attack(PlayerAttack), !,
-    NewAttack is PlayerAttack+Att,
+    player_attack_mult(CurrentAttMult), !,
+    NewAttMult is CurrentAttMult+Att,
     retract(buff_att(_)),
     assertz(buff_att(3)),
-    retract(player_attack(_)),
-    assertz(player_attack(NewAttack)).
+    retract(player_attack_mult(_)),
+    assertz(player_attack_mult(NewAttMult)).
 
 defUp(Def) :-
-    player_defense(PlayerDefense), !,
-    NewDefense is PlayerDefense+Def,
+    player_defense_mult(CurrentDefMult), !,
+    NewDefMult is CurrentDefMult+Def,
     retract(buff_def(_)),
     assertz(buff_def(3)),
-    retract(player_defense(_)),
-    assertz(player_defense(NewDefense)).
+    retract(player_defense_mult(_)),
+    assertz(player_defense_mult(NewDefMult)).
 
 /* Saat bukan boss battle */
 check_death :-
@@ -454,16 +458,11 @@ enemy_turn :-
     TotalDefPlayer is truncate(DefPlayer*MultDefense),
     TotalPlayerHealth is truncate(PlayerHealth*MultHealth),
 
-<<<<<<< HEAD
     calc_damage(AttEnemy, TotalDefPlayer, Atk), !,
 
     decrease_health(Atk, Damage), !,
 
     NewX is TotalPlayerHealth - Damage,
-=======
-    calc_damage(AttEnemy, TotalDefPlayer, Atk), !,write(Atk),nl,write(TotalPlayerHealth),
-    NewX is TotalPlayerHealth - Atk,
->>>>>>> a80cce00898191d3f69d79e558447f3bad57be01
     
     retract(player_health(PlayerHealth)),
     assertz(player_health(NewX)), !,
@@ -483,6 +482,8 @@ check_player_death :-
 
 check_player_death :-
     show_battle_status, !.
+
+check_buff()
 
 /* Nampilin status enemy dan player */
 show_battle_status :-
